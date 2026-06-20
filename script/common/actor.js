@@ -518,7 +518,7 @@ export class DarkHeresyActor extends Actor {
      */
     async _showCritMessage(rolls, target, totalWounds, totalCritWounds) {
         if (rolls.length === 0) return;
-        const html = await renderTemplate("systems/dark-heresy/template/chat/critical.hbs", {
+        const html = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/chat/critical.hbs", {
             rolls,
             target,
             totalWounds,
