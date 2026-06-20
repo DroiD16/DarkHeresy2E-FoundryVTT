@@ -535,42 +535,29 @@ export class DarkHeresyActor extends Actor {
         return boni;
     }
 
-    async addCondition(effect, options={}) {
-        if (typeof (effect) === "string") effect = CONFIG.statusEffects.find(e => e.id === effect);
-        if (!effect) return "No Effect Found";
-        else effect = duplicate(effect);
+    // Condition origin is no longer applied: toggleStatusEffect has no origin parameter.
+    async addCondition(effect) {
+        const id = typeof (effect) === "string" ? effect : effect?.id;
+        if (!id) return "Conditions require an id field";
+        if (!CONFIG.statusEffects.some(e => e.id === id)) return "No Effect Found";
 
-        if (!effect.id) return "Conditions require an id field";
+        if (this.hasCondition(id)) return;
 
-
-        let existing = this.hasCondition(effect.id);
-
-        if (!existing) {
-            effect.label = game.i18n.localize(effect.label);
-            effect["flags.core.statusId"] = effect.id;
-            effect.origin = options.origin || "";
-            delete effect.id;
-            return this.createEmbeddedDocuments("ActiveEffect", [effect]);
-        }
+        return this.toggleStatusEffect(id, { active: true });
     }
 
     async removeCondition(effect) {
-        if (typeof (effect) === "string") effect = CONFIG.statusEffects.find(e => e.id === effect);
-        if (!effect) return "No Effect Found";
-        else effect = duplicate(effect);
+        const id = typeof (effect) === "string" ? effect : effect?.id;
+        if (!id) return "Conditions require an id field";
+        if (!CONFIG.statusEffects.some(e => e.id === id)) return "No Effect Found";
 
-        if (!effect.id) return "Conditions require an id field";
+        if (!this.hasCondition(id)) return;
 
-        let existing = this.hasCondition(effect.id);
-
-        if (existing) {
-            return existing.delete();
-        }
+        return this.toggleStatusEffect(id, { active: false });
     }
 
     hasCondition(conditionKey) {
-        let existing = this.effects.find(i => i.getFlag("core", "statusId") === conditionKey);
-        return existing;
+        return this.effects.find(e => e.statuses.has(conditionKey));
     }
 
     get characteristics() { return this.system.characteristics; }
