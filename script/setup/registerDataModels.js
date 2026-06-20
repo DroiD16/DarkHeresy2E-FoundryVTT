@@ -12,6 +12,7 @@ import GearData from "../data/item/gearData.js";
 import ToolData from "../data/item/toolData.js";
 import WeaponModificationData from "../data/item/weaponModificationData.js";
 import PsychicPowerData from "../data/item/psychicPowerData.js";
+import TalentData from "../data/item/talentData.js";
 
 export const registerDataModels = () => {
     foundry.utils.mergeObject(CONFIG.Actor.dataModels, {
@@ -37,6 +38,11 @@ export const registerDataModels = () => {
         // migrateData because every field keeps the exact template type and default,
         // and NumberField gracefully cleans any legacy string `cost`.
         psychicPower: PsychicPowerData,
+        // TalentData also extends ItemDescriptionData with `prerequisites`/`aptitudes`/
+        // `benefit` strings plus numeric `tier`/`cost` and boolean `starter`; it needs no
+        // migrateData because every field keeps the exact template type and default, and
+        // NumberField gracefully cleans any legacy string `cost`.
+        talent: TalentData,
         // The following equipment-based types extend EquipmentItemData and need no
         // migrateData: every field keeps the exact template type and default, and
         // NumberField gracefully cleans any legacy string numbers, so existing

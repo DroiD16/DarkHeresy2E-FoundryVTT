@@ -49,6 +49,7 @@ const { default: GearData } = await import("../script/data/item/gearData.js");
 const { default: ToolData } = await import("../script/data/item/toolData.js");
 const { default: WeaponModificationData } = await import("../script/data/item/weaponModificationData.js");
 const { default: PsychicPowerData } = await import("../script/data/item/psychicPowerData.js");
+const { default: TalentData } = await import("../script/data/item/talentData.js");
 
 const EQUIPMENT_KEYS = ["craftsmanship", "description", "availability", "weight"];
 
@@ -147,6 +148,36 @@ test("PsychicPowerData: inherits description+source and appends psychic power ow
         assert.equal(schema.damage.fields[key].type, "String", `damage.${key} is String`);
         assert.equal(schema.damage.fields[key].options.initial, "", `damage.${key} initial ""`);
     }
+});
+
+test("TalentData: inherits description+source and appends talent own fields", () => {
+    const schema = TalentData.defineSchema();
+
+    // Inherited from ItemDescriptionData
+    for (const key of ["description", "source"]) {
+        assert.ok(key in schema, `inherited key ${key} present`);
+    }
+    assert.equal(schema.description.type, "String");
+    assert.equal(schema.description.options.initial, "");
+    assert.equal(schema.source.type, "String");
+    assert.equal(schema.source.options.initial, "");
+
+    // Own string fields, all String initial ""
+    for (const key of ["prerequisites", "aptitudes", "benefit"]) {
+        assert.ok(key in schema, `own key ${key} present`);
+        assert.equal(schema[key].type, "String");
+        assert.equal(schema[key].options.initial, "");
+    }
+
+    // tier and cost are numeric
+    assert.equal(schema.tier.type, "Number");
+    assert.equal(schema.tier.options.initial, 0);
+    assert.equal(schema.cost.type, "Number");
+    assert.equal(schema.cost.options.initial, 0);
+
+    // starter is boolean
+    assert.equal(schema.starter.type, "Boolean");
+    assert.equal(schema.starter.options.initial, false);
 });
 
 test("ArmourData: inherits equipment fields and appends armour own fields", () => {
