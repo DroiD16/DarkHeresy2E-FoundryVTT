@@ -10,10 +10,10 @@ AGENTS.md
 CLAUDE.md
 .local/
 
-# Generated build and release artifacts
-css/
-packs/
-release/
+# Generated build and release artifacts (root only; do not match src/packs source)
+/css/
+/packs/
+/release/
 dark-heresy.zip
 
 # OS and editor noise
