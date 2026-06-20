@@ -5,7 +5,8 @@
     "build:watch": "gulp",
     "lint": "gulp lint",
     "lint:fix": "gulp lint --fix",
-    "test": "npm run lint"
+    "test:unit": "node --test \"test/**/*.test.mjs\"",
+    "test": "npm run lint && npm run test:unit"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.5",
