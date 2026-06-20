@@ -1228,30 +1228,7 @@
         "malignancy": {},
         "mentalDisorder": {},
         "mutation": {},
-        "psychicPower": {
-            "templates": [
-                "itemDescription"
-            ],
-            "shortDescription": "",
-            "cost": 0,
-            "prerequisite": "",
-            "action": "",
-            "focusPower": {
-                "difficulty": 0,
-                "test": ""
-            },
-            "range": "",
-            "sustained": "",
-            "subtype": "",
-            "effect": "",
-            "damage": {
-                "zone": "bolt",
-                "type": "energy",
-                "formula": "",
-                "penetration": "",
-                "special": ""
-            }
-        },
+        "psychicPower": {},
         "specialAbility": {},
         "talent": {
             "templates": [
