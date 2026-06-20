@@ -24,11 +24,13 @@
     "test": "npm run lint && npm run test:unit"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.22.5",
+    "@babel/eslint-parser": "^7.29.7",
     "@league-of-foundry-developers/foundry-vtt-types": "^13.341.1",
-    "eslint-plugin-jsdoc": "^46.2.6",
+    "eslint": "^9.39.4",
+    "eslint-plugin-jsdoc": "^48.11.0",
+    "globals": "^16.5.0",
     "gulp": "^5.0.0",
-    "gulp-eslint-new": "^1.8.0",
+    "gulp-eslint-new": "^2.6.2",
     "gulp-if": "^3.0.0",
     "gulp-less": "^5.0.0",
     "js-yaml": "^4.1.1",
