@@ -134,15 +134,9 @@ export class DarkHeresyActor extends Actor {
         }
         for (let item of this.items.filter(it => it.isTalent || it.isPsychicPower)) {
             if (item.isTalent) {
-                let talentAptitudes = item.aptitudes.split(",").map(it => it.trim());
-                let matchedAptitudes = characterAptitudes.filter(it => talentAptitudes.includes(it)).length;
-                let cost = 0;
-                let tier = parseInt(item.tier);
-                if (!item.system.starter && tier >= 1 && tier <= 3) {
-                    cost = config.talentCosts[tier - 1][2 - matchedAptitudes];
-                }
-                item.system.cost = cost.toString();
-                this.experience.spentTalents += cost;
+                // Talent cost is computed by TalentData.prepareDerivedData (which runs
+                // before this actor pass); just read the derived value here.
+                this.experience.spentTalents += parseInt(item.cost, 10) || 0;
             } else if (item.isPsychicPower) {
                 this.experience.spentPsychicPowers += parseInt(item.cost, 10);
             }
