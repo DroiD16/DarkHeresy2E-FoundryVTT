@@ -5,7 +5,7 @@
     "build:watch": "gulp",
     "lint": "gulp lint",
     "lint:fix": "gulp lint --fix",
-    "test": "npm run lint:fix"
+    "test": "npm run lint"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.5",
