@@ -5,9 +5,10 @@ node_modules/
 .vscode/
 *.code-workspace
 
-# Local AI-agent instructions
+# Local AI-agent instructions and working files
 AGENTS.md
 CLAUDE.md
+.local/
 
 # Generated build and release artifacts
 css/
