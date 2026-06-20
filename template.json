@@ -1219,48 +1219,12 @@
             }
         },
         "ammunition": {},
-        "armour": {
-            "templates": [
-                "equipment"
-            ],
-            "type": "basic",
-            "isAdditive": false,
-            "part": {
-                "head": 0,
-                "leftArm": 0,
-                "rightArm": 0,
-                "body": 0,
-                "leftLeg": 0,
-                "rightLeg": 0
-            },
-            "maxAgility": 0
-        },
+        "armour": {},
         "criticalInjury": {},
-        "cybernetic": {
-            "templates": [
-                "equipment"
-            ],
-            "installed": false
-        },
-        "drug": {
-            "templates": [
-                "equipment"
-            ],
-            "shortDescription": ""
-        },
-        "forceField": {
-            "templates": [
-                "equipment"
-            ],
-            "protectionRating": 0,
-            "overloadChance": 0
-        },
-        "gear": {
-            "templates": [
-                "equipment"
-            ],
-            "shortDescription": ""
-        },
+        "cybernetic": {},
+        "drug": {},
+        "forceField": {},
+        "gear": {},
         "malignancy": {},
         "mentalDisorder": {},
         "mutation": {},
@@ -1300,21 +1264,10 @@
             "starter": false,
             "cost": 0
         },
-        "tool": {
-            "templates": [
-                "equipment"
-            ],
-            "shortDescription": ""
-        },
+        "tool": {},
         "trait": {},
         "weapon": {},
-        "weaponModification": {
-            "templates": [
-                "equipment"
-            ],
-            "upgrades": "",
-            "installed": false
-        },
+        "weaponModification": {},
         "aptitude": {}
     }
 }
