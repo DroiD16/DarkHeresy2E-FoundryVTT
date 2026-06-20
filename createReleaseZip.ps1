@@ -6,6 +6,7 @@ New-Item -Path $target -ItemType Directory
 gulp buildAll
 
 Copy-Item -Path ".\asset" -Destination $target -Recurse
+Copy-Item -Path ".\css" -Destination $target -Recurse
 Copy-Item -Path ".\lang" -Destination $target -Recurse
 Copy-Item -Path ".\logo" -Destination $target -Recurse
 Copy-Item -Path ".\packs" -Destination $target -Recurse
