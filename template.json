@@ -1235,13 +1235,7 @@
             },
             "maxAgility": 0
         },
-        "criticalInjury": {
-            "templates": [
-                "itemDescription"
-            ],
-            "type": "impact",
-            "part": "body"
-        },
+        "criticalInjury": {},
         "cybernetic": {
             "templates": [
                 "equipment"
@@ -1267,21 +1261,9 @@
             ],
             "shortDescription": ""
         },
-        "malignancy": {
-            "templates": [
-                "itemDescription"
-            ]
-        },
-        "mentalDisorder": {
-            "templates": [
-                "itemDescription"
-            ]
-        },
-        "mutation": {
-            "templates": [
-                "itemDescription"
-            ]
-        },
+        "malignancy": {},
+        "mentalDisorder": {},
+        "mutation": {},
         "psychicPower": {
             "templates": [
                 "itemDescription"
@@ -1306,12 +1288,7 @@
                 "special": ""
             }
         },
-        "specialAbility": {
-            "templates": [
-                "itemDescription"
-            ],
-            "benefit": ""
-        },
+        "specialAbility": {},
         "talent": {
             "templates": [
                 "itemDescription"
@@ -1329,12 +1306,7 @@
             ],
             "shortDescription": ""
         },
-        "trait": {
-            "templates": [
-                "itemDescription"
-            ],
-            "benefit": ""
-        },
+        "trait": {},
         "weapon": {},
         "weaponModification": {
             "templates": [
@@ -1343,10 +1315,6 @@
             "upgrades": "",
             "installed": false
         },
-        "aptitude": {
-            "templates": [
-                "itemDescription"
-            ]
-        }
+        "aptitude": {}
     }
 }
