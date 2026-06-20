@@ -21,7 +21,14 @@ export class DarkHeresySheet extends ActorSheet {
     /** @override */
     async getData() {
         const data = super.getData();
-        data.system = data.data.system;
+        // After the actor system was converted to a TypeDataModel, `data.data`
+        // (DocumentSheet's `this.document.toObject(false)`) is a schema-filtered
+        // serialization that DROPS every runtime-added derived key
+        // (characteristic.total/bonus/isLeft/isRight, skill.total, speciality.*,
+        // system.armour/movement/encumbrance, experience.*, psy.currentRating,
+        // initiative.bonus, ...). Source the template's `system` from the LIVE
+        // prepared model instead so all derived values are present for rendering.
+        data.system = this.actor.system;
         data.items = this.constructItemLists(data);
         data.enrichment = await this._enrichment();
         data.effects = this.prepareActiveEffectCategories();
