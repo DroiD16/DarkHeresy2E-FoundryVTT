@@ -35,7 +35,7 @@
       "name": "character-aptitudes",
       "label": "Character Aptitudes",
       "system": "dark-heresy",
-      "path": "./packs/aptitudes.db",
+      "path": "./packs/aptitudes",
       "type": "Item"
     }
   ],
