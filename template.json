@@ -1230,17 +1230,7 @@
         "mutation": {},
         "psychicPower": {},
         "specialAbility": {},
-        "talent": {
-            "templates": [
-                "itemDescription"
-            ],
-            "prerequisites": "",
-            "aptitudes": "",
-            "benefit": "",
-            "tier": 0,
-            "starter": false,
-            "cost": 0
-        },
+        "talent": {},
         "tool": {},
         "trait": {},
         "weapon": {},
