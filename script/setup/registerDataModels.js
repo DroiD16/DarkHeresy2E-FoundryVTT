@@ -13,10 +13,18 @@ import ToolData from "../data/item/toolData.js";
 import WeaponModificationData from "../data/item/weaponModificationData.js";
 import PsychicPowerData from "../data/item/psychicPowerData.js";
 import TalentData from "../data/item/talentData.js";
+import AcolyteData from "../data/actor/acolyteData.js";
+import NpcData from "../data/actor/npcData.js";
 
 export const registerDataModels = () => {
     foundry.utils.mergeObject(CONFIG.Actor.dataModels, {
-        // Stub for when Actors are moved to data models
+        // The keys are the Actor types defined in our template.json. Both extend
+        // DarkHeresyActorData (the seven shared templates) and need no migrateData:
+        // the schema reproduces every template default exactly, plus the stored
+        // experience.spentOther field that exists on real actors, so existing
+        // worlds validate as-is. Derived values are computed at runtime.
+        acolyte: AcolyteData,
+        npc: NpcData
     });
 
     foundry.utils.mergeObject(CONFIG.Item.dataModels, {
