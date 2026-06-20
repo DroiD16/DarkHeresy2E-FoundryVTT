@@ -55,17 +55,23 @@ export default class WeaponData extends EquipmentItemData {
         super.migrateData(source);
 
         this.migrateRateOfFire(source);
+
+        return source;
     }
 
     static migrateRateOfFire(source) {
+        if (source.rateOfFire == null) {
+            return;
+        }
+
         if (
             !Number.isInteger(source.rateOfFire.single)
             || !Number.isInteger(source.rateOfFire.burst)
             || !Number.isInteger(source.rateOfFire.full)
         ) {
             source.rateOfFire.single = parseInt(source.rateOfFire.single) || 0;
-            source.rateOfFire.burst = parseInt(source.rateOfFire.single) || 0;
-            source.rateOfFire.full = parseInt(source.rateOfFire.single) || 0;
+            source.rateOfFire.burst = parseInt(source.rateOfFire.burst) || 0;
+            source.rateOfFire.full = parseInt(source.rateOfFire.full) || 0;
         }
     }
 

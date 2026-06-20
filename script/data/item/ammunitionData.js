@@ -54,6 +54,8 @@ export default class AmmunitionData extends EquipmentItemData {
         super.migrateData(source);
 
         this.migrateDamageModifier(source);
+
+        return source;
     }
 
     static migrateDamageModifier(source) {
