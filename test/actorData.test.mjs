@@ -59,8 +59,13 @@ globalThis.foundry.data.fields = {
 const { default: AcolyteData } = await import("../script/data/actor/acolyteData.js");
 const { default: NpcData } = await import("../script/data/actor/npcData.js");
 
-const template = JSON.parse(
-    readFileSync(fileURLToPath(new URL("../template.json", import.meta.url)), "utf8")
+// Frozen snapshot of the actor schema defaults. This fixture was generated from
+// the (now removed) template.json using the same merge logic the test formerly
+// applied inline (`expectedFromTemplate` + `experience.spentOther = 0`), so it
+// preserves the historical expected values and guards against schema drift in
+// the DataModel `defineSchema()` output.
+const fixture = JSON.parse(
+    readFileSync(fileURLToPath(new URL("./fixtures/actor-schema-defaults.json", import.meta.url)), "utf8")
 );
 
 /**
@@ -98,28 +103,8 @@ function schemaDefaults(schema) {
     return out;
 }
 
-/**
- * Build the expected default system object from template.json for a given type:
- * spread each referenced shared template (each wraps its payload under a
- * same-named key, so Object.assign with the template object yields the inner
- * payload), then merge the type's own keys (dropping the `templates` array).
- */
-function expectedFromTemplate(typeKey) {
-    const type = template.Actor[typeKey];
-    const expected = {};
-    for (const name of type.templates) {
-        Object.assign(expected, template.Actor.templates[name]);
-    }
-    for (const [key, value] of Object.entries(type)) {
-        if (key === "templates") continue;
-        expected[key] = structuredClone(value);
-    }
-    return expected;
-}
-
-test("AcolyteData: schema defaults deep-equal template Actor.acolyte + experience.spentOther", () => {
-    const expected = expectedFromTemplate("acolyte");
-    expected.experience.spentOther = 0;
+test("AcolyteData: schema defaults deep-equal frozen actor-schema-defaults fixture (acolyte) + experience.spentOther", () => {
+    const expected = fixture.acolyte;
 
     const actual = schemaDefaults(AcolyteData.defineSchema());
 
@@ -128,9 +113,8 @@ test("AcolyteData: schema defaults deep-equal template Actor.acolyte + experienc
     assert.equal(actual.experience.spentOther, 0);
 });
 
-test("NpcData: schema defaults deep-equal template Actor.npc + experience.spentOther", () => {
-    const expected = expectedFromTemplate("npc");
-    expected.experience.spentOther = 0;
+test("NpcData: schema defaults deep-equal frozen actor-schema-defaults fixture (npc) + experience.spentOther", () => {
+    const expected = fixture.npc;
 
     const actual = schemaDefaults(NpcData.defineSchema());
 

@@ -7,7 +7,6 @@
     "minimum" : 13,
     "verified" : 13
   },
-  "templateVersion": 2,
   "authors": [
 	{ "name":"JeansenVaars" }, 
     { "name":"Moo Man",
@@ -27,6 +26,32 @@
   "esmodules": [
     "script/dark-heresy.js"
   ],
+  "documentTypes": {
+    "Actor": {
+      "acolyte": {},
+      "npc": {}
+    },
+    "Item": {
+      "ammunition": {},
+      "aptitude": {},
+      "armour": {},
+      "criticalInjury": {},
+      "cybernetic": {},
+      "drug": {},
+      "forceField": {},
+      "gear": {},
+      "malignancy": {},
+      "mentalDisorder": {},
+      "mutation": {},
+      "psychicPower": {},
+      "specialAbility": {},
+      "talent": {},
+      "tool": {},
+      "trait": {},
+      "weapon": {},
+      "weaponModification": {}
+    }
+  },
   "styles": [
     "css/dark-heresy.css"
   ],
