@@ -98,11 +98,10 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
-/* Column alignment shared by header and rows: name takes a bounded share
-   (don't let it grow to swallow the whole row), source/duration are small
-   fixed columns, controls absorb the remainder and right-align. */
+/* Column model: name a bounded share, the changes summary is the main
+   (growing) column, duration a small fixed column, controls compact. */
 .dark-heresy .effects .effect-name {
-  flex: 0 1 25%;
+  flex: 0 1 30%;
   align-items: center;
   font-family: var(--font-text);
 }
@@ -126,9 +125,24 @@
   color: var(--color-text);
 }
 
-.dark-heresy .effects .effect-source,
+/* The changes summary ("what it modifies") is the main column. */
+.dark-heresy .effects .effect-summary {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-text);
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--color-text);
+  padding: 0 6px;
+}
+
+.dark-heresy .effects .items-header .effect-summary {
+  color: var(--color-title);
+  text-align: center;
+}
+
 .dark-heresy .effects .effect-duration {
-  flex: 0 0 64px;
+  flex: 0 0 56px;
   text-align: center;
   font-size: 12px;
   overflow: hidden;
@@ -137,7 +151,7 @@
 }
 
 .dark-heresy .effects .effect-controls {
-  flex: 1 1 auto;
+  flex: 0 0 64px;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;

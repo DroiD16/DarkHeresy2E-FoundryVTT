@@ -110,5 +110,36 @@ function registerHandlebarsHelpers() {
         return game.darkHeresy.config[key];
     });
 
+    // Summarize an Active Effect's `changes` as readable "<target> <±value>"
+    // pairs (e.g. "Weapon Skill +5"), shown in the item effect list in place of
+    // the redundant source column. The target is humanized from the change key
+    // (characteristics/skills get their stat name, with the field in parens when
+    // it isn't the base value); the mode selects the operator symbol.
+    Handlebars.registerHelper("effectChanges", function(effect) {
+        const modes = CONST.ACTIVE_EFFECT_MODES;
+        const symbols = {
+            [modes.ADD]: "+", [modes.MULTIPLY]: "×", [modes.OVERRIDE]: "=",
+            [modes.UPGRADE]: "↑", [modes.DOWNGRADE]: "↓", [modes.CUSTOM]: "•"
+        };
+        const humanize = s => String(s).replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase()).trim();
+        const label = key => {
+            const parts = String(key).replace(/^system\./, "").split(".");
+            if ((parts[0] === "characteristics" || parts[0] === "skills") && parts[1]) {
+                let l = humanize(parts[1]);
+                const field = parts[2];
+                if (field && field !== "base" && field !== "total") l += ` (${field})`;
+                return l;
+            }
+            return humanize(parts[parts.length - 1] || key);
+        };
+        const changes = effect?.changes ?? [];
+        return changes.map(c => {
+            const sym = symbols[c.mode] ?? "";
+            const v = String(c.value ?? "");
+            const val = (c.mode === modes.ADD && v.startsWith("-")) ? v : `${sym}${v}`;
+            return `${label(c.key)} ${val}`;
+        }).join(", ");
+    });
+
 }
 

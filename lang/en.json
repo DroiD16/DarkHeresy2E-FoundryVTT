@@ -431,6 +431,7 @@
             "Inactive": "Inactive",
             "Source": "Source",
             "Duration": "Duration",
+            "Modifies": "Modifies",
             "Toggle": "Toggle"
         }
     }

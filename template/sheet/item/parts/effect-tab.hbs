@@ -3,11 +3,11 @@
         {{#each effects as |section sid|}}
             <li class="items-header flexrow" data-effect-type="{{section.type}}">
                 <h3 class="item-name effect-name flexrow">{{localize section.label}}</h3>
-                <div class="effect-source">{{localize "DH.Effect.Source"}}</div>
+                <div class="effect-summary">{{localize "DH.Effect.Modifies"}}</div>
                 <div class="effect-duration">{{localize "DH.Effect.Duration"}}</div>
                 <div class="item-controls effect-controls flexrow">
                     <a class="effect-control" data-action="create" title="{{localize 'DOCUMENT.Create' type="Effect"}}">
-                        <i class="fas fa-plus"></i> {{localize "DOCUMENT.New" type="Effect"}}
+                        <i class="fas fa-plus"></i>
                     </a>
                 </div>
             </li>
@@ -19,7 +19,7 @@
                             <img class="item-image" src="{{effect.img}}" alt="{{effect.name}}" />
                             <h4>{{effect.name}}</h4>
                         </div>
-                        <div class="effect-source">{{effect.sourceName}}</div>
+                        <div class="effect-summary">{{effectChanges effect}}</div>
                         <div class="effect-duration">{{effect.duration.label}}</div>
                         <div class="item-controls effect-controls flexrow">
                             <a class="effect-control" data-action="toggle" title="{{localize 'DH.Effect.Toggle'}}">
