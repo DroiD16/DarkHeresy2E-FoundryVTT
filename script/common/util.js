@@ -261,4 +261,31 @@ export default class DarkHeresyUtil {
             return -20;
         }
     }
+
+    static categorizeEffects(effects) {
+        const categories = {
+            temporary: {
+                type: "temporary",
+                label: game.i18n.localize("DH.Effect.Temporary"),
+                effects: []
+            },
+            passive: {
+                type: "passive",
+                label: game.i18n.localize("DH.Effect.Passive"),
+                effects: []
+            },
+            inactive: {
+                type: "inactive",
+                label: game.i18n.localize("DH.Effect.Inactive"),
+                effects: []
+            }
+        };
+
+        for (const e of effects) {
+            if (e.disabled) categories.inactive.effects.push(e);
+            else if (e.isTemporary) categories.temporary.effects.push(e);
+            else categories.passive.effects.push(e);
+        }
+        return categories;
+    }
 }

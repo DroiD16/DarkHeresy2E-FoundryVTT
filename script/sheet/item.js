@@ -1,3 +1,5 @@
+import DarkHeresyUtil from "../common/util.js";
+
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
@@ -36,7 +38,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
         context.item = this.item;
         context.system = this.item.system;
         context.enrichment = await this._handleEnrichment();
-        context.effects = this.item.effects;
+        context.effects = DarkHeresyUtil.categorizeEffects(this.item.effects);
         context.owner = this.item.isOwner;
         context.editable = this.isEditable;
         return context;
@@ -125,7 +127,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
                 name: game.i18n.format("DOCUMENT.New", {
                     type: game.i18n.localize("DOCUMENT.ActiveEffect")
                 }),
-                icon: "icons/svg/aura.svg",
+                img: "icons/svg/aura.svg",
                 origin: this.item.uuid,
                 "duration.rounds": li?.dataset.effectType === "temporary" ? 1 : undefined,
                 disabled: li?.dataset.effectType === "inactive"
@@ -173,7 +175,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
      * @param {HTMLElement} target  The control that defined the action.
      * @returns {ActiveEffect|undefined} The owning effect, if any.
      */
-    static #getEffect(target) {
+    #getEffect(target) {
         const li = target.closest("[data-effect-id]");
         return li ? this.item.effects.get(li.dataset.effectId) : undefined;
     }

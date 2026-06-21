@@ -324,24 +324,11 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      * @returns {object}                   Data for rendering
      */
     prepareActiveEffectCategories() {
-        // Define effect header categories
-        const categories = {
-            temporary: {
-                type: "temporary",
-                label: game.i18n.localize("DH.Effect.Temporary"),
-                effects: []
-            },
-            passive: {
-                type: "passive",
-                label: game.i18n.localize("DH.Effect.Passive"),
-                effects: []
-            },
-            inactive: {
-                type: "inactive",
-                label: game.i18n.localize("DH.Effect.Inactive"),
-                effects: []
-            }
-        };
+        // Define effect header categories, populated via the shared categorizer
+        // used by item sheets too; conditions are filtered out and appended here.
+        const categories = DarkHeresyUtil.categorizeEffects(
+            Array.from(this.actor.allApplicableEffects()).filter(e => !this._isCondition(e))
+        );
 
         categories.conditions = CONFIG.statusEffects.map(i => {
             return {
@@ -352,14 +339,6 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
             };
         });
 
-        for (let e of Array.from(this.actor.allApplicableEffects()))
-        {
-            if (!this._isCondition(e)) {
-                if (e.disabled) categories.inactive.effects.push(e);
-                else if (e.isTemporary) categories.temporary.effects.push(e);
-                else categories.passive.effects.push(e);
-            }
-        }
         return categories;
     }
 
