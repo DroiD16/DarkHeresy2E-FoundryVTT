@@ -1,8 +1,8 @@
-<form class="{{cssClass}}" autocomplete="off">
+<div class="dark-heresy-item">
     <div class="header border">
         <div class="flex row">
             <div class="avatar">
-                <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+                <img class="profile-img" src="{{item.img}}" data-edit="img" data-action="editImage" title="{{item.name}}" />
             </div>
             <div class="flex column grow justify-center">
                 <div class="name header-row">
@@ -19,4 +19,4 @@
             {{editor enrichment.system.description target="system.description" engine="prosemirror" button=true owner=owner editable=editable}}
         </div>
     </div>
-</form>
+</div>

@@ -1,29 +1,16 @@
 import { DarkHeresyItemSheet } from "./item.js";
 
 export class PsychicPowerSheet extends DarkHeresyItemSheet {
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["dark-heresy", "sheet", "psychic-power"],
+    static DEFAULT_OPTIONS = {
+        classes: ["dark-heresy", "sheet", "psychic-power"],
+        position: { height: 397 }
+    };
+
+    static PARTS = {
+        form: {
+            root: true,
             template: "systems/dark-heresy/template/sheet/psychic-power.hbs",
-            width: 500,
-            height: 397,
-            tabs: [
-                {
-                    navSelector: ".sheet-tabs",
-                    contentSelector: ".sheet-body",
-                    initial: "stats"
-                }
-            ]
-        });
-    }
-
-    _getHeaderButtons() {
-        let buttons = super._getHeaderButtons();
-        buttons = [].concat(buttons);
-        return buttons;
-    }
-
-    activateListeners(html) {
-        super.activateListeners(html);
-    }
+            templates: ["systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs"]
+        }
+    };
 }
