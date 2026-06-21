@@ -20,7 +20,7 @@
             </div>
             <div class="items">
                 {{#each items.criticalInjuries as |item|}}
-                    <div class="wound item flex row" data-item-id="{{item.id}}">
+                    <div class="wound item flex row draggable" data-item-id="{{item.id}}">
                         <div class="flex wound-row item-edit">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
@@ -139,7 +139,7 @@
             </div>
             <div class="items">
                 {{#each items.weapons as |item|}}                    
-                    <div class="weapon item flex row" data-item-id="{{item.id}}">
+                    <div class="weapon item flex row draggable" data-item-id="{{item.id}}">
                         <div class="flex name">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
@@ -192,7 +192,7 @@
             </div>
             <div class="items">
                 {{#each items.psychicPowers as |item|}}                    
-                    <div class="weapon item flex row" data-item-id="{{item.id}}">
+                    <div class="weapon item flex row draggable" data-item-id="{{item.id}}">
                         <div class="flex name">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>

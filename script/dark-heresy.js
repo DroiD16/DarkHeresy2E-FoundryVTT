@@ -138,7 +138,10 @@ Hooks.on("hotbarDrop", (bar, data, slot) => {
     }
 });
 
-Hooks.on("renderDarkHeresySheet", (sheet, html, data) => {
-    html.find("input.cost").prop("disabled", game.settings.get("dark-heresy", "autoCalcXPCosts"));
-    html.find(":not(.psychic-power) > input.item-cost").prop("disabled", game.settings.get("dark-heresy", "autoCalcXPCosts"));
+Hooks.on("renderDarkHeresySheet", (sheet, html) => {
+    // V2 render hooks fire for every class in the chain (so this fires for the
+    // acolyte/npc sheets) and pass the root HTMLElement, not jQuery.
+    const disabled = game.settings.get("dark-heresy", "autoCalcXPCosts");
+    for (const el of html.querySelectorAll("input.cost")) el.disabled = disabled;
+    for (const el of html.querySelectorAll(":not(.psychic-power) > input.item-cost")) el.disabled = disabled;
 });

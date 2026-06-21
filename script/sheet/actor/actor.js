@@ -1,42 +1,61 @@
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll } from "../../common/dialog.js";
 import DarkHeresyUtil from "../../common/util.js";
 
-export class DarkHeresySheet extends ActorSheet {
-    activateListeners(html) {
-        super.activateListeners(html);
-        html.find(".item-create").click(ev => this._onItemCreate(ev));
-        html.find(".item-edit").click(ev => this._onItemEdit(ev));
-        html.find(".item-delete").click(ev => this._onItemDelete(ev));
-        html.find(".ammo-unlink").click(ev => this._onAmmoUnlink(ev));
-        html.find(".roll-characteristic").click(async ev => await this._prepareRollCharacteristic(ev));
-        html.find(".roll-skill").click(async ev => await this._prepareRollSkill(ev));
-        html.find(".roll-speciality").click(async ev => await this._prepareRollSpeciality(ev));
-        html.find(".roll-insanity").click(async ev => await this._prepareRollInsanity(ev));
-        html.find(".roll-corruption").click(async ev => await this._prepareRollCorruption(ev));
-        html.find(".roll-weapon").click(async ev => await this._prepareRollWeapon(ev));
-        html.find(".roll-psychic-power").click(async ev => await this._prepareRollPsychicPower(ev));
-        html.find(".condition-toggle").click(this._onConditionToggle.bind(this));
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ActorSheetV2 } = foundry.applications.sheets;
+
+/**
+ * Base Actor sheet for the Dark Heresy system, built on ApplicationV2.
+ * Per-type sheets (acolyte/npc) extend this and declare their `classes` + `PARTS`.
+ * @extends {ActorSheetV2}
+ */
+export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+
+    /** @inheritDoc */
+    static DEFAULT_OPTIONS = {
+        classes: ["dark-heresy", "sheet", "actor"],
+        position: { width: 700, height: 881 },
+        window: { resizable: true },
+        form: { submitOnChange: true },
+        actions: {
+            customRoll: DarkHeresySheet.#onCustomRoll
+        }
+    };
+
+    /** @inheritDoc */
+    async _prepareContext(options) {
+        const context = await super._prepareContext(options);
+        // Source `system` from the live prepared model (not toObject(false), which
+        // drops the DataModel-derived keys the sheet renders).
+        context.actor = this.actor;
+        context.system = this.actor.system;
+        context.items = this.constructItemLists();
+        context.enrichment = await this._enrichment();
+        context.effects = this.prepareActiveEffectCategories();
+        context.owner = this.actor.isOwner;
+        context.editable = this.isEditable;
+        return context;
     }
 
-    /** @override */
-    async getData() {
-        const data = super.getData();
-        // After the actor system was converted to a TypeDataModel, `data.data`
-        // (DocumentSheet's `this.document.toObject(false)`) is a schema-filtered
-        // serialization that DROPS every runtime-added derived key
-        // (characteristic.total/bonus/isLeft/isRight, skill.total, speciality.*,
-        // system.armour/movement/encumbrance, experience.*, psy.currentRating,
-        // initiative.bonus, ...). Source the template's `system` from the LIVE
-        // prepared model instead so all derived values are present for rendering.
-        data.system = this.actor.system;
-        data.items = this.constructItemLists(data);
-        data.enrichment = await this._enrichment();
-        data.effects = this.prepareActiveEffectCategories();
-        return data;
+    /** @inheritDoc */
+    _configureRenderParts(options) {
+        const parts = super._configureRenderParts(options);
+        // Non-GM users with only limited permission get the reduced sheet.
+        if (!game.user.isGM && this.actor.limited && parts.form) {
+            parts.form = {
+                ...parts.form,
+                template: "systems/dark-heresy/template/sheet/actor/limited-sheet.hbs"
+            };
+        }
+        return parts;
     }
 
+    /**
+     * Enrich the actor's HTML notes for display.
+     * @returns {Promise<object>} The expanded enrichment data.
+     */
     async _enrichment() {
-        let enrichment = {};
+        const enrichment = {};
         if (this.actor.type !== "npc") {
             enrichment["system.bio.notes"] = await TextEditor.enrichHTML(this.actor.system.bio.notes, { async: true });
         } else {
@@ -45,61 +64,133 @@ export class DarkHeresySheet extends ActorSheet {
         return foundry.utils.expandObject(enrichment);
     }
 
-    /** @override */
-    get template() {
-        if (!game.user.isGM && this.actor.limited) {
-            return "systems/dark-heresy/template/sheet/actor/limited-sheet.hbs";
-        } else {
-            return this.options.template;
-        }
-    }
-
-    _getHeaderButtons() {
-        let buttons = super._getHeaderButtons();
+    /** @inheritDoc */
+    _getHeaderControls() {
+        const controls = super._getHeaderControls();
         if (this.actor.isOwner) {
-            buttons = [
-                {
-                    label: game.i18n.localize("BUTTON.ROLL"),
-                    class: "custom-roll",
-                    icon: "fas fa-dice",
-                    onclick: async () => await this._prepareCustomRoll()
-                }
-            ].concat(buttons);
+            controls.unshift({
+                icon: "fas fa-dice",
+                label: "BUTTON.ROLL",
+                action: "customRoll"
+            });
         }
-        return buttons;
+        return controls;
     }
 
-    _onItemCreate(event) {
-        event.preventDefault();
-        let header = event.currentTarget.dataset;
+    /** @inheritDoc */
+    async _onFirstRender(context, options) {
+        await super._onFirstRender(context, options);
+        const element = this.element;
+        // Select an input's contents on focus (replaces the V1 jQuery focusin).
+        element.addEventListener("focusin", event => {
+            if (event.target.matches("input, textarea")) event.target.select();
+        });
+        // Delegated handlers on the persistent frame (replaces the V1 jQuery
+        // class bindings); robust across part re-renders, bound once.
+        element.addEventListener("click", this.#onClick.bind(this));
+        element.addEventListener("change", this.#onChange.bind(this));
+    }
 
-        let data = {
+    /** @inheritDoc */
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        this._activateTabs();
+    }
+
+    /**
+     * Re-apply the active tab after each render (parts re-render without the
+     * `active` class; also preserves the user's tab across submitOnChange).
+     * @protected
+     */
+    _activateTabs() {
+        for (const nav of this.element.querySelectorAll(".tabs[data-group]")) {
+            const group = nav.dataset.group;
+            let active = this.tabGroups[group];
+            const hasActive = active
+                && this.element.querySelector(`.tabs [data-group="${group}"][data-tab="${active}"]`);
+            if (!hasActive) {
+                active = this.element.querySelector(`.tabs [data-group="${group}"][data-tab]`)?.dataset.tab;
+            }
+            if (active) this.changeTab(active, group, { force: true, updatePosition: false });
+        }
+    }
+
+    /**
+     * Delegated click dispatcher for the class-based sheet controls.
+     * @param {PointerEvent} event  The originating click event.
+     * @returns {*} The matched handler's result, if any.
+     */
+    #onClick(event) {
+        const target = event.target;
+        let el;
+        // Order matters: closest() walks UP the tree, so the small leaf controls
+        // are matched before the broad `.item-edit` name/image area (which wraps
+        // a large region and could otherwise swallow a nested control).
+        if ((el = target.closest(".item-create"))) return this._onItemCreate(el);
+        if ((el = target.closest(".item-delete"))) return this._onItemDelete(el);
+        if ((el = target.closest(".ammo-unlink"))) return this._onAmmoUnlink(el);
+        if ((el = target.closest(".roll-characteristic"))) return this._prepareRollCharacteristic(el);
+        if ((el = target.closest(".roll-skill"))) return this._prepareRollSkill(el);
+        if ((el = target.closest(".roll-speciality"))) return this._prepareRollSpeciality(el);
+        if (target.closest(".roll-insanity")) return this._prepareRollInsanity();
+        if (target.closest(".roll-corruption")) return this._prepareRollCorruption();
+        if ((el = target.closest(".roll-weapon"))) return this._prepareRollWeapon(el);
+        if ((el = target.closest(".roll-psychic-power"))) return this._prepareRollPsychicPower(el);
+        if ((el = target.closest(".condition-toggle"))) return this._onConditionToggle(el);
+        if ((el = target.closest(".item-edit"))) return this._onItemEdit(el);
+    }
+
+    /**
+     * Delegated change dispatcher for cross-document item edits made from the
+     * actor sheet (these inputs are unnamed, so they bypass the actor form).
+     * @param {Event} event  The originating change event.
+     * @returns {*} The matched handler's result, if any.
+     */
+    #onChange(event) {
+        const target = event.target;
+        if (target.classList.contains("item-cost")) {
+            event.stopPropagation();
+            return this._onItemCostChange(target);
+        }
+        if (target.classList.contains("item-starter")) {
+            event.stopPropagation();
+            return this._onItemStarterChange(target);
+        }
+    }
+
+    /**
+     * Open the generic roll dialog (header control).
+     * @this {DarkHeresySheet}
+     * @returns {Promise<void>}
+     */
+    static #onCustomRoll() {
+        return this._prepareCustomRoll();
+    }
+
+    _onItemCreate(target) {
+        const header = target.dataset;
+        const data = {
             name: `New ${game.i18n.localize(`TYPES.Item.${header.type.toLowerCase()}`)}`,
             type: header.type
         };
-        this.actor.createEmbeddedDocuments("Item", [data], { renderSheet: true });
+        return this.actor.createEmbeddedDocuments("Item", [data], { renderSheet: true });
     }
 
-    _onItemEdit(event) {
-        event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        let item = this.actor.items.get(div.data("itemId"));
-        item.sheet.render(true);
+    _onItemEdit(target) {
+        const item = this.actor.items.get(target.closest(".item").dataset.itemId);
+        return item?.sheet.render(true);
     }
 
-    _onItemDelete(event) {
-        event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        this.actor.deleteEmbeddedDocuments("Item", [div.data("itemId")]);
-        div.slideUp(200, () => this.render(false));
+    _onItemDelete(target) {
+        const itemId = target.closest(".item").dataset.itemId;
+        return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
 
-    _onAmmoUnlink(event) {
-        event.preventDefault();
-        const ammoId = $(event.currentTarget).parents(".linked-item").data("ammoId");
-        const weaponId = $(event.currentTarget).parents(".item").data("itemId");
+    _onAmmoUnlink(target) {
+        const ammoId = target.closest(".linked-item").dataset.ammoId;
+        const weaponId = target.closest(".item").dataset.itemId;
 
-        let newAmmos = this.actor.items.get(weaponId).system.ammo.filter(ammo => ammo !== ammoId);
+        const newAmmos = this.actor.items.get(weaponId).system.ammo.filter(ammo => ammo !== ammoId);
         this.actor.items.get(weaponId).update({ "system.ammo": newAmmos });
         this.actor.items.get(ammoId).update({ "system.weaponId": "" });
     }
@@ -114,72 +205,72 @@ export class DarkHeresySheet extends ActorSheet {
         await prepareCommonRoll(rollData);
     }
 
-    async _prepareRollCharacteristic(event) {
-        event.preventDefault();
-        const characteristicName = $(event.currentTarget).data("characteristic");
+    async _prepareRollCharacteristic(target) {
+        const characteristicName = target.dataset.characteristic;
         await prepareCommonRoll(
             DarkHeresyUtil.createCharacteristicRollData(this.actor, characteristicName)
         );
     }
 
-    async _prepareRollSkill(event) {
-        event.preventDefault();
-        const skillName = $(event.currentTarget).data("skill");
+    async _prepareRollSkill(target) {
+        const skillName = target.dataset.skill;
         await prepareCommonRoll(
             DarkHeresyUtil.createSkillRollData(this.actor, skillName)
         );
     }
 
-    async _prepareRollSpeciality(event) {
-        event.preventDefault();
-        const skillName = $(event.currentTarget).parents(".item").data("skill");
-        const specialityName = $(event.currentTarget).data("speciality");
+    async _prepareRollSpeciality(target) {
+        const skillName = target.closest(".item").dataset.skill;
+        const specialityName = target.dataset.speciality;
         await prepareCommonRoll(
             DarkHeresyUtil.createSpecialtyRollData(this.actor, skillName, specialityName)
         );
     }
 
-    async _prepareRollInsanity(event) {
-        event.preventDefault();
+    async _prepareRollInsanity() {
         await prepareCommonRoll(
             DarkHeresyUtil.createFearTestRolldata(this.actor)
         );
     }
 
-    async _prepareRollCorruption(event) {
-        event.preventDefault();
+    async _prepareRollCorruption() {
         await prepareCommonRoll(
             DarkHeresyUtil.createMalignancyTestRolldata(this.actor)
         );
     }
 
-    async _prepareRollWeapon(event) {
-        event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        const weapon = this.actor.items.get(div.data("itemId"));
+    async _prepareRollWeapon(target) {
+        const weapon = this.actor.items.get(target.closest(".item").dataset.itemId);
         await prepareCombatRoll(
             DarkHeresyUtil.createWeaponRollData(this.actor, weapon),
             this.actor
         );
     }
 
-    async _prepareRollPsychicPower(event) {
-        event.preventDefault();
-        const div = $(event.currentTarget).parents(".item");
-        const psychicPower = this.actor.items.get(div.data("itemId"));
+    async _prepareRollPsychicPower(target) {
+        const psychicPower = this.actor.items.get(target.closest(".item").dataset.itemId);
         await preparePsychicPowerRoll(
             DarkHeresyUtil.createPsychicRollData(this.actor, psychicPower)
         );
     }
 
-    _onConditionToggle(ev)
-    {
-        let key = $(ev.currentTarget).parents(".condition").data("key");
+    _onConditionToggle(target) {
+        const key = target.closest(".condition").dataset.key;
         if (this.actor.hasCondition(key)) {
             this.actor.removeCondition(key);
         } else {
             this.actor.addCondition(key);
         }
+    }
+
+    _onItemCostChange(target) {
+        const item = this.actor.items.get(target.closest(".item").dataset.itemId);
+        item.update({ "system.cost": target.value });
+    }
+
+    _onItemStarterChange(target) {
+        const item = this.actor.items.get(target.closest(".item").dataset.itemId);
+        item.update({ "system.starter": target.checked });
     }
 
     constructItemLists() {

@@ -8,7 +8,7 @@
             </div>
             <div class="items">
                 {{#each items.aptitudes as |item|}}                    
-                    <div class="aptitude item flex row" data-item-id="{{item.id}}">
+                    <div class="aptitude item flex row draggable" data-item-id="{{item.id}}">
                         <div class="flex aptitude-row item-edit" title="{{removeMarkup item.description}}">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
@@ -34,7 +34,7 @@
             </div>
             <div class="items">
                 {{#each items.talents as |item|}}                    
-                    <div class="talent item flex row" data-item-id="{{item.id}}">
+                    <div class="talent item flex row draggable" data-item-id="{{item.id}}">
                         <div class="flex talent-row item-edit">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
@@ -140,7 +140,7 @@
                 </div>
                 <div class="items">
                     {{#each items.psychicPowers as |item|}}                        
-                        <div class="psychic-power item flex row" data-item-id="{{item.id}}">
+                        <div class="psychic-power item flex row draggable" data-item-id="{{item.id}}">
                             <div class="flex psychic-powers-row item-edit">
                                 <div class="image-container">
                                     <div class="image" style="background-image: url('{{item.img}}')"></div>
