@@ -1,4 +1,9 @@
-.dark-heresy.dialog {
+/* Scope to the content div inside .window-content. The DialogV2 root now also
+   carries `dark-heresy dialog` (needed for the parchment .window-content), and
+   without this scope the bare selector would also match the root and flip the
+   whole window FRAME to row layout (header becomes a vertical strip on the left
+   instead of a bar on top). */
+.window-content .dark-heresy.dialog {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
