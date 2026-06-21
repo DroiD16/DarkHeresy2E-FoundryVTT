@@ -129,6 +129,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
                 }),
                 img: "icons/svg/aura.svg",
                 origin: this.item.uuid,
+                transfer: true,
                 "duration.rounds": li?.dataset.effectType === "temporary" ? 1 : undefined,
                 disabled: li?.dataset.effectType === "inactive"
             }

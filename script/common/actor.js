@@ -19,12 +19,12 @@ export class DarkHeresyActor extends Actor {
 
     prepareBaseData() {
         super.prepareBaseData();
-        this._computeCharacteristics();
-        this._computeSkills();
     }
 
     prepareDerivedData() {
         super.prepareDerivedData();
+        this._computeCharacteristics();
+        this._computeSkills();
         this._computeExperience();
         this._computeArmour();
         this._computeMovement();
