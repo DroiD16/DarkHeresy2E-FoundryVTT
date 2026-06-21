@@ -76,6 +76,9 @@
   color: var(--color-title);
   margin: 0;
   border: 0 none;
+  font-size: 16px;
+  line-height: 14px;
+  font-weight: bold;
 }
 
 .dark-heresy .effects .item-list {
@@ -101,16 +104,31 @@
   align-items: center;
 }
 
+/* Category label (h3) and effect name (h4) inherit large heading sizes
+   (28px/24px); pin them to the 16px item-list scale. Category headers are
+   bold like the gear list's <b> labels; effect-row names are regular. */
 .dark-heresy .effects .effect-name h3,
 .dark-heresy .effects .effect-name h4 {
   margin: 0;
   border: 0 none;
+  font-size: 16px;
+  line-height: 14px;
+  font-weight: bold;
+}
+
+.dark-heresy .effects .item.effect .effect-name h4 {
+  font-weight: normal;
+  line-height: 16px;
 }
 
 .dark-heresy .effects .effect-source,
 .dark-heresy .effects .effect-duration {
-  flex: 0 0 80px;
+  flex: 0 0 64px;
   text-align: center;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dark-heresy .effects .effect-controls {
@@ -120,8 +138,11 @@
   gap: 6px;
 }
 
+/* flex-basis pins the icon to 20px; without it the <img> stretches to the
+   SVG's intrinsic width inside the flex name cell (~115px). */
 .dark-heresy .effects .effect-name .item-image,
 .dark-heresy .effects .item.effect .image {
+  flex: 0 0 20px;
   width: 20px;
   height: 20px;
   margin-right: 5px;
