@@ -84,6 +84,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
         const content = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/dialog/combat-roll.hbs", rollData);
         await foundry.applications.api.DialogV2.wait({
             window: { title: rollData.name },
+            classes: ["dark-heresy", "dialog"],
             content,
             position: { width: 200 },
             rejectClose: false,
