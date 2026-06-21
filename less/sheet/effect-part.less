@@ -76,6 +76,7 @@
   color: var(--color-title);
   margin: 0;
   border: 0 none;
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 14px;
   font-weight: bold;
@@ -97,11 +98,13 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
-/* Column alignment shared by header and rows: name grows, source/duration get
-   a fixed-ish width, controls hug their content. */
+/* Column alignment shared by header and rows: name takes a bounded share
+   (don't let it grow to swallow the whole row), source/duration are small
+   fixed columns, controls absorb the remainder and right-align. */
 .dark-heresy .effects .effect-name {
-  flex: 1 1 auto;
+  flex: 0 1 45%;
   align-items: center;
+  font-family: var(--font-text);
 }
 
 /* Category label (h3) and effect name (h4) inherit large heading sizes
@@ -111,6 +114,7 @@
 .dark-heresy .effects .effect-name h4 {
   margin: 0;
   border: 0 none;
+  font-family: var(--font-text);
   font-size: 16px;
   line-height: 14px;
   font-weight: bold;
@@ -132,7 +136,7 @@
 }
 
 .dark-heresy .effects .effect-controls {
-  flex: 0 0 96px;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
