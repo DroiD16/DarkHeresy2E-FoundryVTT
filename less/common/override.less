@@ -302,6 +302,18 @@ li.folder.collapsed > .folder-header {
   appearance: auto;
   -webkit-appearance: auto;
   accent-color: #666;
+  /* The sheet inherits color-scheme: dark under theme-dark, so native
+     checkboxes render as dark boxes; V1 (theme-light) showed light boxes.
+     Force light so the native control matches the parchment. */
+  color-scheme: light;
+}
+
+/* ApplicationV2 draws a custom checkbox via ::before/::after (an orange/dark
+   overlay on top of the now-native control); V1's .window-app checkboxes had
+   none. Suppress them so the native light checkbox shows. */
+.dark-heresy .window-content input[type="checkbox"]::before,
+.dark-heresy .window-content input[type="checkbox"]::after {
+  content: none;
 }
 
 ::-webkit-scrollbar-thumb {

@@ -66,16 +66,18 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     /** @inheritDoc */
-    _getHeaderControls() {
-        const controls = super._getHeaderControls();
+    async _renderFrame(options) {
+        const frame = await super._renderFrame(options);
+        // Put the ROLL button directly in the title bar (like V1) rather than in
+        // the ApplicationV2 controls dropdown. Injected before the close button;
+        // its `data-action` dispatches to the customRoll action handler.
         if (this.actor.isOwner) {
-            controls.unshift({
-                icon: "fas fa-dice",
-                label: "BUTTON.ROLL",
-                action: "customRoll"
-            });
+            const label = game.i18n.localize("BUTTON.ROLL");
+            const button = `<button type="button" class="header-control icon fa-solid fa-dice"
+                data-action="customRoll" data-tooltip="${label}" aria-label="${label}"></button>`;
+            this.window.close.insertAdjacentHTML("beforebegin", button);
         }
-        return controls;
+        return frame;
     }
 
     /** @inheritDoc */

@@ -20,6 +20,7 @@ export async function prepareCommonRoll(rollData) {
     const content = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/dialog/common-roll.hbs", rollData);
     await foundry.applications.api.DialogV2.wait({
         window: { title: rollData.name },
+        classes: ["dark-heresy", "dialog"],
         content,
         position: { width: 200 },
         rejectClose: false,
@@ -160,6 +161,7 @@ export async function preparePsychicPowerRoll(rollData) {
     const content = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/dialog/psychic-power-roll.hbs", rollData);
     await foundry.applications.api.DialogV2.wait({
         window: { title: rollData.name },
+        classes: ["dark-heresy", "dialog"],
         content,
         position: { width: 200 },
         rejectClose: false,

@@ -169,6 +169,9 @@
 .dark-heresy .item-list .items {
     overflow-y: scroll;
     width: 100%;
+    /* Keep the last column (e.g. the starter checkbox) clear of the scrollbar,
+       which otherwise sits flush against it and clips it. */
+    padding-right: 6px;
 }
 
 .dark-heresy .item-list .items .item {
