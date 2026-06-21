@@ -34,6 +34,8 @@ import { registerDataModels } from "./setup/registerDataModels.js";
 import { registerAdditionalModuleSettings } from "./moduleSupport/moduleSupportSettings.js";
 
 Hooks.once("init", function() {
+    const { Actors, Items } = foundry.documents.collections;
+    const { ActorSheet, ItemSheet } = foundry.appv1.sheets;
     CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
     CONFIG.Actor.documentClass = DarkHeresyActor;
     CONFIG.Item.documentClass = DarkHeresyItem;
