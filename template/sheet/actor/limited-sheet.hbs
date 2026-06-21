@@ -17,8 +17,7 @@
       <div class="flex wrap notes-editor border">
         <h1>{{localize "TITLE.NOTES"}}</h1>
         <div class="notes-editor-content">
-          {{editor enrichment.system.bio.notes target="system.bio.notes" engine="prosemirror" button=true owner=owner
-          editable=editable}}
+          <prose-mirror name="system.bio.notes" toggled value="{{system.bio.notes}}" {{#unless editable}}disabled{{/unless}}>{{{enrichment.system.bio.notes}}}</prose-mirror>
         </div>
       </div>
   </div>

@@ -2,7 +2,7 @@
     <div class="notes-editor border" style="height: 674px;">
         <h1>{{localize "TITLE.NOTES"}}</h1>
         <div style="height: 641px; width: 100%">
-            {{editor enrichment.system.notes target="system.notes" engine="prosemirror" button=true owner=owner editable=editable}}
+            <prose-mirror name="system.notes" toggled value="{{system.notes}}" {{#unless editable}}disabled{{/unless}}>{{{enrichment.system.notes}}}</prose-mirror>
         </div>
     </div>
 </div>

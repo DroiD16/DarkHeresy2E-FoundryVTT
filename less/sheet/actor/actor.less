@@ -36,6 +36,44 @@
     width: 100%;
 }
 
+/* The native <prose-mirror> element shows its edit (toggle) button at all
+   times; V1's editor revealed the edit control only on hover over the notes
+   area. Restore that for the resting (inactive) editor; keep it visible while
+   actively editing so the save/close affordance stays reachable. */
+.dark-heresy prose-mirror:not([open]) .toggle {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.dark-heresy prose-mirror:not([open]):hover .toggle,
+.dark-heresy prose-mirror:not([open]) .toggle:focus-visible {
+    opacity: 1;
+}
+
+/* The native ProseMirror toolbar inherits a dark background from the V2 dark
+   theme, but the sheet forces dark (near-black) menu text/icons — illegible on
+   dark. V1's toolbar was light grey. Force a light toolbar (and its dropdown
+   panels) so the dark labels and icons stay readable. */
+/* The native ProseMirror toolbar/dropdowns derive their colours from Foundry's
+   --menu-background / --dropdown-* variables, which the V2 DARK theme sets to
+   dark values (--menu-background: var(--color-cool-4)) — illegible against the
+   sheet's near-black menu text. Re-point them at Foundry's OWN theme-light
+   values (foundry2.css `.mixin-theme-light-forms prose-mirror`) so the toolbar
+   reproduces the un-themed V1/base editor look exactly rather than an invented
+   colour. The direct `.editor-menu` rules below guarantee the override wins
+   over Foundry's `body.theme-dark prose-mirror` (which out-specifies a bare
+   `.dark-heresy prose-mirror` variable override). */
+.dark-heresy .editor-menu {
+    background: rgba(0, 0, 0, 0.1);
+}
+.dark-heresy .editor-menu ul {
+    background: #d9d8c8;
+    border: 1px solid #999;
+}
+.dark-heresy .editor-menu button:hover,
+.dark-heresy .editor-menu li:hover {
+    background: #f0f0e0;
+}
+
 .dark-heresy .sheet-tabs {
     border-radius: 3px;
     background: #562e2e;
