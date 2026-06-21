@@ -56,10 +56,11 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      */
     async _enrichment() {
         const enrichment = {};
+        const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
         if (this.actor.type !== "npc") {
-            enrichment["system.bio.notes"] = await TextEditor.enrichHTML(this.actor.system.bio.notes, { async: true });
+            enrichment["system.bio.notes"] = await TextEditorImpl.enrichHTML(this.actor.system.bio.notes, { async: true });
         } else {
-            enrichment["system.notes"] = await TextEditor.enrichHTML(this.actor.system.notes, { async: true });
+            enrichment["system.notes"] = await TextEditorImpl.enrichHTML(this.actor.system.notes, { async: true });
         }
         return foundry.utils.expandObject(enrichment);
     }

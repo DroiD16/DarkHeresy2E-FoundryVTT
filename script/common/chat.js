@@ -82,12 +82,16 @@ function applyChatCardDamage(roll, multiplier) {
     // Put the data from different hits together
     const damages = [];
     for (let i = 0; i < amount.length; i++) {
+        // The NodeLists can differ in length (e.g. only hits with righteous fury
+        // emit a .damage-righteous-fury element), so guard each indexed access —
+        // the prior jQuery `$(x).text()`/`.data()` returned ""/undefined for a
+        // missing element rather than throwing.
         damages.push({
-            amount: $(amount[i]).text(),
-            location: $(location[i]).data("location"),
-            penetration: $(penetration[i]).text(),
-            type: $(type[i]).text(),
-            righteousFury: $(righteousFury[i]).text()
+            amount: amount[i]?.textContent ?? "",
+            location: location[i]?.dataset.location,
+            penetration: penetration[i]?.textContent ?? "",
+            type: type[i]?.textContent ?? "",
+            righteousFury: righteousFury[i]?.textContent ?? ""
         });
     }
 
@@ -125,7 +129,7 @@ function rerollTest(rollData) {
  */
 function onTestClick(ev) {
     let actor = game.macro.getActor();
-    let id = $(ev.currentTarget).parents(".message").attr("data-message-id");
+    let id = ev.currentTarget.closest(".message")?.dataset.messageId;
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
 
@@ -156,7 +160,7 @@ function onTestClick(ev) {
  * @returns {Promise}
  */
 function onDamageClick(ev) {
-    let id = $(ev.currentTarget).parents(".message").attr("data-message-id");
+    let id = ev.currentTarget.closest(".message")?.dataset.messageId;
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
     rollData.flags.isEvasion = false;
@@ -170,7 +174,7 @@ function onDamageClick(ev) {
  * @param {Event} ev
  */
 async function onReloadClick(ev) {
-    let id = $(ev.currentTarget).parents(".message").attr("data-message-id");
+    let id = ev.currentTarget.closest(".message")?.dataset.messageId;
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
     let weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
@@ -183,8 +187,9 @@ async function onReloadClick(ev) {
  */
 function onChatRollClick(event) {
     event.preventDefault();
-    let roll = $(event.currentTarget.parentElement);
-    let tip = roll.find(".dice-rolls");
-    if ( !tip.is(":visible") ) tip.slideDown(200);
-    else tip.slideUp(200);
+    const roll = event.currentTarget.parentElement;
+    const tip = roll.querySelector(".dice-rolls");
+    if (!tip) return;
+    const hidden = getComputedStyle(tip).display === "none";
+    tip.style.display = hidden ? "block" : "none";
 }

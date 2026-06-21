@@ -48,8 +48,9 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
      */
     async _handleEnrichment() {
         const enrichment = {};
-        enrichment["system.description"] = await TextEditor.enrichHTML(this.item.system.description, { async: true });
-        enrichment["system.effect"] = await TextEditor.enrichHTML(this.item.system.effect, { async: true });
+        const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
+        enrichment["system.description"] = await TextEditorImpl.enrichHTML(this.item.system.description, { async: true });
+        enrichment["system.effect"] = await TextEditorImpl.enrichHTML(this.item.system.effect, { async: true });
         return foundry.utils.expandObject(enrichment);
     }
 
