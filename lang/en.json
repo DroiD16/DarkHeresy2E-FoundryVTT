@@ -430,6 +430,7 @@
             "Passive": "Passive",
             "Inactive": "Inactive",
             "Source": "Source",
+            "Duration": "Duration",
             "Toggle": "Toggle"
         }
     }

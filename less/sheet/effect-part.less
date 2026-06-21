@@ -1,34 +1,140 @@
-dark-heresy .effects .condition-list {
+.dark-heresy .effects .condition-list {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
 }
 
-dark-heresy .effects .condition-list .condition {
+.dark-heresy .effects .condition-list .condition {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-dark-heresy .effects .condition-list .condition img{
+.dark-heresy .effects .condition-list .condition img {
   width: 50px;
   height: 50px;
-  border: none
+  border: none;
 }
 
-dark-heresy .effects .tab .effects{
+/* Flex + scroll container for the categorized effect list. The real item
+   effect-tab DOM is:
+     .tab[data-tab="effects"] > div.effects > ol.items-list
+       > li.items-header + ol.item-list > li.item.effect
+   so target the .effects block inside the tab directly. */
+.dark-heresy .tab .effects {
   display: flex;
   flex-direction: column;
-  height: 90%;
-  overflow: auto
+  height: 100%;
+  overflow: hidden;
 }
 
-dark-heresy .effects .tab .system-effects label{
-  padding: 6px
+.dark-heresy .tab .system-effects label {
+  padding: 6px;
 }
 
-dark-heresy .effects .tab .system-effects select{
+.dark-heresy .tab .system-effects select {
   margin-left: -5px;
+}
+
+/* Categorized effect list: parchment header bars and a bounded, scrolling
+   body, mirroring the actor sheet's .item-list patterns. */
+.dark-heresy .effects .items-list {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 16px;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4e4438ff transparent;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dark-heresy .effects .items-header {
+  width: 100%;
+  height: 22px;
+  align-items: center;
+  border: 0 none;
+  border-radius: 3px;
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 14px;
+  margin: 0;
+  padding: 0 4px;
+  text-align: center;
+  background: #5d2f149e;
+  color: var(--color-title);
+}
+
+.dark-heresy .effects .items-header .effect-name {
+  color: var(--color-title);
+  margin: 0;
+  border: 0 none;
+}
+
+.dark-heresy .effects .item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.dark-heresy .effects .item.effect {
+  align-items: center;
+  padding: 2px 4px;
+}
+
+.dark-heresy .effects .item.effect:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Column alignment shared by header and rows: name grows, source/duration get
+   a fixed-ish width, controls hug their content. */
+.dark-heresy .effects .effect-name {
+  flex: 1 1 auto;
+  align-items: center;
+}
+
+.dark-heresy .effects .effect-name h3,
+.dark-heresy .effects .effect-name h4 {
+  margin: 0;
+  border: 0 none;
+}
+
+.dark-heresy .effects .effect-source,
+.dark-heresy .effects .effect-duration {
+  flex: 0 0 80px;
+  text-align: center;
+}
+
+.dark-heresy .effects .effect-controls {
+  flex: 0 0 96px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.dark-heresy .effects .effect-name .item-image,
+.dark-heresy .effects .item.effect .image {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: 0 none;
+  object-fit: cover;
+}
+
+.dark-heresy .effects .effect-control {
+  color: var(--color-title);
+  cursor: pointer;
+}
+
+.dark-heresy .effects .effect-control:hover {
+  color: var(--color-highlight);
+  text-shadow: 0 0 8px var(--color-highlight);
 }
