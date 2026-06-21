@@ -49,7 +49,14 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    flex-basis: calc(45% - 4px);
+    /* Top row is APTITUDES 25% + TALENTS + EXPERIENCE 30%. With the old
+       calc(45% - 4px) and the 4px horizontal margin below, talents netted
+       exactly 45%, so the three summed to exactly 100% — zero slack. Under
+       ApplicationV2's box model the sub-pixel rounding tips 1px over 100%,
+       wrapping EXPERIENCE to a second line and collapsing the layout (V1 won
+       the same rounding coin-flip). Subtract a few extra px so the row sums to
+       <100% and tolerates rounding at any width, including the 700px default. */
+    flex-basis: calc(45% - 8px);
     align-items: center;
     margin: 0 2px;
 }
