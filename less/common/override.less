@@ -291,6 +291,19 @@ li.folder.collapsed > .folder-header {
   color: var(--color-text);
 }
 
+/* V1 left-aligned the window title; ApplicationV2 centers it. */
+.dark-heresy .window-title {
+  text-align: start;
+}
+
+/* ApplicationV2 strips native checkbox rendering (appearance: none) and styles
+   its own, which is invisible on the parchment; V1 used native checkboxes. */
+.dark-heresy .window-content input[type="checkbox"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  accent-color: #666;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #1b0f08b8;
   border: 1px solid #33333380;

@@ -31,6 +31,9 @@
     background: #562e2e;
     color: var(--color-title);
     font-family: var(--font-text);
+    /* V1 spread the tabs evenly; ApplicationV2's flex default is flex-start
+       (left-clustered). */
+    justify-content: space-around;
     margin: 8px 0;
     padding: 0 8px;
 }
@@ -61,13 +64,19 @@
     color: var(--color-title);
 }
 
-.dark-heresy button {
+.dark-heresy .window-content button {
     background: transparent;
     border: 0 none;
     border-radius: 3px;
     box-shadow: none;
     color: var(--color-text);
     cursor: pointer;
+    /* ApplicationV2 forces buttons to display:flex, which makes text-align
+       centering ineffective (the auto-width button hugs the left of its cell).
+       V1 buttons were inline-block; restore that so name buttons center. Scope
+       to .window-content so the V2 window-header control buttons keep their
+       own (visible) core styling instead of this sheet's dark text color. */
+    display: inline-block;
     font-family: var(--font-text);
     font-size: inherit;
     font-weight: bold;
@@ -80,8 +89,8 @@
     padding: 2px 4px;
     width: auto;
 }
-.dark-heresy button:focus,
-.dark-heresy button:hover {
+.dark-heresy .window-content button:focus,
+.dark-heresy .window-content button:hover {
     background: var(--color-foreground);
     color: var(--color-title);
 }
