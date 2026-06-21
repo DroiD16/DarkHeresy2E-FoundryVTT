@@ -281,8 +281,14 @@ li.folder.collapsed > .folder-header {
   background: rgb(86 78 74 / 40%);
 }
 
-.window-app .window-content {
+.dark-heresy .window-content {
   background: url("../../asset/image/background.jpg") center;
+  /* Match the V1 sheet inset (8px); ApplicationV2's default is 1rem, which
+     narrowed the content and wrapped/overflowed the columns. */
+  padding: 8px;
+  /* ApplicationV2 sets light text via --color-text-primary under theme-dark,
+     inherited into the sheet; force the dark text the parchment expects. */
+  color: var(--color-text);
 }
 
 ::-webkit-scrollbar-thumb {

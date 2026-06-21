@@ -72,6 +72,10 @@
     font-size: inherit;
     font-weight: bold;
     height: auto;
+    /* ApplicationV2 sets button min-height to --button-size (2em ≈ 40px at the
+       20px name font), inflating skill/characteristic rows and overflowing the
+       column-wrap. V1 had no such min-height; size buttons to content. */
+    min-height: 0;
     line-height: inherit;
     padding: 2px 4px;
     width: auto;
