@@ -1,6 +1,13 @@
+import { WEAPON_QUALITIES } from "./weapon-qualities.js";
+
 let Dh = {};
 
 Dh.attackType = {};
+
+// Single source of truth for weapon special qualities (see weapon-qualities.js).
+// Exposed on the config object as game.darkHeresy.config.weaponQualities for the
+// display helper and the Chunk B chip-list editor, mirroring Dh.aptitudes.
+Dh.weaponQualities = WEAPON_QUALITIES;
 
 Dh.attackTypeRanged = {
     none: "ATTACK_TYPE.NONE",

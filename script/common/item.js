@@ -342,6 +342,8 @@ export class DarkHeresyItem extends Item {
 
     get special() { return this.system.special; }
 
+    get specialQualities() { return this.system.specialQualities; }
+
     get attack() { return this.system.attack; }
 
     get upgrades() { return this.system.upgrades; }

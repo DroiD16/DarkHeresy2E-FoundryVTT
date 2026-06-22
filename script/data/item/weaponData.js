@@ -1,4 +1,5 @@
 import EquipmentItemData from "./equipmentItemData.js";
+import { parseSpecialString } from "../../common/weapon-qualities.js";
 
 const fields = foundry.data.fields;
 
@@ -27,6 +28,11 @@ export default class WeaponData extends EquipmentItemData {
             }),
             reload: new fields.StringField({ initial: "Full" }),
             special: new fields.StringField({ initial: "" }),
+            specialQualities: new fields.ArrayField(new fields.SchemaField({
+                key: new fields.StringField({ required: true, blank: false }),
+                value: new fields.NumberField({ required: false, nullable: true, initial: null })
+            })),
+            malfunction: new fields.StringField({ initial: "", choices: ["", "jammed", "overheated"] }),
             attack: new fields.NumberField({ initial: 0 }),
             ammo: new fields.ArrayField(new fields.StringField({ blank: false}))
         };
@@ -55,8 +61,31 @@ export default class WeaponData extends EquipmentItemData {
         super.migrateData(source);
 
         this.migrateRateOfFire(source);
+        this.migrateSpecialQualities(source);
 
         return source;
+    }
+
+    // Migrate the legacy free-text `special` field into the structured
+    // `specialQualities` array, stripping the recognized tokens from `special`
+    // (only the unrecognized custom leftover remains). Idempotent:
+    //   - if specialQualities is already populated, this has run -> do nothing;
+    //   - if `special` is blank/non-string, nothing to migrate;
+    //   - if no recognized qualities are found, leave `special` untouched
+    //     (it is entirely custom text).
+    static migrateSpecialQualities(source) {
+        if (Array.isArray(source.specialQualities) && source.specialQualities.length > 0) {
+            return;
+        }
+        if (typeof source.special !== "string" || source.special.trim() === "") {
+            return;
+        }
+        const { qualities, leftover } = parseSpecialString(source.special);
+        if (qualities.length === 0) {
+            return;
+        }
+        source.specialQualities = qualities;
+        source.special = leftover;
     }
 
     static migrateRateOfFire(source) {

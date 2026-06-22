@@ -132,6 +132,30 @@ function registerHandlebarsHelpers() {
         return key ? game.i18n.localize(key) : name;
     });
 
+    // Display-only, localized rendering of a weapon's special qualities: each
+    // structured quality becomes its localized label (with " (N)" appended for
+    // parametric qualities, using the stored value or the per-quality default),
+    // then the leftover custom free-text `special` is appended. All parts are
+    // joined by commas with no stray separators for any empty/non-empty mix.
+    // Unknown keys fall back to the raw key so nothing is silently blanked.
+    Handlebars.registerHelper("weaponSpecialDisplay", function(specialQualities, special) {
+        const cfg = game.darkHeresy?.config?.weaponQualities ?? {};
+        const parts = [];
+        for (const q of specialQualities ?? []) {
+            const entry = cfg[q?.key];
+            const label = entry ? game.i18n.localize(entry.labelKey) : q?.key;
+            if (label == null || label === "") continue;
+            if (entry?.hasValue) {
+                parts.push(`${label} (${q?.value ?? entry.default})`);
+            } else {
+                parts.push(label);
+            }
+        }
+        const leftover = (special ?? "").trim();
+        if (leftover) parts.push(leftover);
+        return parts.join(", ");
+    });
+
     // Summarize an Active Effect's `changes` as readable "<target> <±value>"
     // pairs (e.g. "Weapon Skill +5"), shown in the item effect list in place of
     // the redundant source column. The target is humanized from the change key

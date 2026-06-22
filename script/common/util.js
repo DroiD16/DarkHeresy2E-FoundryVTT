@@ -1,3 +1,5 @@
+import { buildTraitsFromQualities } from "./weapon-qualities.js";
+
 export default class DarkHeresyUtil {
 
     // Single source of truth for the name an item gets at creation time. Both
@@ -56,7 +58,7 @@ export default class DarkHeresyUtil {
         } else {
             rateOfFire = { burst: weaponItem.rateOfFire.burst, full: weaponItem.rateOfFire.full };
         }
-        let weaponTraits = this.extractWeaponTraits(weaponItem.special);
+        let weaponTraits = buildTraitsFromQualities(weaponItem.system.specialQualities);
         let isMelee = weaponItem.class === "melee";
         let attributeMod = (isMelee && !weaponItem.damage.match(/SB/gi) ? "+SB" : "");
 
