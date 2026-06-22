@@ -165,9 +165,7 @@
         <div class="information">
             <div class="class">
                 <label>{{localize "PSYCHIC_POWER.CLASS"}}</label>
-                <select disabled>
-                    {{selectOptions (config "psykerClass") selected=system.psy.class localize=true}}
-                </select>
+                <input type="text" value="{{#if system.psy.class}}{{localize (lookup (config "psykerClass") system.psy.class)}}{{/if}}" disabled />
             </div>
             <div class="rating">
                 <label>{{localize "PSYCHIC_POWER.RATING"}}</label>

@@ -34,7 +34,7 @@
         <div class="tab" data-group="primary" data-tab="notes">
             <div class="notes-editor border">
                 <h1>{{localize "TITLE.NOTES"}}</h1>
-                <div style="height: 132px; width: 100%">
+                <div class="notes-editor-body">
                     <prose-mirror name="system.description" toggled value="{{system.description}}" {{#unless editable}}disabled{{/unless}}>{{{enrichment.system.description}}}</prose-mirror>
                 </div>
             </div>

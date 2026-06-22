@@ -218,7 +218,7 @@
 
 .dark-heresy .combat .psychic-powers .information .class {
     display: flex;
-    flex-basis: 40%;
+    flex-basis: calc(100% / 3);
     align-self: center;
     text-align: center;
     align-items: center;
@@ -228,14 +228,14 @@
     flex-basis: 30%;
 }
 
-.dark-heresy .combat .psychic-powers .information .class select {
+.dark-heresy .combat .psychic-powers .information .class input {
     flex-basis: 40%;
 }
 
 .dark-heresy .combat .psychic-powers .information .rating,
 .dark-heresy .combat .psychic-powers .information .sustained {
     display: flex;
-    flex-basis: 30%;
+    flex-basis: calc(100% / 3);
     align-self: center;
     text-align: center;
     align-items: center;
@@ -247,8 +247,10 @@
 }
 
 .dark-heresy .combat .psychic-powers .information .rating input,
-.dark-heresy .combat .psychic-powers .information .sustained input {
+.dark-heresy .combat .psychic-powers .information .sustained input,
+.dark-heresy .combat .psychic-powers .information .class input {
     flex-basis: 40%;
+    text-align: center;
 }
 
 .dark-heresy .combat .psychic-powers .item-list .name {

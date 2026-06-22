@@ -290,8 +290,24 @@
 }
 
 .dark-heresy.sheet .notes-editor {
+    box-sizing: border-box;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
+    flex-wrap: nowrap;
     flex-basis: 100%;
+    min-height: 0;
+}
+
+/* The editor body fills the space the outer .notes-editor reserves (its height
+   is set per sheet) below the heading, instead of each template hard-coding a
+   pixel height on the inner wrapper. min-height:0 lets it shrink inside the
+   flex column; the prose-mirror then stretches to the body. */
+.dark-heresy.sheet .notes-editor .notes-editor-body {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+}
+
+.dark-heresy.sheet .notes-editor .notes-editor-body prose-mirror {
+    height: 100%;
 }

@@ -1,3 +1,29 @@
+/* HandlebarsApplicationMixin strips the template's outer `.dark-heresy-item`
+   element for a `root: true` part. The header, tabs and body are therefore
+   direct children of ApplicationV2's flex-column `.window-content`. */
+.dark-heresy.sheet:not(.actor) .window-content > .sheet-body {
+    box-sizing: border-box;
+    flex: 1;
+    min-height: 0;
+    /* ApplicationV2 clips at the content edge. Reserve the editor's 2px lower
+       border inside that edge instead of letting it land on the clip line. */
+    padding-bottom: 2px;
+}
+
+.dark-heresy.sheet:not(.actor) .window-content > .sheet-body .notes-editor {
+    height: 100%;
+    max-height: none;
+}
+
+/* Aptitudes have no tab wrapper, so their editor itself consumes the space
+   below the header. */
+.dark-heresy.sheet:not(.actor) .window-content > .notes-editor {
+    flex: 1;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+}
+
 .dark-heresy .stats {
     display: flex;
     flex-direction: row;
