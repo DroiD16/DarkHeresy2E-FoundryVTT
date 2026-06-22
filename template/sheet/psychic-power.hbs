@@ -41,7 +41,15 @@
                     <div class="stat focus-power">
                         <label>{{localize "PSYCHIC_POWER.FOCUS_POWER"}}</label>
                         <input name="system.focusPower.difficulty" type="number" value="{{system.focusPower.difficulty}}" data-dtype="Number" />
-                        <input name="system.focusPower.test" type="text" value="{{system.focusPower.test}}" />
+                        <div class="focus-autocomplete">
+                            <input name="system.focusPower.test" type="text" autocomplete="off" value="{{focusTestLabel system.focusPower.test}}" />
+                            <i class="fas fa-caret-down focus-caret"></i>
+                            <ul class="focus-suggestions" hidden>
+                                {{#each focusTestSuggestions}}
+                                    <li class="focus-suggestion" data-value="{{this.key}}">{{this.label}}</li>
+                                {{/each}}
+                            </ul>
+                        </div>
                     </div>
                     <div class="stat range">
                         <label>{{localize "PSYCHIC_POWER.RANGE"}}</label>

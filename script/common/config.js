@@ -175,6 +175,64 @@ Dh.aptitudes = {
     General: "APTITUDE.GENERAL"
 };
 
+// Single source of truth for the psychic-power Focus Power test field: the
+// canonical char/skill KEY (the actor schema property, e.g. "weaponSkill",
+// "commonLore") -> its i18n label key. Mirrors the aptitude map's role:
+// powers store the canonical KEY (locale-independent, so it resolves the same
+// on every client), while this map drives the styled dropdown, the display
+// helper, and the reverse normalizer. Keys + label keys are transcribed from
+// script/data/actor/actorBaseData.js (all 10 characteristics + all 28 skills),
+// so a static map works on an UNOWNED item sheet too (no actor required).
+// getFocusPowerTarget (util.js) resolves the stored KEY against the actor's
+// characteristics/skills; this map is RENDER-ONLY and never written into data.
+Dh.focusPowerTests = {
+    weaponSkill: "CHARACTERISTIC.WEAPON_SKILL",
+    ballisticSkill: "CHARACTERISTIC.BALLISTIC_SKILL",
+    strength: "CHARACTERISTIC.STRENGTH",
+    toughness: "CHARACTERISTIC.TOUGHNESS",
+    agility: "CHARACTERISTIC.AGILITY",
+    intelligence: "CHARACTERISTIC.INTELLIGENCE",
+    perception: "CHARACTERISTIC.PERCEPTION",
+    willpower: "CHARACTERISTIC.WILLPOWER",
+    fellowship: "CHARACTERISTIC.FELLOWSHIP",
+    influence: "CHARACTERISTIC.INFLUENCE",
+    acrobatics: "SKILL.ACROBATICS",
+    athletics: "SKILL.ATHLETICS",
+    awareness: "SKILL.AWARENESS",
+    charm: "SKILL.CHARM",
+    command: "SKILL.COMMAND",
+    commerce: "SKILL.COMMERCE",
+    commonLore: "SKILL.COMMON_LORE",
+    deceive: "SKILL.DECEIVE",
+    dodge: "SKILL.DODGE",
+    forbiddenLore: "SKILL.FORBIDDEN_LORE",
+    inquiry: "SKILL.INQUIRY",
+    interrogation: "SKILL.INTERROGATION",
+    intimidate: "SKILL.INTIMIDATE",
+    linguistics: "SKILL.LINGUISTICS",
+    logic: "SKILL.LOGIC",
+    medicae: "SKILL.MEDICAE",
+    navigate: "SKILL.NAVIGATE",
+    operate: "SKILL.OPERATE",
+    parry: "SKILL.PARRY",
+    psyniscience: "SKILL.PSYNISCIENCE",
+    scholasticLore: "SKILL.SCHOLASTIC_LORE",
+    scrutiny: "SKILL.SCRUTINY",
+    security: "SKILL.SECURITY",
+    sleightOfHand: "SKILL.SLEIGHT_OF_HAND",
+    stealth: "SKILL.STEALTH",
+    survival: "SKILL.SURVIVAL",
+    techUse: "SKILL.TECH_USE",
+    trade: "SKILL.TRADE"
+};
+
+// Curated subset SUGGESTED in the Focus Power test dropdown (keys, in display
+// order). The dropdown only SUGGESTS these; getFocusPowerTarget still resolves
+// ANY characteristic/skill a stored value matches and falls back to willpower
+// only when nothing resolves. focusPowerTests above stays the full map (used for
+// display localisation and the submit reverse-map of any value).
+Dh.focusPowerSuggestions = ["willpower", "psyniscience", "perception", "awareness"];
+
 Dh.hitLocations = {
     head: "ARMOUR.HEAD",
     leftArm: "ARMOUR.LEFT_ARM",

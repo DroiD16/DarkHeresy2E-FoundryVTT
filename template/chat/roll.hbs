@@ -47,6 +47,10 @@
                 {{else}}
                     <p><strong style="color: var(--color-failure)">{{localize "CHAT.HAS_PSYCHIC_PHENOMENA"}}</strong></p>
                 {{/if}}
+                <p><strong>{{localize "CHAT.PHENOMENA_MODIFIER"}}:</strong> +{{psy.phenomenaModifier}}</p>
+                <div class="wrapper flex-column">
+                    <button class="roll-phenomena" data-phenomena-mod="{{psy.phenomenaModifier}}">{{localize "CHAT.ROLL_PHENOMENA"}}</button>
+                </div>
             {{/if}}
         {{/if}}
         {{#if flags.isAttack}}

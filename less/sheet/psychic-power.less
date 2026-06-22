@@ -17,6 +17,96 @@
     text-align: center;
 }
 
+/* Custom autocomplete dropdown for the Focus Power test field, mirroring the
+   aptitude name dropdown but scoped to the psychic-power sheet's focus-power
+   layout. Parchment base, Caslon Antique (--font-text), zebra striping,
+   foreground-red highlight — matching the actor sheet's Advances list. */
+.dark-heresy.psychic-power .stats .stats-row .stat.focus-power .focus-autocomplete {
+    position: relative;
+    /* Match the width the bare text input previously had (8em) and take the
+       left margin the `.stat input` rule applied, so the row layout is
+       unchanged. */
+    width: 8em;
+    margin-left: 8px;
+}
+
+.dark-heresy.psychic-power .stats .stats-row .stat.focus-power .focus-autocomplete input[type="text"] {
+    width: 100%;
+    /* Neutralize the inherited `.stat input { margin-left: 8px }`; the wrapper
+       now carries that margin, and the input must span the wrapper edge-to-edge
+       so it lines up with the absolutely-positioned dropdown. This selector is
+       more specific than the `.stat.focus-power input[type="text"]` rule below,
+       so the width/margin overrides win. */
+    margin-left: 0;
+    box-sizing: border-box;
+    text-align: center;
+    /* Reserve room at the right so typed text never runs under the caret. */
+    padding-right: 16px;
+}
+
+/* Clickable caret affordance signalling the dropdown, pinned to the input's
+   right edge and vertically centered. It is a small element at the right only,
+   so it never blocks the input's own clicks elsewhere. */
+.dark-heresy.psychic-power .stat.focus-power .focus-caret {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text);
+    cursor: pointer;
+    pointer-events: auto;
+    font-size: 12px;
+}
+
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestions {
+    position: absolute;
+    /* left:0;right:0 makes the dropdown exactly as wide as the input. */
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    /* Include the 1px border in the left:0/right:0 width so it lines up exactly
+       with the input edge-to-edge (no sub-pixel overhang). */
+    box-sizing: border-box;
+    /* Opaque parchment base so it covers the stats rows below it. */
+    background: url("../../asset/image/background.jpg") center;
+}
+
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestions[hidden] {
+    display: none;
+}
+
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestion {
+    padding: 2px 6px;
+    font-family: var(--font-text);
+    color: var(--color-text);
+    cursor: pointer;
+    /* Override the centered text from the row's input styling. */
+    text-align: left;
+}
+
+/* Filter class, distinct from the list's [hidden] ATTRIBUTE. */
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestion.hidden {
+    display: none;
+}
+
+/* Zebra over the parchment, like the Advances list. */
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestion:nth-child(odd) {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestion:hover,
+.dark-heresy.psychic-power .stat.focus-power .focus-suggestion.active {
+    background: var(--color-foreground);
+    color: var(--color-title);
+}
+
 .dark-heresy.psychic-power .stats .stats-row .stat.focus-power input[type="text"] {
     width: 8em;
     text-align: center;

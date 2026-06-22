@@ -94,11 +94,22 @@ export default class DarkHeresyUtil {
             special: power.damage.special
         });
         rollData.attackType.name = power.damage.zone;
+        // Sustaining lowers the effective Psy Rating by the number of sustained
+        // powers (actor.psy.currentRating = rating - sustained, derived in
+        // _computeCharacteristics). The focus roll uses this EFFECTIVE rating as
+        // its base/fetter-push reference, floored at 1 so a fully-sustained
+        // psyker can still cast (just at the minimum). The class bonus (max push
+        // headroom: bound +2 / unbound +4 / daemonic +3) is measured from the
+        // full rating, so it stays the same number of points and is re-anchored
+        // onto the effective base.
+        const effectiveBase = Math.max(1, actor.psy.currentRating);
+        const classBonus = this.getMaxPsyRating(actor) - actor.psy.rating;
         rollData.psy = {
-            value: actor.psy.rating,
-            rating: actor.psy.rating,
+            value: effectiveBase,
+            rating: effectiveBase,
             class: actor.psy.class,
-            max: this.getMaxPsyRating(actor),
+            sustained: actor.psy.sustained,
+            max: effectiveBase + classBonus,
             warpConduit: false,
             display: true
         };
@@ -221,14 +232,47 @@ export default class DarkHeresyUtil {
     }
 
     static getFocusPowerTarget(actor, psychicPower) {
-        const normalizeName = psychicPower.focusPower.test.toLowerCase();
-        if (actor.characteristics.hasOwnProperty(normalizeName)) {
-            return actor.characteristics[normalizeName];
-        } else if (actor.skills.hasOwnProperty(normalizeName)) {
-            return actor.skills[normalizeName];
-        } else {
-            return actor.characteristics.willpower;
+        // The stored value is the canonical char/skill KEY (Dh.focusPowerTests),
+        // saved locale-independently by the sheet so it resolves the same on
+        // every client. Resolution order:
+        //   (a) EXACT key match — actor.characteristics[test] then .skills[test].
+        //       Uses Object.hasOwn (no lowercasing) so camelCase keys like
+        //       "weaponSkill"/"commonLore" match correctly (the old
+        //       toLowerCase() turned them into "weaponskill" and silently fell
+        //       through to willpower).
+        //   (b) NORMALIZED fallback for LEGACY free-text values typed before
+        //       this feature ('WP', 'Willpower', 'Common Lore', ''...): build a
+        //       lowercased lookup from each characteristic/skill's canonical
+        //       key, localized label, and (characteristics only) short
+        //       abbreviation, then resolve the trimmed/lowercased value.
+        //   (c) DEFAULT willpower for empty/unknown — so existing worlds never
+        //       break and no migration is needed.
+        const test = psychicPower.focusPower.test ?? "";
+
+        // (a) Exact canonical-key match.
+        if (Object.hasOwn(actor.characteristics, test)) return actor.characteristics[test];
+        if (Object.hasOwn(actor.skills, test)) return actor.skills[test];
+
+        // (b) Normalized legacy lookup. Characteristics first so a label/short
+        // collision (defensive) resolves to the characteristic.
+        const normalized = test.trim().toLowerCase();
+        if (normalized) {
+            const lookup = {};
+            const register = (stat, key) => {
+                const add = token => {
+                    if (token) lookup[String(token).trim().toLowerCase()] ??= stat;
+                };
+                add(key);
+                add(stat.label && game.i18n.localize(stat.label));
+                add(stat.short);
+            };
+            for (const [key, stat] of Object.entries(actor.characteristics)) register(stat, key);
+            for (const [key, stat] of Object.entries(actor.skills)) register(stat, key);
+            if (lookup[normalized]) return lookup[normalized];
         }
+
+        // (c) Default.
+        return actor.characteristics.willpower;
     }
 
     static getCharacteristicOptions(actor, selected) {

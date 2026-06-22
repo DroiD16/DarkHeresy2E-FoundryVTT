@@ -395,6 +395,27 @@ async function _rollRighteousFury() {
  */
 function _computePsychicPhenomena(rollData) {
     rollData.psy.hasPhenomena = rollData.psy.push ? !_isDouble(rollData.result) : _isDouble(rollData.result);
+
+    // Suggested modifier for the SEPARATE Psychic Phenomena roll (1d100 on
+    // Table 6-2). This is independent of the focus test above: sustaining only
+    // affects the focus roll via the reduced effective rating (Part 1), and it
+    // affects the phenomena roll here. Two different rolls, no double-count.
+    const sustained = rollData.psy.sustained ?? 0;
+    // +10 per sustained power AFTER the first.
+    const sustainBonus = 10 * Math.max(0, sustained - 1);
+    // Points pushed above the effective base.
+    const pushPts = Math.max(0, (rollData.psy.value ?? 0) - (rollData.psy.rating ?? 0));
+    let classBonus;
+    if (pushPts > 0) {
+        // Per-push bonus when pushing. Bound psykers get none.
+        classBonus = rollData.psy.class === "unbound" ? Math.min(5 * pushPts, 20)
+            : rollData.psy.class === "daemonic" ? Math.min(10 * pushPts, 30)
+                : 0;
+    } else {
+        // Flat class modifier when not pushing.
+        classBonus = (rollData.psy.class === "unbound" || rollData.psy.class === "daemonic") ? 10 : 0;
+    }
+    rollData.psy.phenomenaModifier = sustainBonus + classBonus;
 }
 
 /**

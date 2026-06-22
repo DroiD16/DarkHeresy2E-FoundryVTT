@@ -57,6 +57,7 @@ function preloadHandlebarsTemplates() {
         "systems/dark-heresy/template/chat/critical.hbs",
         "systems/dark-heresy/template/chat/evasion.hbs",
         "systems/dark-heresy/template/chat/emptyMag.hbs",
+        "systems/dark-heresy/template/chat/phenomena.hbs",
 
         "systems/dark-heresy/template/dialog/common-roll.hbs",
         "systems/dark-heresy/template/dialog/combat-roll.hbs",
@@ -117,6 +118,17 @@ function registerHandlebarsHelpers() {
     // XP cost calc continues to match the stored canonical tag.
     Handlebars.registerHelper("aptitudeLabel", function(name) {
         const key = game.darkHeresy?.config?.aptitudes?.[name];
+        return key ? game.i18n.localize(key) : name;
+    });
+
+    // Display-only localization of a psychic power's Focus Power test value:
+    // when `name` is one of the canonical char/skill KEYS in the focus-power
+    // test map, return its localized label; otherwise return the raw value
+    // unchanged so legacy free-text values display verbatim and are never
+    // blanked ('' renders empty, which is a legal value for this field). This
+    // never writes back; getFocusPowerTarget resolves the stored KEY.
+    Handlebars.registerHelper("focusTestLabel", function(name) {
+        const key = game.darkHeresy?.config?.focusPowerTests?.[name];
         return key ? game.i18n.localize(key) : name;
     });
 

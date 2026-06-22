@@ -12,6 +12,7 @@ export function chatListeners(html) {
     html.querySelectorAll(".invoke-test")?.forEach(button => button.addEventListener("click", event => onTestClick(event)));
     html.querySelectorAll(".invoke-damage")?.forEach(button => button.addEventListener("click", event => onDamageClick(event)));
     html.querySelectorAll(".reload-Weapon")?.forEach(button => button.addEventListener("click", event => onReloadClick(event)));
+    html.querySelectorAll(".roll-phenomena")?.forEach(button => button.addEventListener("click", event => onRollPhenomenaClick(event)));
     html.querySelectorAll(".dark-heresy.chat.roll>.background.border")?.forEach(button => button.addEventListener("dblclick", event => onChatRollClick(event)));
 }
 
@@ -179,6 +180,71 @@ async function onReloadClick(ev) {
     let rollData = msg.getRollData();
     let weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
     await weapon.update({"system.clip.value": rollData.weapon.clip.max});
+}
+
+/**
+ * Roll the separate Psychic Phenomena test (1d100 on Table 6-2) from the chat
+ * card. Opens a small dialog prefilled with the suggested modifier (computed in
+ * roll.js) so the player can adjust it, then posts the modified d100 to chat.
+ * The numeric result is all this produces: the player looks up Table 6-2 (and
+ * Table 6-3 on a 75+ result) themselves.
+ * @param {Event} ev
+ * @returns {Promise}
+ */
+async function onRollPhenomenaClick(ev) {
+    const suggested = parseInt(ev.currentTarget.dataset.phenomenaMod, 10) || 0;
+    const title = game.i18n.localize("CHAT.ROLL_PHENOMENA_TITLE");
+    const label = game.i18n.localize("DIALOG.MODIFIER");
+    // Mirror the system's standard roll dialog (a .background.border box with a
+    // grey <h1> header and a .wrapper label+input row); modifier-only, no target.
+    const content = `<div class="dark-heresy dialog"><div class="flex row wrap background border" style="flex-basis: 100%;margin-bottom: 5px"><h1>${title}</h1><div class="wrapper"><label>${label}</label><input id="phenomenaMod" type="number" value="${suggested}" data-dtype="Number" /></div></div></div>`;
+    await foundry.applications.api.DialogV2.wait({
+        window: { title: game.i18n.localize("CHAT.ROLL_PHENOMENA_TITLE") },
+        classes: ["dark-heresy", "dialog"],
+        content,
+        position: { width: 200 },
+        rejectClose: false,
+        buttons: [
+            {
+                action: "roll",
+                icon: "fas fa-check",
+                label: "BUTTON.ROLL",
+                default: true,
+                callback: async (event, button) => {
+                    const mod = parseInt(button.form.querySelector("#phenomenaMod").value, 10) || 0;
+                    // Build the formula with an explicit sign so an edited
+                    // negative modifier still parses cleanly.
+                    const formula = `1d100 ${mod < 0 ? "-" : "+"} ${Math.abs(mod)}`;
+                    const roll = new Roll(formula);
+                    await roll.evaluate();
+                    // Render a system-styled card (matching template/chat/roll.hbs)
+                    // instead of Foundry's default roll message, mirroring _sendRollToChat.
+                    const content = await foundry.applications.handlebars.renderTemplate(
+                        "systems/dark-heresy/template/chat/phenomena.hbs",
+                        { title: game.i18n.localize("CHAT.ROLL_PHENOMENA_TITLE"), total: roll.total, modifier: mod }
+                    );
+                    const chatData = {
+                        user: game.user.id,
+                        rollMode: game.settings.get("core", "rollMode"),
+                        speaker: ChatMessage.getSpeaker(),
+                        content,
+                        rolls: [roll]
+                    };
+                    if (["gmroll", "blindroll"].includes(chatData.rollMode)) {
+                        chatData.whisper = ChatMessage.getWhisperRecipients("GM");
+                    } else if (chatData.rollMode === "selfroll") {
+                        chatData.whisper = [game.user];
+                    }
+                    await ChatMessage.create(chatData);
+                }
+            },
+            {
+                action: "cancel",
+                icon: "fas fa-times",
+                label: "BUTTON.CANCEL"
+            }
+        ]
+    });
 }
 
 /**
