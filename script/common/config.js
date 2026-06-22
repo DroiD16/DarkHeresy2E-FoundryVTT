@@ -146,6 +146,35 @@ Dh.characteristicCosts = [
 
 Dh.talentCosts = [[200, 300, 600], [300, 450, 900], [400, 600, 1200]];
 
+// Single source of truth for aptitude tags: canonical English tag -> i18n key.
+// The XP cost calc (script/common/actor.js) matches the canonical English tag
+// stored in the aptitude Item's `name`; this map is RENDER-ONLY (datalist,
+// display helper, reverse normalizer) and is never written back into `name`.
+// The 9 characteristic-named tags reuse CHARACTERISTIC.* keys (localized in
+// fr/pl/es today); the 10 APTITUDE.* tags fall back to en in non-en locales
+// until translated. XP correctness is unaffected either way.
+Dh.aptitudes = {
+    "Weapon Skill": "CHARACTERISTIC.WEAPON_SKILL",
+    "Ballistic Skill": "CHARACTERISTIC.BALLISTIC_SKILL",
+    Strength: "CHARACTERISTIC.STRENGTH",
+    Toughness: "CHARACTERISTIC.TOUGHNESS",
+    Agility: "CHARACTERISTIC.AGILITY",
+    Intelligence: "CHARACTERISTIC.INTELLIGENCE",
+    Perception: "CHARACTERISTIC.PERCEPTION",
+    Willpower: "CHARACTERISTIC.WILLPOWER",
+    Fellowship: "CHARACTERISTIC.FELLOWSHIP",
+    Offence: "APTITUDE.OFFENCE",
+    Finesse: "APTITUDE.FINESSE",
+    Defence: "APTITUDE.DEFENCE",
+    Knowledge: "APTITUDE.KNOWLEDGE",
+    Fieldcraft: "APTITUDE.FIELDCRAFT",
+    Psyker: "APTITUDE.PSYKER",
+    Social: "APTITUDE.SOCIAL",
+    Leadership: "APTITUDE.LEADERSHIP",
+    Tech: "APTITUDE.TECH",
+    General: "APTITUDE.GENERAL"
+};
+
 Dh.hitLocations = {
     head: "ARMOUR.HEAD",
     leftArm: "ARMOUR.LEFT_ARM",

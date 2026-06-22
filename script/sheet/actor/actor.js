@@ -173,7 +173,7 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     _onItemCreate(target) {
         const header = target.dataset;
         const data = {
-            name: `New ${game.i18n.localize(`TYPES.Item.${header.type.toLowerCase()}`)}`,
+            name: DarkHeresyUtil.defaultItemName(header.type),
             type: header.type
         };
         return this.actor.createEmbeddedDocuments("Item", [data], { renderSheet: true });

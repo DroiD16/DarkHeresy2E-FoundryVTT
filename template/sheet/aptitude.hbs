@@ -7,7 +7,15 @@
             <div class="flex column grow justify-center">
                 <div class="name header-row">
                     <label>{{localize "APTITUDE.NAME"}}</label>
-                    <input name="name" type="text" value="{{item.name}}" />
+                    <div class="aptitude-autocomplete">
+                        <input name="name" type="text" autocomplete="off" value="{{#unless aptitudeNameIsDefault}}{{aptitudeLabel item.name}}{{/unless}}" placeholder="{{#if aptitudeNameIsDefault}}{{aptitudeLabel item.name}}{{/if}}" />
+                        <i class="fas fa-caret-down aptitude-caret"></i>
+                        <ul class="aptitude-suggestions" hidden>
+                            {{#each aptitudeSuggestions}}
+                                <li class="aptitude-suggestion" data-value="{{this}}">{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

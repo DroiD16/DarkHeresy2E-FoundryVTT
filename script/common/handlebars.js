@@ -110,6 +110,16 @@ function registerHandlebarsHelpers() {
         return game.darkHeresy.config[key];
     });
 
+    // Display-only localization of an aptitude name: when `name` is one of the
+    // canonical English tags in the aptitude map, return its localized label;
+    // otherwise return the raw name unchanged so custom/unmapped values display
+    // verbatim and are never blanked. This never writes back into `name`; the
+    // XP cost calc continues to match the stored canonical tag.
+    Handlebars.registerHelper("aptitudeLabel", function(name) {
+        const key = game.darkHeresy?.config?.aptitudes?.[name];
+        return key ? game.i18n.localize(key) : name;
+    });
+
     // Summarize an Active Effect's `changes` as readable "<target> <±value>"
     // pairs (e.g. "Weapon Skill +5"), shown in the item effect list in place of
     // the redundant source column. The target is humanized from the change key

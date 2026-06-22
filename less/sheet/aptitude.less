@@ -1,0 +1,85 @@
+/* Custom autocomplete dropdown replacing the unstylable native <datalist> on
+   the aptitude name field. Styled to match the actor sheet's Advances list:
+   parchment base, Caslon Antique, zebra striping, foreground-red highlight. */
+
+.dark-heresy .aptitude-autocomplete {
+    position: relative;
+    /* Take the flex-grow + margin the bare input previously had so the header
+       row layout is unchanged. */
+    flex-grow: 1;
+    margin: 0 8px;
+}
+
+.dark-heresy.sheet .header .aptitude-autocomplete input {
+    width: 100%;
+    /* Neutralize the inherited `.header input { margin: 0 8px }`; the wrapper
+       now carries that margin, and the input must span the wrapper edge-to-edge
+       so it lines up with the absolutely-positioned dropdown. This selector is
+       specificity 0,4,1 — higher than the conflicting
+       `.dark-heresy.sheet .header input` (0,3,1) — so the margin reset wins. */
+    margin: 0;
+    box-sizing: border-box;
+    /* Reserve room at the right so typed text never runs under the caret. */
+    padding-right: 18px;
+}
+
+/* Clickable caret affordance signalling the dropdown, pinned to the input's
+   right edge and vertically centered. It is a small element at the right only,
+   so it never blocks the input's own clicks elsewhere. */
+.dark-heresy .aptitude-caret {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text);
+    cursor: pointer;
+    pointer-events: auto;
+    font-size: 12px;
+}
+
+.dark-heresy .aptitude-suggestions {
+    position: absolute;
+    /* left:0;right:0 makes the dropdown exactly as wide as the input. */
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    /* Include the 1px border in the left:0/right:0 width so it lines up exactly
+       with the input edge-to-edge (no sub-pixel overhang). */
+    box-sizing: border-box;
+    /* Opaque parchment base so it covers the notes editor below it. */
+    background: url("../../asset/image/background.jpg") center;
+}
+
+.dark-heresy .aptitude-suggestions[hidden] {
+    display: none;
+}
+
+.dark-heresy .aptitude-suggestion {
+    padding: 2px 6px;
+    font-family: var(--font-text);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+/* Filter class, distinct from the list's [hidden] ATTRIBUTE. */
+.dark-heresy .aptitude-suggestion.hidden {
+    display: none;
+}
+
+/* Zebra over the parchment, like the Advances list. */
+.dark-heresy .aptitude-suggestion:nth-child(odd) {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.dark-heresy .aptitude-suggestion:hover,
+.dark-heresy .aptitude-suggestion.active {
+    background: var(--color-foreground);
+    color: var(--color-title);
+}
