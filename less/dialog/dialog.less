@@ -4,29 +4,44 @@
    whole window FRAME to row layout (header becomes a vertical strip on the left
    instead of a bar on top). */
 .window-content .dark-heresy.dialog {
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    flex-basis: auto;
+    align-items: stretch;
+}
+
+.dark-heresy.dialog > .background.border {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex-basis: 100%;
+    flex: 0 0 auto;
+    flex-direction: column;
+}
+
+.dark-heresy.dialog > .background.border > h1 {
+    flex: 0 0 auto;
+    width: auto;
 }
 
 .dark-heresy.dialog .wrapper {
     display: flex;
     flex-direction: row;
-    flex-basis: 100%;
+    flex-basis: auto;
     margin-top: 5px;
     align-items: center;
 }
 
 .dark-heresy.dialog .separator {
-    flex-basis: 100%;
+    flex-basis: auto;
+    width: 100%;
     padding-top: 5px;
     margin-bottom: 5px;
     border-bottom: 1px solid var(--color-border);
 }
 
 .dark-heresy.dialog .wrapper label {
-    width: 4em;
+    flex: 0 0 var(--dialog-label-width, max-content);
+    width: auto;
+    white-space: nowrap;
 }
 
 .dark-heresy.dialog.combat-roll-dialog > .background.border {
@@ -34,43 +49,32 @@
     min-width: 0;
 }
 
-.dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 101px;
-    column-gap: 5px;
-}
-
-.dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper label {
-    min-width: 0;
-    overflow-wrap: anywhere;
-    width: auto;
-}
-
 .dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper input,
 .dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper select {
-    margin-left: 0;
-    width: 101px;
+    width: 121px;
 }
 
-.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary,
-.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary .wrapper,
-.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary table {
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary {
+    contain: inline-size;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     box-sizing: border-box;
-    width: 100%;
-}
-
-.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary table {
-    table-layout: fixed;
-}
-
-.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary td {
-    padding: 0 4px;
+    width: auto;
+    padding: 4px;
+    background: var(--table-background-color);
     text-align: center;
+}
+
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary > div {
+    min-width: 0;
+    padding: 0 4px;
+    overflow-wrap: anywhere;
 }
 
 .dark-heresy.dialog .wrapper input,
 .dark-heresy.dialog .wrapper select {
-    width: 101px;
+    flex-shrink: 0;
+    width: 121px;
     margin-left: 5px;
     text-align: center;
     font-size: 16px;
