@@ -1,5 +1,5 @@
 import { PlaceableTemplate } from "./placeable-template.js";
-import { computeMalfunction, lancePenetration } from "./weapon-qualities.js";
+import { computeMalfunction, computeSprayMalfunction, lancePenetration } from "./weapon-qualities.js";
 
 /**
  * Roll a generic roll, and post the result to chat.
@@ -33,6 +33,7 @@ export async function combatRoll(rollData) {
         rollData.attackResult = 5; // Attacks that skip the hit roll always hit body; 05 reversed 50 = body
         rollData.flags.isDamageRoll = true;
         await _rollDamage(rollData);
+        await _applySprayMalfunction(rollData);
         await _updateRangedAmmo(rollData);
         await sendDamageToChat(rollData);
     } else {
@@ -405,7 +406,8 @@ async function _updateRangedAmmo(rollData) {
  */
 async function _applyMalfunction(rollData) {
     const type = computeMalfunction(
-        rollData.weapon.traits, rollData.result, rollData.attackType?.name, rollData.weapon.isRange);
+        rollData.weapon.traits, rollData.result, rollData.attackType?.name, rollData.weapon.isRange,
+        rollData.weapon.craftsmanship, rollData.flags.isSuccess);
     if (!type) {
         // Clean roll: drop any stale malfunction carried over from a discarded
         // reroll so the reroll card does not show the old jam. The persisted
@@ -435,6 +437,35 @@ async function _applyMalfunction(rollData) {
     // mutually exclusive per weapon, so the type need not be stored — the chat
     // card above carries it for this roll). The flag blocks the next shot until
     // the player clears the toggle on the weapon sheet.
+    const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
+    if (weapon) await weapon.update({ "system.malfunction": true });
+}
+
+/**
+ * Detect a Spray weapon's jam: a Spray weapon jams if any of its damage dice
+ * shows a natural 9 before modifiers (Core Rulebook p. 149). Spray skips the hit
+ * roll, so this runs after the damage roll instead of _applyMalfunction. Sets
+ * rollData.malfunction (read by the damage chat card), rolls Overheat self-damage
+ * if applicable, and persists the boolean flag. Effectively-Reliable / Best
+ * Spray weapons never jam (handled in computeSprayMalfunction).
+ * @param {object} rollData
+ */
+async function _applySprayMalfunction(rollData) {
+    // Natural die faces from the damage roll(s), before any modifiers.
+    const damageDice = (rollData.damages ?? []).flatMap(d =>
+        (d.damageRoll?.terms ?? []).flatMap(term => (term.results ?? []).map(res => res.result)));
+    const type = computeSprayMalfunction(rollData.weapon.traits, rollData.weapon.craftsmanship, damageDice);
+    if (!type) {
+        delete rollData.malfunction;
+        return;
+    }
+    rollData.malfunction = { type, jammed: type === "jammed", overheated: type === "overheated" };
+    if (type === "overheated") {
+        const formula = _replaceSymbols(rollData.weapon.damageFormula || "0", rollData);
+        let r = new Roll(formula);
+        await r.evaluate();
+        rollData.malfunction.selfDamage = r.total;
+    }
     const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
     if (weapon) await weapon.update({ "system.malfunction": true });
 }

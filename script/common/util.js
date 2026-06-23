@@ -81,7 +81,10 @@ export default class DarkHeresyUtil {
             ammos: weaponItem.system.ammoItems,
             traits: weaponTraits,
             special: weaponItem.special,
-            malfunction: weaponItem.system.malfunction
+            malfunction: weaponItem.system.malfunction,
+            // Craftsmanship shifts ranged reliability (jam/overheat) and the
+            // Spray jam-on-9 check (see computeMalfunction/computeSprayMalfunction).
+            craftsmanship: weaponItem.system.craftsmanship
         });
 
         return rollData;

@@ -233,27 +233,94 @@ export function parseSpecialString(special) {
 
 /**
  * Determine whether a weapon attack roll triggers a malfunction (Core Rulebook
- * pp. 145-150 + p. 224). Overheats (91+) replaces jamming entirely and applies
- * regardless of fire mode (and absorbs any jam-causing effect). Otherwise
- * jamming is a RANGED-only rule: Reliable narrows the jam window to a natural
- * 100, Unreliable widens it to 91+, and the base window is 96-100 for a single
- * shot / 94-100 for Semi-Auto or Full-Auto Burst. Spray weapons never reach this
- * (they skip the hit roll), which structurally satisfies Reliable's "never jams
+ * pp. 142, 145-150, 224). Overheats (91+) replaces jamming entirely and applies
+ * regardless of fire mode. Otherwise jamming is a RANGED-only rule: Reliable
+ * narrows the jam window to a natural 100, Unreliable widens it to 91+, and the
+ * base window is 96-100 for a single shot / 94-100 for Semi-Auto or Full-Auto.
+ * Spray weapons never reach this (they skip the hit roll — see
+ * computeSprayMalfunction), which structurally satisfies Reliable's "never jams
  * if it makes no hit roll".
+ *
+ * The model: first decide whether a malfunction is TRIGGERED, then map it to a
+ * type. An Overheats weapon overheats instead of jamming and adds its own 91+
+ * trigger ("any effect that would cause the weapon to jam instead causes the
+ * weapon to overheat"); the only thing that suppresses overheating is Best
+ * RANGED craftsmanship.
+ *
+ * Craftsmanship (p. 142) shifts the effective reliability of a RANGED weapon:
+ *   - Best: never jams or overheats (ranged benefit only; melee Best is +WS/+dmg
+ *     and does NOT grant malfunction immunity).
+ *   - Good: loses Unreliable; if it had none, gains Reliable.
+ *   - Poor: gains Unreliable; if it was ALREADY Unreliable, it ALSO jams on any
+ *           failed hit roll (in addition to Unreliable's 91+ trigger).
+ *   - Common: baseline.
  * @param {object} traits          rollData.weapon.traits (reliable, unreliable, overheats booleans).
  * @param {number} result         The unmodified d100 attack roll.
  * @param {string} attackTypeName rollData.attackType.name ("standard","semi_auto","full_auto",...).
  * @param {boolean} isRange        rollData.weapon.isRange.
+ * @param {string} [craftsmanship] "poor" | "common" | "good" | "best".
+ * @param {boolean} [isSuccess]    Whether the attack hit (only the Poor + already-Unreliable case uses it).
  * @returns {"jammed"|"overheated"|null} The malfunction type, or null for none.
  */
-export function computeMalfunction(traits, result, attackTypeName, isRange) {
-    if (traits?.overheats) return result >= 91 ? "overheated" : null;
-    if (!isRange) return null; // Base jamming is a ranged-attack rule.
-    let threshold;
-    if (traits?.reliable) threshold = 100;
-    else if (traits?.unreliable) threshold = 91;
-    else threshold = (attackTypeName === "semi_auto" || attackTypeName === "full_auto") ? 94 : 96;
-    return result >= threshold ? "jammed" : null;
+export function computeMalfunction(traits, result, attackTypeName, isRange, craftsmanship, isSuccess) {
+    const overheats = !!traits?.overheats;
+    // Best RANGED craftsmanship never jams or overheats; Best melee has no such effect.
+    if (craftsmanship === "best" && isRange) return null;
+    // Overheats has its own 91+ trigger (any fire mode), on top of converting jams.
+    let triggered = overheats && result >= 91;
+    // Jamming is a ranged-attack rule; compute its trigger and OR it in.
+    if (isRange) {
+        let reliable = !!traits?.reliable;
+        let unreliable = !!traits?.unreliable;
+        let jam = false;
+        if (craftsmanship === "poor") {
+            if (unreliable) {
+                // Poor keeps Unreliable's 91+ trigger AND adds an any-failed-hit trigger.
+                jam = result >= 91 || isSuccess === false;
+            } else {
+                unreliable = true;
+            }
+        } else if (craftsmanship === "good") {
+            // Loses Unreliable; if it had none, gains Reliable.
+            if (unreliable) unreliable = false;
+            else reliable = true;
+        }
+        if (!jam) {
+            let threshold;
+            if (reliable) threshold = 100;
+            else if (unreliable) threshold = 91;
+            else threshold = (attackTypeName === "semi_auto" || attackTypeName === "full_auto") ? 94 : 96;
+            jam = result >= threshold;
+        }
+        triggered = triggered || jam;
+    }
+    if (!triggered) return null;
+    return overheats ? "overheated" : "jammed";
+}
+
+/**
+ * Determine whether a Spray weapon malfunctions: it jams if any of its damage
+ * dice shows a natural 9 (before modifiers) (Core Rulebook p. 149). Order of
+ * precedence:
+ *   - Best craftsmanship never jams or overheats.
+ *   - Otherwise, if a 9 is rolled and the weapon has Overheats, it OVERHEATS —
+ *     Overheats converts the jam-causing 9 into an overheat, and only Best
+ *     craftsmanship suppresses overheating (Reliable/Good do not).
+ *   - Otherwise an effectively-Reliable Spray weapon never jams ("Reliable
+ *     weapons with the Spray quality ... never jam", p. 148): the Reliable
+ *     quality, or Good craftsmanship when the weapon is not Unreliable.
+ * @param {object} traits          rollData.weapon.traits.
+ * @param {string} [craftsmanship] "poor" | "common" | "good" | "best".
+ * @param {number[]} damageDice    The natural damage-die faces (before modifiers).
+ * @returns {"jammed"|"overheated"|null} The malfunction type, or null for none.
+ */
+export function computeSprayMalfunction(traits, craftsmanship, damageDice) {
+    if (craftsmanship === "best") return null; // Never jams or overheats.
+    if (!(damageDice ?? []).some(d => d === 9)) return null;
+    if (traits?.overheats) return "overheated"; // Overheats converts the 9-jam; only Best stops it.
+    if (traits?.reliable) return null; // Reliable + Spray never jams.
+    if (craftsmanship === "good" && !traits?.unreliable) return null; // Good grants Reliable.
+    return "jammed";
 }
 
 /**

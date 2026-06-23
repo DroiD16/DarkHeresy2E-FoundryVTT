@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 // `foundry`/`game` inside method bodies (not at module load), and
 // extractWeaponTraits uses only its own static helpers — so it can be imported
 // and called directly to prove behavior parity for the shared trait keys.
-const { WEAPON_QUALITIES, parseSpecialString, buildTraitsFromQualities, computeMalfunction, lancePenetration } =
+const { WEAPON_QUALITIES, parseSpecialString, buildTraitsFromQualities, computeMalfunction, computeSprayMalfunction, lancePenetration } =
     await import("../script/common/weapon-qualities.js");
 const { default: DarkHeresyUtil } = await import("../script/common/util.js");
 
@@ -448,4 +448,93 @@ test("lancePenetration: stacks on a Razor Sharp-doubled full pen", () => {
     // Razor Sharp already doubled full pen to 10 (base 5 x2); Lance adds base 5
     // per degree on top: 10 + 5*2 = 20.
     assert.equal(lancePenetration(10, 5, 2), 20);
+});
+
+// ---------------------------------------------------------------------------
+// computeMalfunction — craftsmanship interaction
+// ---------------------------------------------------------------------------
+
+test("computeMalfunction: Best craftsmanship never jams or overheats", () => {
+    assert.equal(computeMalfunction({}, 100, "standard", true, "best"), null);
+    assert.equal(computeMalfunction({ overheats: true }, 100, "standard", true, "best"), null);
+    assert.equal(computeMalfunction({ unreliable: true }, 100, "full_auto", true, "best"), null);
+});
+
+test("computeMalfunction: Poor craftsmanship grants Unreliable (jam at 91+)", () => {
+    assert.equal(computeMalfunction({}, 90, "standard", true, "poor"), null);
+    assert.equal(computeMalfunction({}, 91, "standard", true, "poor"), "jammed");
+});
+
+test("computeMalfunction: Poor + already Unreliable jams on any failed hit", () => {
+    // isSuccess === false -> jam regardless of the result value.
+    assert.equal(computeMalfunction({ unreliable: true }, 30, "standard", true, "poor", false), "jammed");
+    // A successful hit does not jam under this clause.
+    assert.equal(computeMalfunction({ unreliable: true }, 30, "standard", true, "poor", true), null);
+});
+
+test("computeMalfunction: Good craftsmanship grants Reliable (jam only on 100)", () => {
+    assert.equal(computeMalfunction({}, 99, "standard", true, "good"), null);
+    assert.equal(computeMalfunction({}, 100, "standard", true, "good"), "jammed");
+});
+
+test("computeMalfunction: Good craftsmanship removes Unreliable (back to baseline)", () => {
+    // Unreliable would jam at 91; Good removes it -> baseline 96 single-shot.
+    assert.equal(computeMalfunction({ unreliable: true }, 95, "standard", true, "good"), null);
+    assert.equal(computeMalfunction({ unreliable: true }, 96, "standard", true, "good"), "jammed");
+});
+
+test("computeMalfunction: Common craftsmanship is baseline (96 single / 94 burst)", () => {
+    assert.equal(computeMalfunction({}, 95, "standard", true, "common"), null);
+    assert.equal(computeMalfunction({}, 96, "standard", true, "common"), "jammed");
+    assert.equal(computeMalfunction({}, 94, "full_auto", true, "common"), "jammed");
+});
+
+// ---------------------------------------------------------------------------
+// computeSprayMalfunction — jam on a damage-die 9
+// ---------------------------------------------------------------------------
+
+test("computeSprayMalfunction: a natural 9 jams; no 9 does not", () => {
+    assert.equal(computeSprayMalfunction({}, "common", [3, 9, 5]), "jammed");
+    assert.equal(computeSprayMalfunction({}, "common", [3, 8, 10]), null);
+    assert.equal(computeSprayMalfunction({}, "common", []), null);
+});
+
+test("computeSprayMalfunction: effectively-Reliable spray never jams", () => {
+    assert.equal(computeSprayMalfunction({ reliable: true }, "common", [9]), null); // Reliable quality
+    assert.equal(computeSprayMalfunction({}, "good", [9]), null);                   // Good grants Reliable
+    assert.equal(computeSprayMalfunction({}, "best", [9]), null);                   // Best never jams
+});
+
+test("computeSprayMalfunction: Good does not exempt an Unreliable spray", () => {
+    // Good only grants Reliable when the weapon is NOT Unreliable.
+    assert.equal(computeSprayMalfunction({ unreliable: true }, "good", [9]), "jammed");
+});
+
+test("computeSprayMalfunction: an Overheats spray overheats instead of jamming", () => {
+    assert.equal(computeSprayMalfunction({ overheats: true }, "common", [9]), "overheated");
+});
+
+// Edge combinations (quality x craftsmanship) — the trigger-then-type model.
+
+test("computeMalfunction: Best craftsmanship immunity is ranged-only (melee Overheats still overheats)", () => {
+    // Best MELEE craftsmanship grants +WS/+dmg, NOT malfunction immunity.
+    assert.equal(computeMalfunction({ overheats: true }, 95, "standard", false, "best"), "overheated");
+    // Best RANGED is immune.
+    assert.equal(computeMalfunction({ overheats: true }, 95, "standard", true, "best"), null);
+});
+
+test("computeMalfunction: Poor + already-Unreliable keeps the 91+ jam on a high-target success", () => {
+    // A success at 91+ still jams (Unreliable's own trigger), not only failed hits.
+    assert.equal(computeMalfunction({ unreliable: true }, 95, "standard", true, "poor", true), "jammed");
+});
+
+test("computeMalfunction: Poor + Unreliable + Overheats converts a failed-hit jam into an overheat", () => {
+    // Failed hit below 91: Poor adds the failed-hit jam, Overheats converts it.
+    assert.equal(computeMalfunction({ unreliable: true, overheats: true }, 40, "standard", true, "poor", false), "overheated");
+});
+
+test("computeSprayMalfunction: Overheats converts the 9 even on a Reliable/Good spray (only Best stops it)", () => {
+    assert.equal(computeSprayMalfunction({ overheats: true, reliable: true }, "common", [9]), "overheated");
+    assert.equal(computeSprayMalfunction({ overheats: true }, "good", [9]), "overheated");
+    assert.equal(computeSprayMalfunction({ overheats: true }, "best", [9]), null);
 });
