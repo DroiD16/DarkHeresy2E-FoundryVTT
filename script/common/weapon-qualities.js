@@ -278,7 +278,10 @@ export function computeMalfunction(traits, result, attackTypeName, isRange, craf
                 // Poor keeps Unreliable's 91+ trigger AND adds an any-failed-hit trigger.
                 jam = result >= 91 || isSuccess === false;
             } else {
+                // Poor grants Unreliable; this degradation overrides any Reliable
+                // quality, so a Poor Reliable weapon jams at 91+ (not only on 100).
                 unreliable = true;
+                reliable = false;
             }
         } else if (craftsmanship === "good") {
             // Loses Unreliable; if it had none, gains Reliable.

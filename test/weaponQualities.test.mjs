@@ -489,6 +489,13 @@ test("computeMalfunction: Common craftsmanship is baseline (96 single / 94 burst
     assert.equal(computeMalfunction({}, 94, "full_auto", true, "common"), "jammed");
 });
 
+test("computeMalfunction: Poor degrades a Reliable weapon to Unreliable (jam at 91+)", () => {
+    // A Poor Reliable weapon (e.g. a Poor lasgun): Poor's Unreliable overrides
+    // Reliable, so 91-99 jams rather than only 100.
+    assert.equal(computeMalfunction({ reliable: true }, 90, "standard", true, "poor"), null);
+    assert.equal(computeMalfunction({ reliable: true }, 91, "standard", true, "poor"), "jammed");
+});
+
 // ---------------------------------------------------------------------------
 // computeSprayMalfunction — jam on a damage-die 9
 // ---------------------------------------------------------------------------

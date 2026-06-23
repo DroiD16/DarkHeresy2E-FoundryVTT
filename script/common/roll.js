@@ -451,9 +451,11 @@ async function _applyMalfunction(rollData) {
  * @param {object} rollData
  */
 async function _applySprayMalfunction(rollData) {
-    // Natural die faces from the damage roll(s), before any modifiers.
+    // Natural die faces from the damage roll(s), before any modifiers. Roll#dice
+    // recurses into parenthetical/function terms, so dice nested in the damage
+    // formula are still inspected (a top-level terms[] walk would miss them).
     const damageDice = (rollData.damages ?? []).flatMap(d =>
-        (d.damageRoll?.terms ?? []).flatMap(term => (term.results ?? []).map(res => res.result)));
+        (d.damageRoll?.dice ?? []).flatMap(die => (die.results ?? []).map(res => res.result)));
     const type = computeSprayMalfunction(rollData.weapon.traits, rollData.weapon.craftsmanship, damageDice);
     if (!type) {
         delete rollData.malfunction;
