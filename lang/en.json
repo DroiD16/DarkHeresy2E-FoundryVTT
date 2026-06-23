@@ -408,6 +408,7 @@
     "WEAPON.ADD_QUALITY": "Add quality…",
     "WEAPON.REMOVE_QUALITY": "Remove",
     "WEAPON.MALFUNCTION": "Jammed / Overheated",
+    "WEAPON.MALFUNCTION_SHORT": "J/O",
     "WEAPON.CRAFTSMANSHIP": "Craftsmanship",
     "WEAPON.AVAILABILITY": "Availability",
     "WEAPON.WEIGHT": "Weight",

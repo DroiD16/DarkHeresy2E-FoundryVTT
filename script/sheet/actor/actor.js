@@ -159,6 +159,10 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
             event.stopPropagation();
             return this._onItemStarterChange(target);
         }
+        if (target.classList.contains("weapon-malfunction-toggle")) {
+            event.stopPropagation();
+            return this._onWeaponMalfunctionToggle(target);
+        }
     }
 
     /**
@@ -274,6 +278,11 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     _onItemStarterChange(target) {
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.starter": target.checked });
+    }
+
+    _onWeaponMalfunctionToggle(target) {
+        const item = this.actor.items.get(target.closest(".item").dataset.itemId);
+        item.update({ "system.malfunction": target.checked });
     }
 
     constructItemLists() {

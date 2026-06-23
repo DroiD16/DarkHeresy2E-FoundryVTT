@@ -135,6 +135,7 @@
                 <b class="penetration">{{localize "WEAPON.PENETRATION"}}</b>
                 <b class="clip">{{localize "WEAPON.CLIP"}}</b>
                 <b class="reload">{{localize "WEAPON.RELOAD"}}</b>
+                <b class="malfunction">{{localize "WEAPON.MALFUNCTION_SHORT"}}</b>
                 <b class="special">{{localize "WEAPON.SPECIAL"}}</b>
             </div>
             <div class="items">
@@ -155,6 +156,7 @@
                         <div class="penetration">{{item.penetration}}</div>
                         <div class="clip">{{item.Clip}}</div>
                         <div class="reload">{{item.reload}}</div>
+                        <div class="malfunction"><input type="checkbox" class="weapon-malfunction-toggle" {{#if item.system.malfunction}}checked{{/if}} title="{{localize "WEAPON.MALFUNCTION"}}" /></div>
                         <div class="special">{{weaponSpecialDisplay item.specialQualities item.special}}</div>
                     </div>
                 {{/each}}
