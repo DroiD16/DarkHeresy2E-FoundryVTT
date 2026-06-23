@@ -111,7 +111,7 @@ export default class DarkHeresyUtil {
         rollData.weapon = foundry.utils.mergeObject(rollData.weapon, {
             damageFormula: power.damage.formula,
             penetrationFormula: power.damage.penetration,
-            traits: this.extractWeaponTraits(power.damage.special),
+            traits: buildTraitsFromQualities(power.system.damage.specialQualities),
             special: power.damage.special
         });
         rollData.attackType.name = power.damage.zone;
@@ -196,6 +196,12 @@ export default class DarkHeresyUtil {
     }
 
 
+    // RETAINED FOR THE PLANNED FREE-TEXT -> STRUCTURED MIGRATION. This regex
+    // parser and its helpers (hasNamedTrait, extractNumberedTrait below) are
+    // intentionally kept even though createPsychicRollData no longer calls them:
+    // a future migration will use them to seed structured `specialQualities` from
+    // existing free-text `special`/`damage.special` fields. Do NOT remove them as
+    // "dead/unused code" — that finding is invalid (see spec guard rail G1).
     static extractWeaponTraits(traits) {
         // These weapon traits never go above 9 or below 2
         return {

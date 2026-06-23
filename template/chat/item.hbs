@@ -85,7 +85,7 @@
         <p><strong>{{localize "PSYCHIC_POWER.ZONE"}}:</strong> {{item.PsychicPowerZone}}</p>
         <p><strong>{{localize "PSYCHIC_POWER.DAMAGE_FULL"}}:</strong> {{item.damage.formula}} {{item.DamageType}}</p>
         <p><strong>{{localize "PSYCHIC_POWER.PENETRATION"}}:</strong> {{item.damage.penetration}}</p>
-        <p><strong>{{localize "PSYCHIC_POWER.SPECIAL"}}:</strong> {{item.damage.special}}</p>
+        <p><strong>{{localize "PSYCHIC_POWER.SPECIAL"}}:</strong> {{weaponSpecialDisplay item.damage.specialQualities item.damage.special}}</p>
         <p><strong>{{localize "PSYCHIC_POWER.EFFECT"}}:</strong> {{{item.effect}}}</p>
         <p><strong>{{localize "HEADER.DESCRIPTION"}}:</strong> {{{item.description}}}</p>
         {{/if}}

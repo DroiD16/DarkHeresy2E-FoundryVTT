@@ -206,7 +206,7 @@
                         <div class="damage">{{item.damage.formula}}</div>
                         <div class="damage-type">{{item.DamageTypeShort}}</div>
                         <div class="penetration">{{item.damage.penetration}}</div>
-                        <div class="special">{{item.damage.special}}</div>
+                        <div class="special">{{weaponSpecialDisplay item.damage.specialQualities item.damage.special}}</div>
                     </div>                    
                 {{/each}}
             </div>

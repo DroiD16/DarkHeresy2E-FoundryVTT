@@ -85,6 +85,36 @@
                         <input name="system.damage.special" type="text" value="{{system.damage.special}}" />
                     </div>
                 </div>
+                <div class="stats-row special-qualities-row">
+                    <div class="stat special-qualities">
+                        <label>{{localize "PSYCHIC_POWER.SPECIAL_QUALITIES"}}</label>
+                        {{#if editable}}
+                            <select class="add-quality-select">
+                                <option value="">{{localize "PSYCHIC_POWER.ADD_QUALITY"}}</option>
+                                {{#each qualityOptions}}<option value="{{key}}">{{label}}</option>{{/each}}
+                            </select>
+                        {{/if}}
+                    </div>
+                </div>
+                {{#if qualityChips}}
+                <div class="stats-row quality-chips-row">
+                    <div class="quality-chips border">
+                        {{#each qualityChips}}
+                            <span class="quality-chip" data-key="{{key}}">
+                                <span class="quality-chip-label">{{label}}</span>
+                                {{#if hasValue}}
+                                    <input class="quality-value-input" type="number" data-key="{{key}}"
+                                           value="{{value}}" min="0" step="1" data-dtype="Number" {{#unless @root.editable}}disabled{{/unless}} />
+                                {{/if}}
+                                {{#if @root.editable}}
+                                    <a class="remove-quality" data-key="{{key}}" title="{{localize 'PSYCHIC_POWER.REMOVE_QUALITY'}}">
+                                        <i class="fas fa-trash"></i></a>
+                                {{/if}}
+                            </span>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
                 <div class="stats-row">
                     <div class="stat short-description">
                         <label style="width: 90px">{{localize "PSYCHIC_POWER.SHORT_DESCRIPTION"}}</label>

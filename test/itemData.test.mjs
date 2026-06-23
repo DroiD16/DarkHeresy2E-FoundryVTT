@@ -33,6 +33,13 @@ globalThis.foundry.data = globalThis.foundry.data || {
                 this.fields = f;
                 this.options = o;
             }
+        },
+        ArrayField: class {
+            constructor(e = {}, o = {}) {
+                this.type = "Array";
+                this.element = e;
+                this.options = o;
+            }
         }
     }
 };
@@ -148,6 +155,20 @@ test("PsychicPowerData: inherits description+source and appends psychic power ow
         assert.equal(schema.damage.fields[key].type, "String", `damage.${key} is String`);
         assert.equal(schema.damage.fields[key].options.initial, "", `damage.${key} initial ""`);
     }
+
+    // damage.specialQualities is the structured chip array: an ArrayField of a
+    // Schema {key: String required/non-blank, value: Number nullable/min 0/int}.
+    assert.equal(schema.damage.fields.specialQualities.type, "Array");
+    const quality = schema.damage.fields.specialQualities.element;
+    assert.equal(quality.type, "Schema");
+    assert.equal(quality.fields.key.type, "String");
+    assert.equal(quality.fields.key.options.required, true);
+    assert.equal(quality.fields.key.options.blank, false);
+    assert.equal(quality.fields.value.type, "Number");
+    assert.equal(quality.fields.value.options.nullable, true);
+    assert.equal(quality.fields.value.options.initial, null);
+    assert.equal(quality.fields.value.options.min, 0);
+    assert.equal(quality.fields.value.options.integer, true);
 });
 
 test("TalentData: inherits description+source and appends talent own fields", () => {

@@ -57,6 +57,12 @@ export const WEAPON_QUALITIES = {
     vengeful: { labelKey: "WEAPON_QUALITY.VENGEFUL", hasValue: true, default: 9, trait: "rfFace", numericTrait: true }
 };
 
+// Curated subset of WEAPON_QUALITIES offered in the psychic-power sheet's
+// add-quality dropdown (Dark Heresy 2E psychic powers). The full WEAPON_QUALITIES
+// map still backs labels/defaults and chip rendering; only the ADD dropdown is
+// restricted to these rules-relevant keys.
+export const PSYCHIC_POWER_QUALITY_KEYS = ["blast", "concussive", "flame", "melta", "snare", "force", "haywire", "hallucinogenic"];
+
 const RANGE_BAND_MODIFIERS = Object.freeze({
     pointBlank: 30,
     pointBlankMelee: 0,

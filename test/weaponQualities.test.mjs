@@ -85,6 +85,25 @@ test("buildTraitsFromQualities: new keys flip true when present", () => {
     }
 });
 
+test("buildTraitsFromQualities: force flips its trait true (psychic curated key)", () => {
+    const traits = buildTraitsFromQualities([{ key: "force", value: null }]);
+    assert.equal(traits.force, true);
+});
+
+test("buildTraitsFromQualities: non-trait psychic curated keys produce no trait flags", () => {
+    // Of the eight curated psychic keys, only `force` and `melta` map to a
+    // non-null trait. The other six are damage/effect qualities with trait:null,
+    // so they never appear in the traits object and never disturb the roll path.
+    for (const key of ["blast", "concussive", "snare", "haywire", "hallucinogenic", "flame"]) {
+        const traits = buildTraitsFromQualities([{ key, value: null }]);
+        assert.equal(traits[key], undefined, `${key} should not appear in traits`);
+        // The combat-roll contract fields stay falsy for these psychic-only keys,
+        // so the psychic attack-type pipeline is unchanged.
+        assert.equal(traits.spray, false, `${key} must not set spray`);
+        assert.equal(traits.skipAttackRoll, false, `${key} must not set skipAttackRoll`);
+    }
+});
+
 test("buildTraitsFromQualities: tolerates undefined / non-array input", () => {
     assert.doesNotThrow(() => buildTraitsFromQualities(undefined));
     assert.equal(buildTraitsFromQualities(undefined).accurate, false);

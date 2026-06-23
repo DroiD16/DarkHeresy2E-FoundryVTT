@@ -1,4 +1,4 @@
-import { WEAPON_QUALITIES } from "./weapon-qualities.js";
+import { WEAPON_QUALITIES, PSYCHIC_POWER_QUALITY_KEYS } from "./weapon-qualities.js";
 
 let Dh = {};
 
@@ -239,6 +239,12 @@ Dh.focusPowerTests = {
 // only when nothing resolves. focusPowerTests above stays the full map (used for
 // display localisation and the submit reverse-map of any value).
 Dh.focusPowerSuggestions = ["willpower", "psyniscience", "perception", "awareness"];
+
+// Curated subset of weaponQualities the psychic-power sheet offers in its
+// add-quality dropdown (see PSYCHIC_POWER_QUALITY_KEYS). Chip rendering and the
+// weaponSpecialDisplay helper still read the full weaponQualities map; only the
+// ADD dropdown is curated to these keys.
+Dh.psychicPowerQualityKeys = PSYCHIC_POWER_QUALITY_KEYS;
 
 Dh.hitLocations = {
     head: "ARMOUR.HEAD",

@@ -26,8 +26,41 @@ export default class PsychicPowerData extends ItemDescriptionData {
                 type: new fields.StringField({ initial: "energy" }),
                 formula: new fields.StringField({ initial: "" }),
                 penetration: new fields.StringField({ initial: "" }),
-                special: new fields.StringField({ initial: "" })
+                special: new fields.StringField({ initial: "" }),
+                specialQualities: new fields.ArrayField(new fields.SchemaField({
+                    key: new fields.StringField({ required: true, blank: false }),
+                    value: new fields.NumberField({
+                        required: false,
+                        nullable: true,
+                        initial: null,
+                        min: 0,
+                        integer: true
+                    })
+                }))
             })
         };
+    }
+
+    /** @inheritdoc */
+    static migrateData(source) {
+        super.migrateData(source);
+
+        this.migrateSpecialQualities(source);
+
+        return source;
+    }
+
+    // Numeric normalizer for the structured qualities, nested under `damage`.
+    // NORMALIZE ONLY: it never parses the free-text `damage.special` field into
+    // structured qualities (that migration is out of scope; the regex parser in
+    // util.js is retained for it). Mirrors WeaponData.migrateSpecialQualities,
+    // with the array read from `source.damage.specialQualities`.
+    static migrateSpecialQualities(source) {
+        if (!source.damage || !Array.isArray(source.damage.specialQualities)) return;
+        for (const quality of source.damage.specialQualities) {
+            if (quality?.value === null || typeof quality?.value === "undefined") continue;
+            const value = Number(quality.value);
+            quality.value = Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : null;
+        }
     }
 }

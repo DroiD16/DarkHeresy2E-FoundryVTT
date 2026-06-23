@@ -17,6 +17,7 @@ globalThis.foundry.abstract = globalThis.foundry.abstract || {
 
 const { default: WeaponData } = await import("../script/data/item/weaponData.js");
 const { default: AmmunitionData } = await import("../script/data/item/ammunitionData.js");
+const { default: PsychicPowerData } = await import("../script/data/item/psychicPowerData.js");
 
 test("migrateRateOfFire converts each string field independently (regression guard)", () => {
     const source = { rateOfFire: { single: "3", burst: "2", full: "1" } };
@@ -93,4 +94,57 @@ test("AmmunitionData.migrateData returns the same source object", () => {
     assert.equal(result, source, "returns the same (referential) source object");
     // migrateDamageModifier logic is unchanged: string coerced to int.
     assert.equal(result.effect.damage.modifier, 2);
+});
+
+// ---------------------------------------------------------------------------
+// PsychicPowerData.migrateSpecialQualities — same numeric normalizer as
+// WeaponData, but the array is NESTED under `damage`.
+// ---------------------------------------------------------------------------
+
+test("PsychicPowerData.migrateSpecialQualities normalizes unsafe nested parametric values", () => {
+    const source = {
+        damage: {
+            special: "Force, custom text",
+            specialQualities: [
+                { key: "blast", value: -5 },
+                { key: "concussive", value: 6.8 },
+                { key: "snare", value: "4" },
+                { key: "haywire", value: "invalid" },
+                { key: "force", value: null }
+            ]
+        }
+    };
+    PsychicPowerData.migrateSpecialQualities(source);
+    assert.deepEqual(source.damage.specialQualities, [
+        { key: "blast", value: 0 },
+        { key: "concussive", value: 6 },
+        { key: "snare", value: 4 },
+        { key: "haywire", value: null },
+        { key: "force", value: null }
+    ]);
+    // Free-text special is never parsed into structured qualities (out of scope).
+    assert.equal(source.damage.special, "Force, custom text");
+});
+
+test("PsychicPowerData.migrateSpecialQualities does not throw on missing damage", () => {
+    const undefSource = {};
+    assert.doesNotThrow(() => PsychicPowerData.migrateSpecialQualities(undefSource));
+    assert.equal(undefSource.damage, undefined);
+
+    const noArray = { damage: { special: "Blast" } };
+    assert.doesNotThrow(() => PsychicPowerData.migrateSpecialQualities(noArray));
+    assert.equal(noArray.damage.specialQualities, undefined);
+});
+
+test("PsychicPowerData.migrateData returns the same source object and leaves free text untouched", () => {
+    const source = {
+        damage: {
+            special: "Hallucinogenic (2)",
+            specialQualities: [{ key: "hallucinogenic", value: 9.9 }]
+        }
+    };
+    const result = PsychicPowerData.migrateData(source);
+    assert.equal(result, source, "returns the same (referential) source object");
+    assert.deepEqual(result.damage.specialQualities, [{ key: "hallucinogenic", value: 9 }]);
+    assert.equal(result.damage.special, "Hallucinogenic (2)");
 });
