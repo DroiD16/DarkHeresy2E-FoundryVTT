@@ -281,6 +281,7 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onWeaponMalfunctionToggle(target) {
+        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.malfunction": target.checked });
     }
