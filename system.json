@@ -84,6 +84,11 @@
       "lang": "pl",
       "name": "Polski",
       "path": "lang/pl.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
     }
   ],
   "gridDistance": 1,

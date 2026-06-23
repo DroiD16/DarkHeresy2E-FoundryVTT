@@ -96,7 +96,7 @@
                             {{selectOptions ammunitionOptions selected=system.ammo valueAttr="id" labelAttr="name"}}
                         </select>
                         <a class="weapon-ammunition-unlink {{#unless system.ammo}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}"
-                           title="Unlink" aria-label="Unlink"><i class="fas fa-chain-broken"></i></a>
+                           title="{{localize 'BUTTON.UNLINK'}}" aria-label="{{localize 'BUTTON.UNLINK'}}"><i class="fas fa-chain-broken"></i></a>
                     </div>
                     <div class="stat malfunction">
                         <label>{{localize "WEAPON.MALFUNCTION"}}</label>
