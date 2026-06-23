@@ -98,6 +98,40 @@
                         <input name="system.attack" type="number" value="{{system.attack}}" data-dtype="Number" />
                     </div>
                 </div>
+                <div class="stats-row special-qualities-row">
+                    <div class="stat special-qualities">
+                        <label>{{localize "WEAPON.SPECIAL_QUALITIES"}}</label>
+                        <div class="special-qualities-editor">
+                            <div class="quality-chips">
+                                {{#each qualityChips}}
+                                    <span class="quality-chip" data-key="{{key}}">
+                                        <span class="quality-chip-label">{{label}}</span>
+                                        {{#if hasValue}}
+                                            <input class="quality-value-input" type="number" data-key="{{key}}"
+                                                   value="{{value}}" data-dtype="Number" {{#unless @root.editable}}disabled{{/unless}} />
+                                        {{/if}}
+                                        {{#if @root.editable}}
+                                            <a class="remove-quality" data-key="{{key}}" title="{{localize 'WEAPON.REMOVE_QUALITY'}}">
+                                                <i class="fas fa-trash"></i></a>
+                                        {{/if}}
+                                    </span>
+                                {{/each}}
+                            </div>
+                            {{#if editable}}
+                                <select class="add-quality-select">
+                                    <option value="">{{localize "WEAPON.ADD_QUALITY"}}</option>
+                                    {{#each qualityOptions}}<option value="{{key}}">{{label}}</option>{{/each}}
+                                </select>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="stat malfunction">
+                        <label>{{localize "WEAPON.MALFUNCTION"}}</label>
+                        <select name="system.malfunction">
+                            {{selectOptions (config "weaponMalfunction") selected=system.malfunction localize=true}}
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tab" data-group="primary" data-tab="notes">

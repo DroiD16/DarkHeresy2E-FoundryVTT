@@ -1,0 +1,70 @@
+/* Structured special-qualities chip editor on the weapon sheet (Chunk B).
+   Chips are dark "plates" that wrap horizontally to the next line at the window
+   edge, matching the parchment/Caslon palette the aptitude dropdown uses. */
+
+.dark-heresy.weapon .stats .stats-row.special-qualities-row {
+    /* The qualities row is wide: give the editor room and let the malfunction
+       select sit beside it, both wrapping if the window is narrow. */
+    align-items: flex-start;
+}
+
+.dark-heresy.weapon .stat.special-qualities {
+    /* Take most of the row so chips have room to wrap before the malfunction
+       select; the row still distributes leftover space to the select. */
+    flex: 1 1 auto;
+}
+
+.dark-heresy.weapon .special-qualities-editor {
+    display: flex;
+    flex-direction: column;
+}
+
+.dark-heresy.weapon .quality-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+    /* Bound the chip area so a long quality list scrolls internally instead of
+       growing the row and clipping the add-select against the fixed-height,
+       overflow:hidden sheet body. The add-select sits below this box and stays
+       visible regardless of how many chips wrap. */
+    max-height: 84px;
+    overflow-y: auto;
+}
+
+.dark-heresy.weapon .quality-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    /* The aptitude zebra-odd shade, so chips read as the same UI family. */
+    background: rgba(0, 0, 0, 0.2);
+    font-family: var(--font-text);
+    color: var(--color-text);
+}
+
+.dark-heresy.weapon .quality-chip .quality-value-input {
+    width: 2.5em;
+    text-align: center;
+    margin: 0;
+}
+
+.dark-heresy.weapon .quality-chip .remove-quality {
+    cursor: pointer;
+    color: var(--color-text);
+    line-height: 1;
+}
+
+.dark-heresy.weapon .quality-chip .remove-quality:hover {
+    color: var(--color-foreground);
+}
+
+.dark-heresy.weapon .add-quality-select {
+    margin-top: 4px;
+    width: 12em;
+}
+
+.dark-heresy.weapon .stat.malfunction select {
+    width: 8em;
+}
