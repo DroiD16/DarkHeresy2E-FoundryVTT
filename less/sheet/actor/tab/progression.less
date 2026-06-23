@@ -421,3 +421,20 @@
     margin-right: 2px;
     width: calc(100% - 4px);
 }
+
+/* The legacy flex rules give cost fields 5px side margins. In a grid cell that
+   makes the input wider than its track, so override both margin and width as a
+   matched pair. */
+.dark-heresy .progression .progression-talents-table.aligned-table > .items > .item > input.item-cost {
+    justify-self: center;
+    margin-left: 0;
+    margin-right: 0;
+    width: calc(100% - 10px);
+}
+
+.dark-heresy .progression .progression-talents-table.aligned-table > .items > .item > input.item-starter,
+.dark-heresy .progression .progression-skills-table.aligned-table > .items > .item > input.starter {
+    justify-self: center;
+    margin: 1px;
+    width: 15px;
+}
