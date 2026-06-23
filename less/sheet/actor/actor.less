@@ -263,6 +263,31 @@
     margin: 5px 0;
 }
 
+/* Keep localized labels and their controls in the same semantic column. Long
+   labels retain their natural width while the control yields the remaining
+   space instead of wrapping below it. */
+.dark-heresy.sheet.actor .header .header-row > div {
+    align-items: baseline;
+    column-gap: 8px;
+    display: flex;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.dark-heresy.sheet.actor .header .header-row > div > label {
+    flex: 0 0 auto;
+}
+
+.dark-heresy.sheet.actor .header .header-row > div > input,
+.dark-heresy.sheet.actor .header .header-row > div > select {
+    margin: 0;
+}
+
+.dark-heresy.sheet.actor .header .fate,
+.dark-heresy.sheet.actor .header .fatigue {
+    column-gap: 5px;
+}
+
 .dark-heresy.sheet .header .avatar {
     background: radial-gradient(
             closest-side,
