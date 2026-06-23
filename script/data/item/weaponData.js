@@ -32,12 +32,13 @@ export default class WeaponData extends EquipmentItemData {
                 key: new fields.StringField({ required: true, blank: false }),
                 value: new fields.NumberField({ required: false, nullable: true, initial: null })
             })),
-            // Persisted jam/overheat state: "" (none) | "jammed" | "overheated".
-            // A plain StringField (blank allowed, matching damageType/class etc.):
-            // a `choices` constraint rejects the default "" as a blank string
-            // because the blank check runs before the choices check. The valid
-            // values are constrained by the sheet's malfunction <select>.
-            malfunction: new fields.StringField({ initial: "" }),
+            // Persisted jam/overheat state as a single toggle. Jam and overheat
+            // are mutually exclusive per weapon (a weapon with the Overheats
+            // quality only ever overheats and never jams, and a weapon without it
+            // only ever jams), so one boolean suffices: the attack chat card shows
+            // the specific word (jammed vs overheated) at roll time, and the type
+            // is otherwise derivable from the weapon's qualities.
+            malfunction: new fields.BooleanField({ initial: false }),
             attack: new fields.NumberField({ initial: 0 }),
             ammo: new fields.ArrayField(new fields.StringField({ blank: false}))
         };

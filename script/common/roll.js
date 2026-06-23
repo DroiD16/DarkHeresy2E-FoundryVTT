@@ -431,8 +431,12 @@ async function _applyMalfunction(rollData) {
         await r.evaluate();
         rollData.malfunction.selfDamage = r.total;
     }
+    // Persist the malfunction as a single boolean flag (jam and overheat are
+    // mutually exclusive per weapon, so the type need not be stored — the chat
+    // card above carries it for this roll). The flag blocks the next shot until
+    // the player clears the toggle on the weapon sheet.
     const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
-    if (weapon) await weapon.update({ "system.malfunction": type });
+    if (weapon) await weapon.update({ "system.malfunction": true });
 }
 
 /**

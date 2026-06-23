@@ -127,9 +127,7 @@
                     </div>
                     <div class="stat malfunction">
                         <label>{{localize "WEAPON.MALFUNCTION"}}</label>
-                        <select name="system.malfunction">
-                            {{selectOptions (config "weaponMalfunction") selected=system.malfunction localize=true}}
-                        </select>
+                        <input type="checkbox" name="system.malfunction" data-dtype="Boolean" {{#if system.malfunction}}checked{{/if}} />
                     </div>
                 </div>
             </div>

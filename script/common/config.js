@@ -9,17 +9,6 @@ Dh.attackType = {};
 // display helper and the Chunk B chip-list editor, mirroring Dh.aptitudes.
 Dh.weaponQualities = WEAPON_QUALITIES;
 
-// Malfunction state of a weapon (jam/overheat). The "" entry is the cleared
-// state and is a normal selectable <option> in the sheet's malfunction select
-// (the player clears a jam/overheat by picking it). Keys match the
-// `system.malfunction` StringField choices in weaponData.js. Chunk C SETS this
-// on detection; the sheet UI lets the player clear it manually.
-Dh.weaponMalfunction = {
-    "": "WEAPON.MALFUNCTION_NONE",
-    jammed: "WEAPON.MALFUNCTION_JAMMED",
-    overheated: "WEAPON.MALFUNCTION_OVERHEATED"
-};
-
 Dh.attackTypeRanged = {
     none: "ATTACK_TYPE.NONE",
     standard: "ATTACK_TYPE.STANDARD",
