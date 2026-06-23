@@ -36,11 +36,11 @@ Dh.attackTypePsy = {
 };
 
 Dh.ranges = {
-    0: "RANGE.NONE",
-    30: "RANGE.POINT_BLANK",
-    10: "RANGE.SHORT",
-    "-10": "RANGE.LONG",
-    "-30": "RANGE.EXTREME"
+    pointBlank: "RANGE.POINT_BLANK",
+    short: "RANGE.SHORT",
+    normal: "RANGE.NONE",
+    long: "RANGE.LONG",
+    extreme: "RANGE.EXTREME"
 };
 
 Dh.damageTypes = {

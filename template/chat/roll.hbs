@@ -10,7 +10,12 @@
         <h3 style="color: var(--color-failure)">{{localize "CHAT.FAILURE"}} <span>({{result}})</span></h3>
         {{/if}}
 
-        <p><strong>{{localize "CHAT.TEST_MODIFIER"}}:</strong> {{target.modifier}}</p>
+        {{#if flags.showAutomationModifier}}
+            <p><strong>{{localize "CHAT.TOTAL_MODIFIER"}}:</strong> {{target.totalModifier}}</p>
+            <p class="modifier-breakdown">{{localize "CHAT.MANUAL_MODIFIER"}}: {{target.modifier}} · {{localize "CHAT.AUTOMATION_MODIFIER"}}: {{target.automationModifier}}</p>
+        {{else}}
+            <p><strong>{{localize "CHAT.TEST_MODIFIER"}}:</strong> {{target.modifier}}</p>
+        {{/if}}
 
         {{#if rolledWith}}
             <p><strong>{{localize "CHAT.ROLLED_WITH"}}:</strong> {{rolledWith}}</p>
@@ -19,7 +24,7 @@
         {{#if aim}}
             <p><strong>{{localize "CHAT.AIMING"}}:</strong> {{aim.text}}</p>
         {{/if}}
-        {{#if rangeText}}
+        {{#if rangeModText}}
             <p><strong>{{localize "CHAT.ATTACK_RANGE"}}:</strong> {{rangeModText}}</p>
         {{/if}}
 

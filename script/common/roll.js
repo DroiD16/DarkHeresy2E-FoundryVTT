@@ -1,5 +1,17 @@
 import { PlaceableTemplate } from "./placeable-template.js";
-import { computeMalfunction, computeSprayMalfunction, lancePenetration } from "./weapon-qualities.js";
+import {
+    combineTestModifiers,
+    computeCombatAutomationModifier
+} from "./combat-modifiers.js";
+import { resolveRollActor, resolveRollItem } from "./roll-documents.js";
+import { buildDamageFormula } from "./roll-formulas.js";
+import {
+    computeMalfunction,
+    computeSprayMalfunction,
+    lancePenetration,
+    maximalAmmoUsage,
+    rangeQualityEffects
+} from "./weapon-qualities.js";
 
 /**
  * Roll a generic roll, and post the result to chat.
@@ -42,7 +54,7 @@ export async function combatRoll(rollData) {
         rollData.attackDos = rollData.dos;
         rollData.attackResult = rollData.result;
         await _applyMalfunction(rollData);
-        if (!rollData.isReRoll) {
+        if (!rollData.flags.isReRoll) {
             await _updateRangedAmmo(rollData);
         }
         rollData.numberOfHits = _computeNumberOfHits(
@@ -95,10 +107,8 @@ export async function reportMalfunction(rollData) {
  */
 async function _computeCombatTarget(rollData) {
 
-    let attackType = 0;
     if (rollData.attackType) {
         _computeRateOfFire(rollData);
-        attackType = rollData.attackType.modifier;
     }
     let psyModifier = 0;
     if (typeof rollData.psy !== "undefined" && typeof rollData.psy.useModifier !== "undefined" && rollData.psy.useModifier) {
@@ -114,14 +124,20 @@ async function _computeCombatTarget(rollData) {
         }
     }
 
-    let targetMods = rollData.target.modifier
-        + (rollData.aim?.val ? rollData.aim.val : 0)
-        + (rollData.rangeMod ? rollData.rangeMod : 0)
-        + (rollData.weapon?.traits?.twinLinked ? 20 : 0)
-        + attackType
-        + psyModifier;
-
-    rollData.target.final = _getRollTarget(targetMods, rollData.target.base);
+    const automation = computeCombatAutomationModifier({
+        traits: rollData.weapon?.traits,
+        aimModifier: rollData.aim?.val,
+        rangeBand: rollData.rangeBand,
+        rangeMod: rollData.rangeMod,
+        attackTypeName: rollData.attackType?.name,
+        psyModifier
+    });
+    rollData.target.modifier = Number.isFinite(Number(rollData.target.modifier))
+        ? Math.trunc(Number(rollData.target.modifier)) : 0;
+    rollData.target.automationModifier = automation.total;
+    rollData.target.totalModifier = combineTestModifiers(
+        rollData.target.modifier, rollData.target.automationModifier);
+    rollData.target.final = rollData.target.base + rollData.target.totalModifier;
 }
 
 /**
@@ -183,24 +199,8 @@ async function _rollTarget(rollData) {
  * @param {object} rollData
  */
 async function _rollDamage(rollData) {
-    let formula = "0";
     rollData.damages = [];
-    if (rollData.weapon.damageFormula) {
-        formula = rollData.weapon.damageFormula;
-
-        if (rollData.weapon.traits.tearing) {
-            formula = _appendTearing(formula);
-        }
-        if (rollData.weapon.traits.proven) {
-            formula = _appendNumberedDiceModifier(formula, "min", rollData.weapon.traits.proven);
-        }
-        if (rollData.weapon.traits.primitive) {
-            formula = _appendNumberedDiceModifier(formula, "max", rollData.weapon.traits.primitive);
-        }
-
-        formula = `${formula}+${rollData.weapon.damageBonus}`;
-        formula = _replaceSymbols(formula, rollData);
-    }
+    const formula = _buildDamageFormula(rollData);
 
 
     let penetration = await _rollPenetration(rollData);
@@ -320,8 +320,12 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
         if (typeof term === "object" && term !== null) {
             let rfFace = weaponTraits.rfFace ? weaponTraits.rfFace : term.faces; // Without the Vengeful weapon trait rfFace is undefined
             for await (const result of term.results ?? []) {
-                let dieResult = result.count ? result.count : result.result; // Result.count = actual value if modified by term
-                if (result.active && dieResult >= rfFace) damage.righteousFury = await _rollRighteousFury();
+                // Righteous Fury and Vengeful use the natural face before
+                // Primitive/Proven modifiers. `count` remains the effective
+                // value used for damage and the existing DoS substitution.
+                const naturalResult = result.result;
+                const dieResult = result.count ?? naturalResult;
+                if (result.active && naturalResult >= rfFace) damage.righteousFury = await _rollRighteousFury();
                 if (result.active && dieResult < dos) damage.dices.push(dieResult);
                 if (result.active && (typeof damage.minDice === "undefined" || dieResult < damage.minDice)) damage.minDice = dieResult;
             }
@@ -338,26 +342,34 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
 async function _updateRangedAmmo(rollData) {
     let firerate = 1;
     let mod = rollData.weapon.traits.storm || rollData.weapon.traits.twinLinked ? 2 : 1;
-    // Maximal fires a tripled charge: x3 ammo on a single shot (Core Rulebook
-    // p. 148). Applied to standard/called_shot only; auto-burst x3 is not
-    // automated (the partial-burst ammo model does not cleanly support it, and
-    // it cannot be live-tested here) — the table tracks the extra burst rounds.
-    let maximalMod = rollData.maximal ? 3 : 1;
     if (rollData.weapon.isRange && rollData.weapon.clip.max > 0) {
         if (rollData.weapon.clip.value < 1) {
             return;
         }
-        let weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
+        let weapon = resolveRollItem(rollData);
         if (weapon) {
             switch (rollData.attackType.name) {
                 case "standard":
                 case "called_shot": {
-                    // Maximal consumes a 3-round charge; clamp at 0 so a clip
-                    // with 1-2 rounds left does not store a negative value.
-                    rollData.weapon.clip.value = Math.max(0, rollData.weapon.clip.value - (firerate * maximalMod));
+                    if (rollData.maximal) {
+                        const usage = maximalAmmoUsage(
+                            rollData.weapon.clip.value, firerate, rollData.weapon.traits);
+                        rollData.weapon.clip.value -= usage.ammoSpent;
+                    } else {
+                        rollData.weapon.clip.value -= firerate;
+                    }
                     break;
                 }
                 case "semi_auto": {
+                    if (rollData.maximal) {
+                        const usage = maximalAmmoUsage(
+                            rollData.weapon.clip.value,
+                            rollData.weapon.rateOfFire.burst,
+                            rollData.weapon.traits);
+                        rollData.shotsFired = usage.shotsFired;
+                        rollData.weapon.clip.value -= usage.ammoSpent;
+                        break;
+                    }
                     firerate = rollData.weapon.rateOfFire.burst * mod;
                     if (rollData.weapon.clip.value < firerate) {
                         rollData.shotsFired = rollData.weapon.clip.value;
@@ -368,6 +380,15 @@ async function _updateRangedAmmo(rollData) {
                     break;
                 }
                 case "full_auto": {
+                    if (rollData.maximal) {
+                        const usage = maximalAmmoUsage(
+                            rollData.weapon.clip.value,
+                            rollData.weapon.rateOfFire.full,
+                            rollData.weapon.traits);
+                        rollData.shotsFired = usage.shotsFired;
+                        rollData.weapon.clip.value -= usage.ammoSpent;
+                        break;
+                    }
                     firerate = rollData.weapon.rateOfFire.full * mod;
                     if (rollData.weapon.clip.value < firerate) {
                         rollData.shotsFired = rollData.weapon.clip.value;
@@ -398,21 +419,25 @@ async function _updateRangedAmmo(rollData) {
  * Sets rollData.malfunction SYNCHRONOUSLY (before the chat send reads it); the
  * weapon.update persists the flag so firing is blocked until the player clears
  * it on the sheet. On a Fate reroll the same rollData carries the discarded
- * roll's malfunction, so a clean reroll drops the TRANSIENT field (else the
- * reroll card would still show the old jam); the PERSISTED flag is left for the
- * player to clear (their explicit decision: detection sets it, the player clears
- * it — no auto-clear / round-tracking / clear-jam action).
+ * roll's malfunction. A clean replacement removes both the transient chat state
+ * and the persisted flag because the second result supersedes the first.
  * @param {object} rollData
  */
 async function _applyMalfunction(rollData) {
+    const previousMalfunction = !!rollData.malfunction;
     const type = computeMalfunction(
         rollData.weapon.traits, rollData.result, rollData.attackType?.name, rollData.weapon.isRange,
         rollData.weapon.craftsmanship, rollData.flags.isSuccess);
     if (!type) {
-        // Clean roll: drop any stale malfunction carried over from a discarded
-        // reroll so the reroll card does not show the old jam. The persisted
-        // weapon flag is intentionally left for the player to clear on the sheet.
+        // A Fate reroll replaces the original result. If that discarded result
+        // caused the malfunction, a clean replacement must also clear the
+        // persisted weapon state; otherwise the weapon remains blocked despite
+        // the final roll not jamming or overheating.
         delete rollData.malfunction;
+        if (rollData.flags.isReRoll && previousMalfunction) {
+            const weapon = resolveRollItem(rollData);
+            if (weapon) await weapon.update({ "system.malfunction": false });
+        }
         return;
     }
     rollData.malfunction = { type, jammed: type === "jammed", overheated: type === "overheated" };
@@ -428,16 +453,13 @@ async function _applyMalfunction(rollData) {
         if (!rollData.dof) rollData.dof = 1;
     }
     if (type === "overheated") {
-        const formula = _replaceSymbols(rollData.weapon.damageFormula || "0", rollData);
-        let r = new Roll(formula);
-        await r.evaluate();
-        rollData.malfunction.selfDamage = r.total;
+        rollData.malfunction.selfDamage = await _rollOverheatSelfDamage(rollData);
     }
     // Persist the malfunction as a single boolean flag (jam and overheat are
     // mutually exclusive per weapon, so the type need not be stored — the chat
     // card above carries it for this roll). The flag blocks the next shot until
     // the player clears the toggle on the weapon sheet.
-    const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
+    const weapon = resolveRollItem(rollData);
     if (weapon) await weapon.update({ "system.malfunction": true });
 }
 
@@ -463,12 +485,9 @@ async function _applySprayMalfunction(rollData) {
     }
     rollData.malfunction = { type, jammed: type === "jammed", overheated: type === "overheated" };
     if (type === "overheated") {
-        const formula = _replaceSymbols(rollData.weapon.damageFormula || "0", rollData);
-        let r = new Roll(formula);
-        await r.evaluate();
-        rollData.malfunction.selfDamage = r.total;
+        rollData.malfunction.selfDamage = await _rollOverheatSelfDamage(rollData);
     }
-    const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
+    const weapon = resolveRollItem(rollData);
     if (weapon) await weapon.update({ "system.malfunction": true });
 }
 
@@ -479,7 +498,9 @@ async function _applySprayMalfunction(rollData) {
  */
 async function _rollPenetration(rollData) {
     let penetration = (rollData.weapon.penetrationFormula) ? _replaceSymbols(rollData.weapon.penetrationFormula, rollData) : "0";
-    let multiplier = 1;
+    const rangeEffects = rangeQualityEffects(
+        rollData.weapon.traits, rollData.rangeBand, rollData.rangeMod);
+    let multiplier = rangeEffects.penetrationMultiplier;
 
     if (rollData.dos >= 3) {
         if (penetration.includes("(")) // Legacy Support
@@ -487,7 +508,9 @@ async function _rollPenetration(rollData) {
             let rsValue = penetration.match(/\(\d+\)/gi); // Get Razorsharp Value
             penetration = penetration.replace(/\d+.*\(\d+\)/gi, rsValue); // Replace construct BaseValue(RazorsharpValue) with the extracted date
         } else if (rollData.weapon.traits.razorSharp) {
-            multiplier = 2;
+            // Multiple multipliers stack additively: Melta x2 plus Razor Sharp
+            // x2 becomes x3, rather than x4 (Core Rulebook p. 22).
+            multiplier += 1;
         }
     }
     let r = new Roll(penetration.toString());
@@ -592,14 +615,12 @@ function _getLocation(result) {
 function _computeRateOfFire(rollData) {
     switch (rollData.attackType.name) {
         case "standard":
-            rollData.attackType.modifier = 10;
             rollData.attackType.hitMargin = 1;
             rollData.attackType.maxHits = 1;
             break;
 
         case "bolt":
         case "blast":
-            rollData.attackType.modifier = 0;
             rollData.attackType.hitMargin = 1;
             rollData.attackType.maxHits = 1;
             break;
@@ -607,38 +628,32 @@ function _computeRateOfFire(rollData) {
         case "swift":
         case "semi_auto":
         case "barrage":
-            rollData.attackType.modifier = 0;
             rollData.attackType.hitMargin = 2;
             rollData.attackType.maxHits = rollData.weapon.rateOfFire.burst;
             break;
 
         case "lightning":
         case "full_auto":
-            rollData.attackType.modifier = -10;
             rollData.attackType.hitMargin = 1;
             rollData.attackType.maxHits = rollData.weapon.rateOfFire.full;
             break;
 
         case "called_shot":
-            rollData.attackType.modifier = -20;
             rollData.attackType.hitMargin = 1;
             rollData.attackType.maxHits = 1;
             break;
 
         case "charge":
-            rollData.attackType.modifier = 20;
             rollData.attackType.hitMargin = 1;
             rollData.attackType.maxHits = 1;
             break;
 
         case "allOut":
-            rollData.attackType.modifier = 30;
             rollData.attackType.hitMargin = 1;
             rollData.attackType.maxHits = 1;
             break;
 
         default:
-            rollData.attackType.modifier = 0;
             rollData.attackType.hitMargin = 0;
             rollData.attackType.maxHits = 1;
             break;
@@ -707,8 +722,8 @@ function _getDegree(a, b) {
  * @returns {string}
  */
 function _replaceSymbols(formula, rollData) {
-    let actor = game.actors.get(rollData.ownerId);
-    let attributeBoni = actor.attributeBoni;
+    const actor = resolveRollActor(rollData);
+    const attributeBoni = rollData.attributeBoni ?? actor?.attributeBoni ?? [];
     if (rollData.psy) {
         formula = formula.replaceAll(/PR/gi, rollData.psy.value);
     }
@@ -719,40 +734,31 @@ function _replaceSymbols(formula, rollData) {
 }
 
 /**
- * Add a special weapon modifier value to a roll formula.
- * @param {string} formula
- * @param {string} modifier
- * @param {number} value
+ * Build and resolve every component of the weapon's current damage formula.
+ * @param {object} rollData
  * @returns {string}
  */
-function _appendNumberedDiceModifier(formula, modifier, value) {
-    let diceRegex = /\d+d\d+/;
-    if (!formula.includes(modifier)) {
-        let match = formula.match(diceRegex);
-        if (match) {
-            let dice = match[0];
-            dice += `${modifier}${value}`;
-            formula = formula.replace(diceRegex, dice);
-        }
-    }
-    return formula;
+function _buildDamageFormula(rollData) {
+    const rangeEffects = rangeQualityEffects(
+        rollData.weapon.traits, rollData.rangeBand, rollData.rangeMod);
+    const formula = buildDamageFormula({
+        formula: rollData.weapon.damageFormula,
+        traits: rollData.weapon.traits,
+        damageBonus: rollData.weapon.damageBonus,
+        rangeDamageModifier: rangeEffects.damageModifier
+    });
+    return _replaceSymbols(formula, rollData);
 }
 
 /**
- * Add the "tearing" special weapon modifier to a roll formula.
- * @param {string} formula
- * @returns {string}
+ * Roll the damage inflicted on a wielder by an overheating weapon.
+ * @param {object} rollData
+ * @returns {Promise<number>}
  */
-function _appendTearing(formula) {
-    let diceRegex = /\d+d\d+/;
-    if (!formula.match(/dl|kh/gi, formula)) { // Already has drop lowest or keep highest
-        let match = formula.match(/\d+/g, formula);
-        let numDice = parseInt(match[0]) + 1;
-        let faces = parseInt(match[1]);
-        let diceTerm = `${numDice}d${faces}dl`;
-        formula = formula.replace(diceRegex, diceTerm);
-    }
-    return formula;
+async function _rollOverheatSelfDamage(rollData) {
+    const roll = new Roll(_buildDamageFormula(rollData));
+    await roll.evaluate();
+    return roll.total;
 }
 
 /**

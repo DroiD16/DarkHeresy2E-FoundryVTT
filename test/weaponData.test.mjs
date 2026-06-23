@@ -56,6 +56,37 @@ test("WeaponData.migrateData returns the same source object and applies the rof 
     assert.deepEqual(result.rateOfFire, { single: 3, burst: 2, full: 1 });
 });
 
+test("WeaponData.migrateData leaves legacy Special text untouched", () => {
+    const source = {
+        rateOfFire: { single: 1, burst: 0, full: 0 },
+        special: "Accurate, custom text",
+        specialQualities: []
+    };
+    WeaponData.migrateData(source);
+    assert.equal(source.special, "Accurate, custom text");
+    assert.deepEqual(source.specialQualities, []);
+});
+
+test("migrateSpecialQualities normalizes unsafe parametric values", () => {
+    const source = {
+        specialQualities: [
+            { key: "vengeful", value: -5 },
+            { key: "primitive", value: 6.8 },
+            { key: "proven", value: "4" },
+            { key: "blast", value: "invalid" },
+            { key: "toxic", value: null }
+        ]
+    };
+    WeaponData.migrateSpecialQualities(source);
+    assert.deepEqual(source.specialQualities, [
+        { key: "vengeful", value: 0 },
+        { key: "primitive", value: 6 },
+        { key: "proven", value: 4 },
+        { key: "blast", value: null },
+        { key: "toxic", value: null }
+    ]);
+});
+
 test("AmmunitionData.migrateData returns the same source object", () => {
     const source = { effect: { damage: { modifier: "2" } } };
     const result = AmmunitionData.migrateData(source);

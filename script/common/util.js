@@ -1,4 +1,4 @@
-import { buildTraitsFromQualities } from "./weapon-qualities.js";
+import { ammunitionMultiplier, buildTraitsFromQualities } from "./weapon-qualities.js";
 
 export default class DarkHeresyUtil {
 
@@ -14,7 +14,10 @@ export default class DarkHeresyUtil {
             name: item.name,
             itemName: item.name, // Seperately here because evasion may override it
             ownerId: actor.id,
+            actorUuid: actor.uuid,
+            tokenId: actor.token?.id,
             itemId: item.id,
+            itemUuid: item.uuid,
             target: {
                 base: 0,
                 modifier: 0
@@ -65,11 +68,17 @@ export default class DarkHeresyUtil {
         let rollData = this.createCommonAttackRollData(actor, weaponItem);
 
         rollData.target.base = characteristic.total + weaponItem.attack;
+        rollData.target.automationModifier = 0;
+        rollData.target.totalModifier = 0;
+        rollData.rangeBand = !isMelee ? "short" : undefined;
         rollData.rangeMod = !isMelee ? 10 : 0;
 
         rollData.weapon = foundry.utils.mergeObject(rollData.weapon, {
             isMelee: isMelee,
             isRange: !isMelee,
+            isPistol: weaponItem.class === "pistol",
+            showRangeBand: !isMelee && (!weaponTraits.skipAttackRoll
+                || weaponTraits.melta || weaponTraits.scatter),
             clip: weaponItem.clip,
             rateOfFire: rateOfFire,
             range: !isMelee ? weaponItem.range : 0,
@@ -82,10 +91,13 @@ export default class DarkHeresyUtil {
             traits: weaponTraits,
             special: weaponItem.special,
             malfunction: weaponItem.system.malfunction,
+            maximalAvailable: weaponItem.clip.max <= 0
+                || weaponItem.clip.value >= ammunitionMultiplier(weaponTraits, true),
             // Craftsmanship shifts ranged reliability (jam/overheat) and the
             // Spray jam-on-9 check (see computeMalfunction/computeSprayMalfunction).
             craftsmanship: weaponItem.system.craftsmanship
         });
+        rollData.flags.showAutomationModifier = true;
 
         return rollData;
     }

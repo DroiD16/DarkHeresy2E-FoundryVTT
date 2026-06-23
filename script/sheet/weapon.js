@@ -3,10 +3,10 @@ import { DarkHeresyItemSheet } from "./item.js";
 export class WeaponSheet extends DarkHeresyItemSheet {
     static DEFAULT_OPTIONS = {
         classes: ["dark-heresy", "sheet", "weapon"],
-        // Taller than the base item sheet to fit the special-qualities row; the
-        // window stays resizable and the chip list scrolls internally (see
-        // weapon-qualities.less), so a long quality list never clips its controls.
-        position: { width: 500, height: 440 }
+        // Taller than the base item sheet to fit the separate Special and
+        // special-quality chip rows. The window stays resizable and a long chip
+        // list scrolls internally instead of clipping its controls.
+        position: { width: 500, height: 480 }
     };
 
     static PARTS = {
@@ -102,7 +102,7 @@ export class WeaponSheet extends DarkHeresyItemSheet {
             const key = input.dataset.key;
             const raw = input.value.trim();
             const parsed = raw === "" ? null : parseInt(raw, 10);
-            const value = Number.isNaN(parsed) ? null : parsed;
+            const value = Number.isNaN(parsed) ? null : Math.max(0, parsed);
             this.#mutateQualities(current => {
                 const entry = current.find(q => q.key === key);
                 if (!entry) return null;

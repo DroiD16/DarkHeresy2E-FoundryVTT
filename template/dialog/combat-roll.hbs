@@ -1,4 +1,4 @@
-<div class="dark-heresy dialog">
+<div class="dark-heresy dialog combat-roll-dialog">
     <div class="flex row wrap background border" style="flex-basis: 100%;margin-bottom: 5px">
         <h1>{{localize name}}</h1>
         {{#unless weapon.traits.skipAttackRoll}}
@@ -6,9 +6,13 @@
                 <label>{{localize "DIALOG.TARGET"}}</label>
                 <input id="target" type="number" value="{{target.base}}" data-dtype="Number" />
             </div>
-            <div class="wrapper">
-                <label>{{localize "DIALOG.MODIFIER"}}</label>
+            <div class="wrapper modifier-wrapper">
+                <label>{{localize "DIALOG.MANUAL_MODIFIER"}}</label>
                 <input id="modifier" type="text" value="{{target.modifier}}" />
+            </div>
+            <div class="wrapper modifier-wrapper">
+                <label>{{localize "DIALOG.AUTOMATION_MODIFIER"}}</label>
+                <input id="automationModifier" type="number" value="{{target.automationModifier}}" disabled />
             </div>
             <div class="wrapper">
                 <label>{{localize "DIALOG.AIM"}}</label>
@@ -26,12 +30,6 @@
             {{/if}}
             {{#if weapon.isRange}}
                 <div class="wrapper">
-                    <label>{{localize "DIALOG.RANGE"}}</label>
-                    <select id="range">
-                        {{selectOptions (config "ranges") selected=rangeMod localize=true}}
-                    </select>
-                </div>
-                <div class="wrapper">
                     <label>{{localize "DIALOG.ATTACK_TYPE"}}</label>
                     <select id="attackType">
                         {{selectOptions (config "attackTypeRanged") selected=attackType.name localize=true}}
@@ -40,6 +38,17 @@
             {{/if}}
             <div class="separator"></div>
         {{/unless}}
+        {{#if weapon.showRangeBand}}
+            <div class="wrapper">
+                <label>{{localize "DIALOG.RANGE"}}</label>
+                <select id="range">
+                    {{selectOptions (config "ranges") selected=rangeBand localize=true}}
+                    {{#if weapon.isPistol}}
+                        <option value="pointBlankMelee">{{localize "RANGE.POINT_BLANK"}} ({{localize "WEAPON.MELEE"}})</option>
+                    {{/if}}
+                </select>
+            </div>
+        {{/if}}
         <div class="wrapper">
             <label>{{localize "DIALOG.DAMAGE"}}</label>
             <input id="damageFormula" type="text" value="{{weapon.damageFormula}}" />
@@ -61,7 +70,7 @@
         {{#if weapon.traits.maximal}}
             <div class="wrapper">
                 <label>{{localize "DIALOG.MAXIMAL"}}</label>
-                <input id="maximal" type="checkbox" />
+                <input id="maximal" type="checkbox" {{#unless weapon.maximalAvailable}}disabled{{/unless}} />
             </div>
         {{/if}}
         {{#if weapon.ammos}}
@@ -73,13 +82,13 @@
             </div>
         {{/if}}
     </div>
-    <div>
+    <div class="combat-roll-summary">
         {{#if weapon.isRange}}
             <div class="wrapper">
                 <table>
                     <tr>
-                        <td style="padding:0 10px 0 10px;"><b>{{localize "DIALOG.CLIP"}}: </b>{{weapon.clip.value}}</td>
-                        <td style="padding:0 10px 0 10px;"><b>RoF:
+                        <td><b>{{localize "DIALOG.CLIP"}}: </b>{{weapon.clip.value}}</td>
+                        <td><b>RoF:
                             </b>1/{{#if weapon.rateOfFire.burst}}{{weapon.rateOfFire.burst}}{{else}}-{{/if}}/{{#if weapon.rateOfFire.full}}{{weapon.rateOfFire.full}}{{else}}-{{/if}}
                         </td>
                     </tr>

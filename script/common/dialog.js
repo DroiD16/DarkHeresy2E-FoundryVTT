@@ -1,4 +1,10 @@
 import { commonRoll, combatRoll, reportEmptyClip, reportMalfunction } from "./roll.js";
+import {
+    computeCombatAutomationModifier,
+    effectiveAimModifier,
+    normalizeTestModifier
+} from "./combat-modifiers.js";
+import { ammunitionMultiplier, rangeBandModifier } from "./weapon-qualities.js";
 
 /**
  * Attach the focus-select behavior used by every roll dialog.
@@ -10,6 +16,28 @@ function attachFocusSelect(root) {
     for (const input of root.querySelectorAll(".wrapper input")) {
         input.addEventListener("focusin", event => event.currentTarget.select());
     }
+}
+
+/**
+ * Calculate the weapon automation modifier represented by the current combat
+ * dialog controls. This is preview-only; the roll pipeline recalculates from
+ * rollData before resolving the test.
+ * @param {HTMLElement} root Dialog root.
+ * @param {object} rollData Weapon roll data.
+ * @returns {number}
+ */
+function combatAutomationPreview(root, rollData) {
+    const aim = root.querySelector("#aim");
+    const range = root.querySelector("#range");
+    const attackType = root.querySelector("#attackType");
+    const rangeBand = range?.value ?? rollData.rangeBand;
+    return computeCombatAutomationModifier({
+        traits: rollData.weapon.traits,
+        aimModifier: effectiveAimModifier(rollData.weapon.traits, aim?.value ?? 0),
+        rangeBand,
+        rangeMod: rangeBandModifier(rangeBand),
+        attackTypeName: attackType?.value ?? rollData.attackType?.name
+    }).total;
 }
 
 /**
@@ -85,12 +113,19 @@ export async function prepareCombatRoll(rollData, actorRef) {
     } else if (rollData.weapon.isRange && rollData.weapon.clip.value <= 0) {
         reportEmptyClip(rollData);
     } else {
+        rollData.target.automationModifier = computeCombatAutomationModifier({
+            traits: rollData.weapon.traits,
+            aimModifier: 0,
+            rangeBand: rollData.rangeBand,
+            rangeMod: rollData.rangeMod,
+            attackTypeName: rollData.attackType?.name
+        }).total;
         const content = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/dialog/combat-roll.hbs", rollData);
         await foundry.applications.api.DialogV2.wait({
             window: { title: rollData.name },
             classes: ["dark-heresy", "dialog"],
             content,
-            position: { width: 200 },
+            position: { width: 240 },
             rejectClose: false,
             buttons: [
                 {
@@ -102,10 +137,12 @@ export async function prepareCombatRoll(rollData, actorRef) {
                         const form = button.form;
                         rollData.name = game.i18n.localize(rollData.name);
                         rollData.target.base = parseInt(form.querySelector("#target")?.value, 10);
-                        rollData.target.modifier = parseInt(form.querySelector("#modifier")?.value, 10);
+                        rollData.target.modifier = normalizeTestModifier(
+                            form.querySelector("#modifier")?.value);
                         const range = form.querySelector("#range");
                         if (range) {
-                            rollData.rangeMod = parseInt(range.value, 10);
+                            rollData.rangeBand = range.value;
+                            rollData.rangeMod = rangeBandModifier(rollData.rangeBand);
                             rollData.rangeModText = range.options[range.selectedIndex].text;
                         }
 
@@ -118,16 +155,10 @@ export async function prepareCombatRoll(rollData, actorRef) {
 
                         const aim = form.querySelector("#aim");
                         rollData.aim = {
-                            val: parseInt(aim?.value, 10),
+                            val: effectiveAimModifier(rollData.weapon.traits, aim?.value),
                             isAiming: aim?.value !== "0",
                             text: aim?.options[aim.selectedIndex].text
                         };
-
-                        if (rollData.weapon.traits.inaccurate) {
-                            rollData.aim.val=0;
-                        } else if (rollData.weapon.traits.accurate && rollData.aim.isAiming) {
-                            rollData.aim.val += 10;
-                        }
 
                         let ammo = actorRef.items.get(form.querySelector("#ammo")?.value);
 
@@ -144,6 +175,11 @@ export async function prepareCombatRoll(rollData, actorRef) {
                         // draws to weapon.range). The x3 ammo cost is applied in
                         // _updateRangedAmmo via rollData.maximal.
                         if (form.querySelector("#maximal")?.checked) {
+                            const minimumCharge = ammunitionMultiplier(rollData.weapon.traits, true);
+                            if (rollData.weapon.clip.max > 0 && rollData.weapon.clip.value < minimumCharge) {
+                                await reportEmptyClip(rollData);
+                                return;
+                            }
                             rollData.weapon.damageFormula = `${rollData.weapon.damageFormula}+1d10`;
                             rollData.weapon.penetrationFormula = `${rollData.weapon.penetrationFormula}+2`;
                             rollData.weapon.range = (rollData.weapon.range ?? 0) + 10;
@@ -164,7 +200,16 @@ export async function prepareCombatRoll(rollData, actorRef) {
                 }
             ],
             render: (event, dialog) => {
-                attachFocusSelect(dialog.element);
+                const root = dialog.element;
+                attachFocusSelect(root);
+                const automation = root.querySelector("#automationModifier");
+                const refreshAutomation = () => {
+                    if (automation) automation.value = combatAutomationPreview(root, rollData);
+                };
+                for (const control of root.querySelectorAll("#aim, #range, #attackType")) {
+                    control.addEventListener("change", refreshAutomation);
+                }
+                refreshAutomation();
             }
         });
     }

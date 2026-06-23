@@ -1,5 +1,4 @@
 import EquipmentItemData from "./equipmentItemData.js";
-import { parseSpecialString } from "../../common/weapon-qualities.js";
 
 const fields = foundry.data.fields;
 
@@ -30,7 +29,13 @@ export default class WeaponData extends EquipmentItemData {
             special: new fields.StringField({ initial: "" }),
             specialQualities: new fields.ArrayField(new fields.SchemaField({
                 key: new fields.StringField({ required: true, blank: false }),
-                value: new fields.NumberField({ required: false, nullable: true, initial: null })
+                value: new fields.NumberField({
+                    required: false,
+                    nullable: true,
+                    initial: null,
+                    min: 0,
+                    integer: true
+                })
             })),
             // Persisted jam/overheat state as a single toggle. Jam and overheat
             // are mutually exclusive per weapon (a weapon with the Overheats
@@ -67,8 +72,8 @@ export default class WeaponData extends EquipmentItemData {
         super.migrateData(source);
 
         this.migrateRateOfFire(source);
-        this.migrateSpecialQualities(source);
         this.migrateMalfunction(source);
+        this.migrateSpecialQualities(source);
 
         return source;
     }
@@ -85,26 +90,13 @@ export default class WeaponData extends EquipmentItemData {
         }
     }
 
-    // Migrate the legacy free-text `special` field into the structured
-    // `specialQualities` array, stripping the recognized tokens from `special`
-    // (only the unrecognized custom leftover remains). Idempotent:
-    //   - if specialQualities is already populated, this has run -> do nothing;
-    //   - if `special` is blank/non-string, nothing to migrate;
-    //   - if no recognized qualities are found, leave `special` untouched
-    //     (it is entirely custom text).
     static migrateSpecialQualities(source) {
-        if (Array.isArray(source.specialQualities) && source.specialQualities.length > 0) {
-            return;
+        if (!Array.isArray(source.specialQualities)) return;
+        for (const quality of source.specialQualities) {
+            if (quality?.value === null || typeof quality?.value === "undefined") continue;
+            const value = Number(quality.value);
+            quality.value = Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : null;
         }
-        if (typeof source.special !== "string" || source.special.trim() === "") {
-            return;
-        }
-        const { qualities, leftover } = parseSpecialString(source.special);
-        if (qualities.length === 0) {
-            return;
-        }
-        source.specialQualities = qualities;
-        source.special = leftover;
     }
 
     static migrateRateOfFire(source) {

@@ -29,6 +29,45 @@
     width: 4em;
 }
 
+.dark-heresy.dialog.combat-roll-dialog > .background.border {
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 101px;
+    column-gap: 5px;
+}
+
+.dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    width: auto;
+}
+
+.dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper input,
+.dark-heresy.dialog.combat-roll-dialog > .background.border > .wrapper select {
+    margin-left: 0;
+    width: 101px;
+}
+
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary,
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary .wrapper,
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary table {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary table {
+    table-layout: fixed;
+}
+
+.dark-heresy.dialog.combat-roll-dialog .combat-roll-summary td {
+    padding: 0 4px;
+    text-align: center;
+}
+
 .dark-heresy.dialog .wrapper input,
 .dark-heresy.dialog .wrapper select {
     width: 101px;

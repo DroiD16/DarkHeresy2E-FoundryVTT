@@ -88,48 +88,52 @@
                         <input name="system.weight" type="number" value="{{system.weight}}" data-dtype="Number" />
                     </div>
                 </div>
-                <div class="stats-row">
-                    <div class="stat special">
-                        <label>{{localize "WEAPON.SPECIAL"}}</label>
-                        <input name="system.special" type="text" value="{{system.special}}" />
+                <div class="stats-row attack-malfunction-row">
+                    <div class="stat malfunction">
+                        <label>{{localize "WEAPON.MALFUNCTION"}}</label>
+                        <input type="checkbox" name="system.malfunction" data-dtype="Boolean" {{#if system.malfunction}}checked{{/if}} />
                     </div>
                     <div class="stat attack">
                         <label>{{localize "WEAPON.ATTACK"}}</label>
                         <input name="system.attack" type="number" value="{{system.attack}}" data-dtype="Number" />
                     </div>
                 </div>
+                <div class="stats-row special-row">
+                    <div class="stat special">
+                        <label>{{localize "WEAPON.SPECIAL"}}</label>
+                        <input name="system.special" type="text" value="{{system.special}}" />
+                    </div>
+                </div>
                 <div class="stats-row special-qualities-row">
                     <div class="stat special-qualities">
                         <label>{{localize "WEAPON.SPECIAL_QUALITIES"}}</label>
-                        <div class="special-qualities-editor">
-                            <div class="quality-chips">
-                                {{#each qualityChips}}
-                                    <span class="quality-chip" data-key="{{key}}">
-                                        <span class="quality-chip-label">{{label}}</span>
-                                        {{#if hasValue}}
-                                            <input class="quality-value-input" type="number" data-key="{{key}}"
-                                                   value="{{value}}" data-dtype="Number" {{#unless @root.editable}}disabled{{/unless}} />
-                                        {{/if}}
-                                        {{#if @root.editable}}
-                                            <a class="remove-quality" data-key="{{key}}" title="{{localize 'WEAPON.REMOVE_QUALITY'}}">
-                                                <i class="fas fa-trash"></i></a>
-                                        {{/if}}
-                                    </span>
-                                {{/each}}
-                            </div>
-                            {{#if editable}}
-                                <select class="add-quality-select">
-                                    <option value="">{{localize "WEAPON.ADD_QUALITY"}}</option>
-                                    {{#each qualityOptions}}<option value="{{key}}">{{label}}</option>{{/each}}
-                                </select>
-                            {{/if}}
-                        </div>
-                    </div>
-                    <div class="stat malfunction">
-                        <label>{{localize "WEAPON.MALFUNCTION"}}</label>
-                        <input type="checkbox" name="system.malfunction" data-dtype="Boolean" {{#if system.malfunction}}checked{{/if}} />
+                        {{#if editable}}
+                            <select class="add-quality-select">
+                                <option value="">{{localize "WEAPON.ADD_QUALITY"}}</option>
+                                {{#each qualityOptions}}<option value="{{key}}">{{label}}</option>{{/each}}
+                            </select>
+                        {{/if}}
                     </div>
                 </div>
+                {{#if qualityChips}}
+                <div class="stats-row quality-chips-row">
+                    <div class="quality-chips border">
+                        {{#each qualityChips}}
+                            <span class="quality-chip" data-key="{{key}}">
+                                <span class="quality-chip-label">{{label}}</span>
+                                {{#if hasValue}}
+                                    <input class="quality-value-input" type="number" data-key="{{key}}"
+                                           value="{{value}}" min="0" step="1" data-dtype="Number" {{#unless @root.editable}}disabled{{/unless}} />
+                                {{/if}}
+                                {{#if @root.editable}}
+                                    <a class="remove-quality" data-key="{{key}}" title="{{localize 'WEAPON.REMOVE_QUALITY'}}">
+                                        <i class="fas fa-trash"></i></a>
+                                {{/if}}
+                            </span>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
             </div>
         </div>
         <div class="tab" data-group="primary" data-tab="notes">
