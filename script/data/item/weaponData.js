@@ -32,7 +32,12 @@ export default class WeaponData extends EquipmentItemData {
                 key: new fields.StringField({ required: true, blank: false }),
                 value: new fields.NumberField({ required: false, nullable: true, initial: null })
             })),
-            malfunction: new fields.StringField({ initial: "", choices: ["", "jammed", "overheated"] }),
+            // Persisted jam/overheat state: "" (none) | "jammed" | "overheated".
+            // A plain StringField (blank allowed, matching damageType/class etc.):
+            // a `choices` constraint rejects the default "" as a blank string
+            // because the blank check runs before the choices check. The valid
+            // values are constrained by the sheet's malfunction <select>.
+            malfunction: new fields.StringField({ initial: "" }),
             attack: new fields.NumberField({ initial: 0 }),
             ammo: new fields.ArrayField(new fields.StringField({ blank: false}))
         };
