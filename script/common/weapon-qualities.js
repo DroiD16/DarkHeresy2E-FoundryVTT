@@ -232,6 +232,46 @@ export function parseSpecialString(special) {
 }
 
 /**
+ * Determine whether a weapon attack roll triggers a malfunction (Core Rulebook
+ * pp. 145-150 + p. 224). Overheats (91+) replaces jamming entirely and applies
+ * regardless of fire mode (and absorbs any jam-causing effect). Otherwise
+ * jamming is a RANGED-only rule: Reliable narrows the jam window to a natural
+ * 100, Unreliable widens it to 91+, and the base window is 96-100 for a single
+ * shot / 94-100 for Semi-Auto or Full-Auto Burst. Spray weapons never reach this
+ * (they skip the hit roll), which structurally satisfies Reliable's "never jams
+ * if it makes no hit roll".
+ * @param {object} traits          rollData.weapon.traits (reliable, unreliable, overheats booleans).
+ * @param {number} result         The unmodified d100 attack roll.
+ * @param {string} attackTypeName rollData.attackType.name ("standard","semi_auto","full_auto",...).
+ * @param {boolean} isRange        rollData.weapon.isRange.
+ * @returns {"jammed"|"overheated"|null} The malfunction type, or null for none.
+ */
+export function computeMalfunction(traits, result, attackTypeName, isRange) {
+    if (traits?.overheats) return result >= 91 ? "overheated" : null;
+    if (!isRange) return null; // Base jamming is a ranged-attack rule.
+    let threshold;
+    if (traits?.reliable) threshold = 100;
+    else if (traits?.unreliable) threshold = 91;
+    else threshold = (attackTypeName === "semi_auto" || attackTypeName === "full_auto") ? 94 : 96;
+    return result >= threshold ? "jammed" : null;
+}
+
+/**
+ * Apply the Lance quality to a rolled penetration value. Lance increases the
+ * weapon's penetration by its BASE value once per degree of success (Core
+ * Rulebook p. 147): total = full penetration + base x DoS. Only the base scales
+ * per degree — additive bonuses already folded into `fullPen` (ammunition,
+ * Force's +PR, Maximal's +2) are NOT multiplied by the degrees of success.
+ * @param {number} fullPen  The fully-rolled penetration (base + additive bonuses, after any Razor Sharp x2).
+ * @param {number} basePen  The weapon's own base penetration, rolled separately.
+ * @param {number} dos      Degrees of success on the attack (clamped at 0).
+ * @returns {number} The Lance-adjusted penetration.
+ */
+export function lancePenetration(fullPen, basePen, dos) {
+    return fullPen + (basePen * Math.max(0, dos ?? 0));
+}
+
+/**
  * Build the rollData.weapon.traits object from the structured qualities array.
  * This MUST match the shape extractWeaponTraits emits for the existing keys (so
  * migrated weapons behave identically), including skipAttackRoll === spray. The

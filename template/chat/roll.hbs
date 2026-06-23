@@ -53,6 +53,14 @@
                 </div>
             {{/if}}
         {{/if}}
+        {{#if malfunction}}
+            {{#if malfunction.overheated}}
+                <p><strong style="color: var(--color-failure)">{{localize "CHAT.OVERHEAT"}}</strong></p>
+                <p><strong>{{localize "CHAT.OVERHEAT_DAMAGE"}}:</strong> {{malfunction.selfDamage}}</p>
+            {{else}}
+                <p><strong style="color: var(--color-failure)">{{localize "CHAT.JAM"}}</strong></p>
+            {{/if}}
+        {{/if}}
         {{#if flags.isAttack}}
             {{#if flags.isSuccess}}
                 <div class="wrapper flex-column">

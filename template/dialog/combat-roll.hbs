@@ -58,6 +58,12 @@
             <label>{{localize "DIALOG.PENETRATION"}}</label>
             <input id="penetration" type="text" value="{{weapon.penetrationFormula}}" />
         </div>
+        {{#if weapon.traits.maximal}}
+            <div class="wrapper">
+                <label>{{localize "DIALOG.MAXIMAL"}}</label>
+                <input id="maximal" type="checkbox" />
+            </div>
+        {{/if}}
         {{#if weapon.ammos}}
             <div class="wrapper">
                 <label>{{localize "DIALOG.AMMO"}}</label>

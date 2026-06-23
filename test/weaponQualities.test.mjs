@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 // `foundry`/`game` inside method bodies (not at module load), and
 // extractWeaponTraits uses only its own static helpers — so it can be imported
 // and called directly to prove behavior parity for the shared trait keys.
-const { WEAPON_QUALITIES, parseSpecialString, buildTraitsFromQualities } =
+const { WEAPON_QUALITIES, parseSpecialString, buildTraitsFromQualities, computeMalfunction, lancePenetration } =
     await import("../script/common/weapon-qualities.js");
 const { default: DarkHeresyUtil } = await import("../script/common/util.js");
 
@@ -346,4 +346,106 @@ test("parity: 'and'-joined 'Storm and Tearing' matches legacy whole-string detec
     const legacy = DarkHeresyUtil.extractWeaponTraits(legacyString);
     const built = buildTraitsFromQualities(parseSpecialString(legacyString).qualities);
     assert.deepEqual(pick(built, SHARED_TRAIT_KEYS), pick(legacy, SHARED_TRAIT_KEYS));
+});
+
+// ---------------------------------------------------------------------------
+// computeMalfunction (jam/overheat detection — pure, the testable core of Chunk C)
+// ---------------------------------------------------------------------------
+
+test("computeMalfunction: base single-shot jams on 96-100, not 95 (ranged)", () => {
+    assert.equal(computeMalfunction({}, 95, "standard", true), null);
+    assert.equal(computeMalfunction({}, 96, "standard", true), "jammed");
+    assert.equal(computeMalfunction({}, 100, "standard", true), "jammed");
+});
+
+test("computeMalfunction: called_shot uses the single-shot 96 window", () => {
+    assert.equal(computeMalfunction({}, 95, "called_shot", true), null);
+    assert.equal(computeMalfunction({}, 96, "called_shot", true), "jammed");
+});
+
+test("computeMalfunction: semi_auto jams on 94-100, not 93", () => {
+    assert.equal(computeMalfunction({}, 93, "semi_auto", true), null);
+    assert.equal(computeMalfunction({}, 94, "semi_auto", true), "jammed");
+});
+
+test("computeMalfunction: full_auto jams on 94-100", () => {
+    assert.equal(computeMalfunction({}, 93, "full_auto", true), null);
+    assert.equal(computeMalfunction({}, 94, "full_auto", true), "jammed");
+});
+
+test("computeMalfunction: reliable jams only on a natural 100", () => {
+    assert.equal(computeMalfunction({ reliable: true }, 99, "standard", true), null);
+    assert.equal(computeMalfunction({ reliable: true }, 100, "standard", true), "jammed");
+    // Even in a Semi-/Full-Auto burst, Reliable narrows the window to 100.
+    assert.equal(computeMalfunction({ reliable: true }, 99, "full_auto", true), null);
+});
+
+test("computeMalfunction: unreliable jams on 91-100 in every mode", () => {
+    assert.equal(computeMalfunction({ unreliable: true }, 90, "standard", true), null);
+    assert.equal(computeMalfunction({ unreliable: true }, 91, "standard", true), "jammed");
+    assert.equal(computeMalfunction({ unreliable: true }, 91, "semi_auto", true), "jammed");
+});
+
+test("computeMalfunction: overheats overheats on 91-100, never jams", () => {
+    assert.equal(computeMalfunction({ overheats: true }, 90, "standard", true), null);
+    assert.equal(computeMalfunction({ overheats: true }, 91, "standard", true), "overheated");
+    assert.equal(computeMalfunction({ overheats: true }, 100, "standard", true), "overheated");
+});
+
+test("computeMalfunction: overheats takes precedence over reliable and unreliable", () => {
+    // Overheats absorbs any jam-causing effect: a 91 overheats (not the
+    // reliable-narrowed 100, nor a jam).
+    assert.equal(computeMalfunction({ overheats: true, reliable: true }, 91, "standard", true), "overheated");
+    assert.equal(computeMalfunction({ overheats: true, unreliable: true }, 91, "standard", true), "overheated");
+});
+
+test("computeMalfunction: overheats applies regardless of fire mode and even when not ranged", () => {
+    // Overheats is checked before the ranged-only guard, so a melee/no-range
+    // overheating weapon still overheats.
+    assert.equal(computeMalfunction({ overheats: true }, 91, "standard", false), "overheated");
+    assert.equal(computeMalfunction({ overheats: true }, 90, "standard", false), null);
+});
+
+test("computeMalfunction: melee (non-ranged) weapons never jam without overheats", () => {
+    assert.equal(computeMalfunction({}, 100, "standard", false), null);
+    assert.equal(computeMalfunction({ unreliable: true }, 100, "standard", false), null);
+    assert.equal(computeMalfunction({ reliable: true }, 100, "standard", false), null);
+});
+
+test("computeMalfunction: a natural 100 always triggers for base and unreliable", () => {
+    assert.equal(computeMalfunction({}, 100, "standard", true), "jammed");
+    assert.equal(computeMalfunction({}, 100, "semi_auto", true), "jammed");
+    assert.equal(computeMalfunction({ unreliable: true }, 100, "full_auto", true), "jammed");
+});
+
+test("computeMalfunction: tolerates missing/undefined traits object", () => {
+    assert.equal(computeMalfunction(undefined, 96, "standard", true), "jammed");
+    assert.equal(computeMalfunction(undefined, 95, "standard", true), null);
+});
+
+// ---------------------------------------------------------------------------
+// lancePenetration — only the base scales per degree of success
+// ---------------------------------------------------------------------------
+
+test("lancePenetration: pure Lance weapon (no additive bonus) = base x (1 + DoS)", () => {
+    // base 5, 3 DoS, no bonuses -> full pen is just the base 5 -> 5 + 5*3 = 20.
+    assert.equal(lancePenetration(5, 5, 3), 20);
+});
+
+test("lancePenetration: additive bonuses are NOT multiplied per degree", () => {
+    // base 5 + Maximal's +2 -> full pen 7; at 3 DoS only the base 5 scales:
+    // 7 + 5*3 = 22 (NOT (5+2)*(1+3) = 28).
+    assert.equal(lancePenetration(7, 5, 3), 22);
+});
+
+test("lancePenetration: zero / missing DoS adds nothing (Spray/skip path)", () => {
+    assert.equal(lancePenetration(5, 5, 0), 5);
+    assert.equal(lancePenetration(5, 5, undefined), 5);
+    assert.equal(lancePenetration(5, 5, -2), 5); // clamped at 0
+});
+
+test("lancePenetration: stacks on a Razor Sharp-doubled full pen", () => {
+    // Razor Sharp already doubled full pen to 10 (base 5 x2); Lance adds base 5
+    // per degree on top: 10 + 5*2 = 20.
+    assert.equal(lancePenetration(10, 5, 2), 20);
 });

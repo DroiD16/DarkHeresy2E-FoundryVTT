@@ -145,6 +145,7 @@
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
                             </div>
                             <button class="roll-weapon" type="button">{{item.name}}</button>
+                            {{#if item.system.malfunction}}<span class="weapon-malfunction" title="{{localize "WEAPON.MALFUNCTION"}}">&#9888;</span>{{/if}}
                         </div>
                         <div class="class">{{item.WeaponClass}}</div>
                         <div class="range">{{item.range}}</div>

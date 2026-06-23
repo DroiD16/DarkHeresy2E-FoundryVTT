@@ -1,4 +1,4 @@
-import { commonRoll, combatRoll, reportEmptyClip } from "./roll.js";
+import { commonRoll, combatRoll, reportEmptyClip, reportMalfunction } from "./roll.js";
 
 /**
  * Attach the focus-select behavior used by every roll dialog.
@@ -78,7 +78,11 @@ export async function prepareCommonRoll(rollData) {
  * @param {DarkHeresyActor} actorRef
  */
 export async function prepareCombatRoll(rollData, actorRef) {
-    if (rollData.weapon.isRange && rollData.weapon.clip.value <= 0) {
+    if (rollData.weapon.malfunction) {
+        // A jammed/overheated weapon is blocked from firing until the player
+        // clears the flag on the weapon sheet.
+        reportMalfunction(rollData);
+    } else if (rollData.weapon.isRange && rollData.weapon.clip.value <= 0) {
         reportEmptyClip(rollData);
     } else {
         const content = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/dialog/combat-roll.hbs", rollData);
@@ -133,6 +137,18 @@ export async function prepareCombatRoll(rollData, actorRef) {
                         rollData.weapon.penetrationFormula = `${form.querySelector("#penetration").value}${ammo?.system.effect.penetration ? `+${ammo?.system.effect.penetration}`: ""}`;
                         rollData.flags.isDamageRoll = false;
                         rollData.flags.isCombatRoll = true;
+
+                        // Maximal (Free Action toggle): fire on the strongest
+                        // setting for +1d10 damage, +2 penetration and +10 m
+                        // range (the range bonus matters for the Spray cone, which
+                        // draws to weapon.range). The x3 ammo cost is applied in
+                        // _updateRangedAmmo via rollData.maximal.
+                        if (form.querySelector("#maximal")?.checked) {
+                            rollData.weapon.damageFormula = `${rollData.weapon.damageFormula}+1d10`;
+                            rollData.weapon.penetrationFormula = `${rollData.weapon.penetrationFormula}+2`;
+                            rollData.weapon.range = (rollData.weapon.range ?? 0) + 10;
+                            rollData.maximal = true;
+                        }
 
                         if (rollData.weapon.traits.skipAttackRoll) {
                             rollData.attackType.name = "standard";

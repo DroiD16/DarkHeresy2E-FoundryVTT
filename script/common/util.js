@@ -75,9 +75,13 @@ export default class DarkHeresyUtil {
             range: !isMelee ? weaponItem.range : 0,
             damageFormula: weaponItem.damage + attributeMod + (weaponTraits.force ? "+PR" : ""),
             penetrationFormula: weaponItem.penetration + (weaponTraits.force ? "+PR" : ""),
+            // The weapon's intrinsic (pre-bonus) penetration, used by the Lance
+            // quality which scales only the base value per degree of success.
+            basePenetration: weaponItem.penetration,
             ammos: weaponItem.system.ammoItems,
             traits: weaponTraits,
-            special: weaponItem.special
+            special: weaponItem.special,
+            malfunction: weaponItem.system.malfunction
         });
 
         return rollData;

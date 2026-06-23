@@ -1,4 +1,5 @@
 import { PlaceableTemplate } from "./placeable-template.js";
+import { computeMalfunction, lancePenetration } from "./weapon-qualities.js";
 
 /**
  * Roll a generic roll, and post the result to chat.
@@ -39,6 +40,7 @@ export async function combatRoll(rollData) {
         await _rollTarget(rollData);
         rollData.attackDos = rollData.dos;
         rollData.attackResult = rollData.result;
+        await _applyMalfunction(rollData);
         if (!rollData.isReRoll) {
             await _updateRangedAmmo(rollData);
         }
@@ -67,6 +69,23 @@ export async function damageRoll(rollData) {
  */
 export async function reportEmptyClip(rollData) {
     await _emptyClipToChat(rollData);
+}
+
+/**
+ * Post a "this weapon is jammed/overheated, clear it before firing" message to
+ * chat. Used by prepareCombatRoll to block firing a weapon whose persisted
+ * malfunction flag is set.
+ * @param {object} rollData
+ */
+export async function reportMalfunction(rollData) {
+    let chatData = {
+        user: game.user.id,
+        content: await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/chat/malfunction.hbs", rollData),
+        flags: {
+            "dark-heresy.rollData": rollData
+        }
+    };
+    ChatMessage.create(chatData);
 }
 
 /**
@@ -318,6 +337,11 @@ async function _computeDamage(damageFormula, penetration, dos, isAiming, weaponT
 async function _updateRangedAmmo(rollData) {
     let firerate = 1;
     let mod = rollData.weapon.traits.storm || rollData.weapon.traits.twinLinked ? 2 : 1;
+    // Maximal fires a tripled charge: x3 ammo on a single shot (Core Rulebook
+    // p. 148). Applied to standard/called_shot only; auto-burst x3 is not
+    // automated (the partial-burst ammo model does not cleanly support it, and
+    // it cannot be live-tested here) — the table tracks the extra burst rounds.
+    let maximalMod = rollData.maximal ? 3 : 1;
     if (rollData.weapon.isRange && rollData.weapon.clip.max > 0) {
         if (rollData.weapon.clip.value < 1) {
             return;
@@ -327,7 +351,9 @@ async function _updateRangedAmmo(rollData) {
             switch (rollData.attackType.name) {
                 case "standard":
                 case "called_shot": {
-                    rollData.weapon.clip.value -= firerate;
+                    // Maximal consumes a 3-round charge; clamp at 0 so a clip
+                    // with 1-2 rounds left does not store a negative value.
+                    rollData.weapon.clip.value = Math.max(0, rollData.weapon.clip.value - (firerate * maximalMod));
                     break;
                 }
                 case "semi_auto": {
@@ -357,6 +383,59 @@ async function _updateRangedAmmo(rollData) {
 }
 
 /**
+ * Detect a weapon jam or overheat on the attack roll, announce it (via the
+ * combat chat card, which reads rollData.malfunction), and persist the state on
+ * the weapon so firing is blocked until the player clears it on the sheet.
+ *
+ * A jam makes the triggering attack automatically miss (Core Rulebook p. 224);
+ * an Overheat does not (the shot still resolves, the weapon just overheats).
+ * There is no round-tracking or clear-jam action; the persisted flag blocks the
+ * NEXT shot only. For an Overheat, the wielder takes Energy damage equal to the
+ * weapon's rolled damage at Pen 0 to an arm — the number is SHOWN (not
+ * auto-applied), consistent with how the system surfaces damage.
+ *
+ * Sets rollData.malfunction SYNCHRONOUSLY (before the chat send reads it); the
+ * weapon.update persists the flag so firing is blocked until the player clears
+ * it on the sheet. On a Fate reroll the same rollData carries the discarded
+ * roll's malfunction, so a clean reroll drops the TRANSIENT field (else the
+ * reroll card would still show the old jam); the PERSISTED flag is left for the
+ * player to clear (their explicit decision: detection sets it, the player clears
+ * it — no auto-clear / round-tracking / clear-jam action).
+ * @param {object} rollData
+ */
+async function _applyMalfunction(rollData) {
+    const type = computeMalfunction(
+        rollData.weapon.traits, rollData.result, rollData.attackType?.name, rollData.weapon.isRange);
+    if (!type) {
+        // Clean roll: drop any stale malfunction carried over from a discarded
+        // reroll so the reroll card does not show the old jam. The persisted
+        // weapon flag is intentionally left for the player to clear on the sheet.
+        delete rollData.malfunction;
+        return;
+    }
+    rollData.malfunction = { type, jammed: type === "jammed", overheated: type === "overheated" };
+    if (type === "jammed") {
+        // A jammed shot automatically misses (Core Rulebook p. 224). The d100
+        // already resolved; on the rare high-target roll where a jam value
+        // (94+/96+) would otherwise be a success, convert it to a miss: clear the
+        // success flag and the success-derived degrees so the card shows a clean
+        // failure with no lingering DoS/hits. Overheat does NOT auto-miss.
+        rollData.flags.isSuccess = false;
+        rollData.dos = 0;
+        rollData.attackDos = 0;
+        if (!rollData.dof) rollData.dof = 1;
+    }
+    if (type === "overheated") {
+        const formula = _replaceSymbols(rollData.weapon.damageFormula || "0", rollData);
+        let r = new Roll(formula);
+        await r.evaluate();
+        rollData.malfunction.selfDamage = r.total;
+    }
+    const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
+    if (weapon) await weapon.update({ "system.malfunction": type });
+}
+
+/**
  * Evaluate final penetration, by leveraging the dice roll API.
  * @param {object} rollData
  * @returns {number}
@@ -376,7 +455,19 @@ async function _rollPenetration(rollData) {
     }
     let r = new Roll(penetration.toString());
     await r.evaluate();
-    return r.total * multiplier;
+    let total = r.total * multiplier;
+    // Lance: add the weapon's BASE penetration once per degree of success. Only
+    // the base scales per DoS — additive ammo/Force(+PR)/Maximal bonuses already
+    // folded into `total` are NOT multiplied. basePenetration is captured
+    // pre-bonus in createWeaponRollData; rollData.dos is absent on the Spray/
+    // skipAttackRoll path, where lancePenetration clamps it to 0 (no NaN).
+    if (rollData.weapon.traits.lance) {
+        const baseFormula = _replaceSymbols(String(rollData.weapon.basePenetration ?? "0"), rollData);
+        const baseRoll = new Roll(baseFormula);
+        await baseRoll.evaluate();
+        total = lancePenetration(total, baseRoll.total, rollData.dos);
+    }
+    return total;
 }
 
 /**
