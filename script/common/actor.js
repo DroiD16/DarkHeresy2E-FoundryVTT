@@ -345,40 +345,18 @@ export class DarkHeresyActor extends Actor {
     }
 
 
+    // Single-letter advance-stage badge shown next to characteristics/skills.
+    // Derived from the first letter of the localised ADVANCE.* label so it
+    // follows the active language (e.g. "Простое" -> "П") and stays correct
+    // without a per-language abbreviation table.
     _getAdvanceCharacteristic(characteristic) {
-        switch (characteristic || 0) {
-            case 0:
-                return "N";
-            case 5:
-                return "S";
-            case 10:
-                return "I";
-            case 15:
-                return "T";
-            case 20:
-                return "P";
-            case 25:
-                return "E";
-            default:
-                return "N";
-        }
+        const key = game.darkHeresy.config.advanceStagesCharacteristics[characteristic || 0] ?? "ADVANCE.NONE";
+        return game.i18n.localize(key).charAt(0).toUpperCase();
     }
 
     _getAdvanceSkill(skill) {
-        switch (skill || 0) {
-            case -20:
-                return "U";
-            case 0:
-                return "K";
-            case 10:
-                return "T";
-            case 20:
-                return "E";
-            case 30:
-                return "V";
-            default:
-                return "U";
-        }
+        const key = game.darkHeresy.config.advanceStagesSkills[skill || 0] ?? "ADVANCE.UNTRAINED";
+        return game.i18n.localize(key).charAt(0).toUpperCase();
     }
 
     /**
