@@ -11,6 +11,13 @@ const { ItemSheetV2 } = foundry.applications.sheets;
  */
 export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
 
+    /** Opt-in configuration for the shared special-quality chip editor. */
+    static QUALITY_EDITOR = null;
+
+    // Serialize quality writes so rapid UI events always read the result of the
+    // preceding asynchronous item update instead of a stale array snapshot.
+    #qualityMutations = Promise.resolve();
+
     /** @inheritDoc */
     static DEFAULT_OPTIONS = {
         classes: ["dark-heresy", "sheet"],
@@ -41,6 +48,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
         context.effects = DarkHeresyUtil.categorizeEffects(this.item.effects);
         context.owner = this.item.isOwner;
         context.editable = this.isEditable;
+        this.#prepareQualityEditorContext(context);
         return context;
     }
 
@@ -77,6 +85,98 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
         this.element.addEventListener("focusin", event => {
             if (event.target.matches("input, textarea")) event.target.select();
         });
+        this.#activateQualityEditor();
+    }
+
+    /**
+     * Populate the shared chip-editor context for sheets which opt into it.
+     * @param {object} context The render context to extend.
+     */
+    #prepareQualityEditorContext(context) {
+        const editor = this.constructor.QUALITY_EDITOR;
+        if (!editor) return;
+
+        const cfg = game.darkHeresy.config.weaponQualities;
+        const current = foundry.utils.getProperty(this.item, editor.systemPath) ?? [];
+        context.qualityChips = current.map(quality => {
+            const entry = cfg[quality.key];
+            return {
+                key: quality.key,
+                label: entry ? game.i18n.localize(entry.labelKey) : quality.key,
+                hasValue: !!entry?.hasValue,
+                value: quality.value ?? entry?.default ?? null
+            };
+        });
+
+        const present = new Set(current.map(quality => quality.key));
+        const availableKeys = editor.curatedKeys ?? Object.keys(cfg);
+        context.qualityOptions = availableKeys
+            .filter(key => cfg[key] && !present.has(key))
+            .map(key => ({ key, label: game.i18n.localize(cfg[key].labelKey) }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    /** Bind the delegated controls for the shared special-quality chip editor. */
+    #activateQualityEditor() {
+        if (!this.constructor.QUALITY_EDITOR) return;
+        const element = this.element;
+
+        element.addEventListener("change", event => {
+            const select = event.target.closest(".add-quality-select");
+            if (!select || !this.isEditable) return;
+            const key = select.value;
+            select.value = "";
+            if (!key) return;
+            const entry = game.darkHeresy.config.weaponQualities[key];
+            if (!entry) return;
+            this.#mutateQualities(current => {
+                if (current.some(quality => quality.key === key)) return null;
+                current.push({ key, value: entry.hasValue ? entry.default ?? null : null });
+                return current;
+            });
+        });
+
+        element.addEventListener("change", event => {
+            const input = event.target.closest(".quality-value-input");
+            if (!input || !this.isEditable) return;
+            const key = input.dataset.key;
+            const raw = input.value.trim();
+            const parsed = raw === "" ? null : parseInt(raw, 10);
+            const value = Number.isNaN(parsed) ? null : Math.max(0, parsed);
+            this.#mutateQualities(current => {
+                const entry = current.find(quality => quality.key === key);
+                if (!entry) return null;
+                entry.value = value;
+                return current;
+            });
+        });
+
+        element.addEventListener("click", event => {
+            const button = event.target.closest(".remove-quality");
+            if (!button || !this.isEditable) return;
+            event.preventDefault();
+            const key = button.dataset.key;
+            this.#mutateQualities(current => {
+                const next = current.filter(quality => quality.key !== key);
+                return next.length === current.length ? null : next;
+            });
+        });
+    }
+
+    /**
+     * Apply one serialized mutation to the configured special-quality array.
+     * @param {(current: {key: string, value: (number|null)}[]) => (object[]|null)} mutator
+     * @returns {Promise<void>}
+     */
+    #mutateQualities(mutator) {
+        const systemPath = this.constructor.QUALITY_EDITOR.systemPath;
+        this.#qualityMutations = this.#qualityMutations.then(async () => {
+            const qualities = foundry.utils.getProperty(this.item, systemPath) ?? [];
+            const current = qualities.map(quality => ({ key: quality.key, value: quality.value }));
+            const next = mutator(current);
+            if (next) await this.item.update({ [systemPath]: next });
+        }).catch(err => console.error("dark-heresy | special-quality update failed:", err));
+        return this.#qualityMutations;
     }
 
     /** @inheritDoc */
