@@ -13,7 +13,7 @@ export class AmmunitionSheet extends DarkHeresyItemSheet {
         // Taller than the base item sheet so the special-quality add row and chip
         // list fit below the existing stats. The window stays resizable and a long
         // chip list scrolls internally instead of clipping its controls.
-        position: { width: 500, height: 460 }
+        position: { height: 460 }
     };
 
     static PARTS = {

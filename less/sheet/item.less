@@ -1,6 +1,26 @@
 /* HandlebarsApplicationMixin strips the template's outer `.dark-heresy-item`
    element for a `root: true` part. The header, tabs and body are therefore
    direct children of ApplicationV2's flex-column `.window-content`. */
+.dark-heresy.sheet:not(.actor) {
+    min-width: 500px;
+}
+
+.dark-heresy.sheet:not(.actor).lang-ru {
+    min-width: 600px;
+}
+
+.dark-heresy.sheet:not(.actor) .header .grow,
+.dark-heresy.sheet:not(.actor) .header .header-row,
+.dark-heresy.sheet:not(.actor) .header .header-row input,
+.dark-heresy.sheet:not(.actor) .header .header-row select {
+    min-width: 0;
+}
+
+.dark-heresy.sheet:not(.actor) .header .header-row label {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
 .dark-heresy.sheet:not(.actor) .window-content > .sheet-body {
     box-sizing: border-box;
     flex: 1;
@@ -45,13 +65,25 @@
 .dark-heresy .stats .stats-row .stat {
     display: flex;
     align-items: center;
-}
-
-.dark-heresy .stats .stats-row .stat {
-    display: flex;
+    min-width: 0;
 }
 
 .dark-heresy .stats .stats-row .stat input,
 .dark-heresy .stats .stats-row .stat select {
     margin-left: 8px;
+    min-width: 0;
+}
+
+/* A row containing one field is a long-form value rather than a compact stat.
+   Let it consume the row and yield to localized labels instead of relying on
+   the fixed pixel/em widths inherited from the original English layout. */
+.dark-heresy.sheet:not(.actor) .stats .stats-row .stat:only-child,
+.dark-heresy.sheet:not(.actor) .stats .stats-row .stat:only-child input,
+.dark-heresy.sheet:not(.actor) .stats .stats-row .stat:only-child select {
+    flex: 1;
+}
+
+.dark-heresy.sheet:not(.actor) .stats .stats-row .stat:only-child input,
+.dark-heresy.sheet:not(.actor) .stats .stats-row .stat:only-child select {
+    width: auto;
 }
