@@ -71,10 +71,14 @@ export class DarkHeresyActor extends Actor {
             skill.total = characteristic.total + skill.advance;
             skill.advanceSkill = this._getAdvanceSkill(skill.advance);
             if (skill.isSpecialist) {
-                for (let speciality of Object.values(skill.specialities)) {
+                for (let [specialityKey, speciality] of Object.entries(skill.specialities)) {
                     speciality.total = characteristic.total + speciality.advance;
                     speciality.isKnown = speciality.advance >= 0;
                     speciality.advanceSpec = this._getAdvanceSkill(speciality.advance);
+                    // Localise the display label by its stable key, keeping the stored
+                    // English label as a fallback for unknown/custom specialities.
+                    const localeKey = `SPECIALITY.${specialityKey}`;
+                    if (game?.i18n?.has(localeKey)) speciality.label = game.i18n.localize(localeKey);
                 }
             }
         }
