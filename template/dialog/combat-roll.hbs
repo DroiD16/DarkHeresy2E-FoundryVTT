@@ -42,10 +42,10 @@
             <div class="wrapper">
                 <label>{{localize "DIALOG.RANGE"}}</label>
                 <select id="range">
-                    {{selectOptions (config "ranges") selected=rangeBand localize=true}}
                     {{#if weapon.isPistol}}
                         <option value="pointBlankMelee">{{localize "RANGE.POINT_BLANK"}} ({{localize "WEAPON.MELEE"}})</option>
                     {{/if}}
+                    {{selectOptions (config "ranges") selected=rangeBand localize=true}}
                 </select>
             </div>
         {{/if}}
