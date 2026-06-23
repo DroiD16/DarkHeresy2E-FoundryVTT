@@ -11,6 +11,7 @@ const {
     computeSprayMalfunction,
     lancePenetration,
     maximalAmmoUsage,
+    mergeSpecialQualities,
     rangeBandModifier,
     rangeQualityEffects,
     resolveRangeBand
@@ -396,4 +397,98 @@ test("computeSprayMalfunction: Overheats converts the 9 even on a Reliable/Good 
     assert.equal(computeSprayMalfunction({ overheats: true, reliable: true }, "common", [9]), "overheated");
     assert.equal(computeSprayMalfunction({ overheats: true }, "good", [9]), "overheated");
     assert.equal(computeSprayMalfunction({ overheats: true }, "best", [9]), null);
+});
+
+// ---------------------------------------------------------------------------
+// mergeSpecialQualities — weapon + ammo union (the AMMO chunk's pure core)
+// ---------------------------------------------------------------------------
+
+test("mergeSpecialQualities: empty/null/undefined ammo reproduces the weapon array (identity)", () => {
+    // This is the load-bearing regression guard: the dialog rebuilds traits from
+    // the merge on EVERY combat roll, so an ammo-less roll MUST reproduce the
+    // weapon's own qualities verbatim.
+    const weapon = [{ key: "spray", value: null }, { key: "tearing", value: null }];
+    assert.deepEqual(mergeSpecialQualities(weapon, null), weapon);
+    assert.deepEqual(mergeSpecialQualities(weapon, []), weapon);
+    assert.deepEqual(mergeSpecialQualities(weapon, undefined), weapon);
+});
+
+test("mergeSpecialQualities: empty-ammo merge yields traits identical to the weapon alone", () => {
+    // The direct invariant the ammo-less roll path depends on: the rebuilt traits
+    // must equal the traits built from the weapon's own qualities.
+    const weapon = [
+        { key: "spray", value: null },
+        { key: "reliable", value: null },
+        { key: "proven", value: 4 }
+    ];
+    const expected = buildTraitsFromQualities(weapon);
+    assert.deepEqual(buildTraitsFromQualities(mergeSpecialQualities(weapon, null)), expected);
+    assert.deepEqual(buildTraitsFromQualities(mergeSpecialQualities(weapon, [])), expected);
+    assert.deepEqual(buildTraitsFromQualities(mergeSpecialQualities(weapon, undefined)), expected);
+});
+
+test("mergeSpecialQualities: additive union of disjoint keys keeps both", () => {
+    const merged = mergeSpecialQualities([{ key: "accurate", value: null }], [{ key: "toxic", value: null }]);
+    assert.deepEqual(merged, [
+        { key: "accurate", value: null },
+        { key: "toxic", value: null }
+    ]);
+});
+
+test("mergeSpecialQualities: dedup by key keeps a single entry", () => {
+    const merged = mergeSpecialQualities([{ key: "tearing", value: null }], [{ key: "tearing", value: null }]);
+    assert.deepEqual(merged, [{ key: "tearing", value: null }]);
+});
+
+test("mergeSpecialQualities: higher numeric value wins for a parametric conflict (both orders)", () => {
+    assert.deepEqual(
+        mergeSpecialQualities([{ key: "blast", value: 1 }], [{ key: "blast", value: 3 }]),
+        [{ key: "blast", value: 3 }]
+    );
+    assert.deepEqual(
+        mergeSpecialQualities([{ key: "blast", value: 3 }], [{ key: "blast", value: 1 }]),
+        [{ key: "blast", value: 3 }]
+    );
+});
+
+test("mergeSpecialQualities: a present number beats null; both-null stays null", () => {
+    assert.deepEqual(
+        mergeSpecialQualities([{ key: "toxic", value: null }], [{ key: "toxic", value: 2 }]),
+        [{ key: "toxic", value: 2 }]
+    );
+    assert.deepEqual(
+        mergeSpecialQualities([{ key: "toxic", value: 2 }], [{ key: "toxic", value: null }]),
+        [{ key: "toxic", value: 2 }]
+    );
+    assert.deepEqual(
+        mergeSpecialQualities([{ key: "toxic", value: null }], [{ key: "toxic", value: null }]),
+        [{ key: "toxic", value: null }]
+    );
+});
+
+test("mergeSpecialQualities: additive-only — a weapon quality absent from ammo survives", () => {
+    const merged = mergeSpecialQualities(
+        [{ key: "reliable", value: null }, { key: "spray", value: null }],
+        [{ key: "tearing", value: null }]
+    );
+    assert.deepEqual(merged, [
+        { key: "reliable", value: null },
+        { key: "spray", value: null },
+        { key: "tearing", value: null }
+    ]);
+});
+
+test("mergeSpecialQualities: tolerates both arguments null/undefined", () => {
+    assert.deepEqual(mergeSpecialQualities(null, null), []);
+    assert.deepEqual(mergeSpecialQualities(undefined, undefined), []);
+});
+
+test("mergeSpecialQualities: is pure — inputs are not mutated", () => {
+    const weapon = [{ key: "blast", value: 1 }];
+    const ammo = [{ key: "blast", value: 3 }, { key: "toxic", value: null }];
+    const weaponClone = weapon.map(q => ({ ...q }));
+    const ammoClone = ammo.map(q => ({ ...q }));
+    mergeSpecialQualities(weapon, ammo);
+    assert.deepEqual(weapon, weaponClone);
+    assert.deepEqual(ammo, ammoClone);
 });

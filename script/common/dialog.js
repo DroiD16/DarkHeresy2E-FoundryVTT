@@ -4,7 +4,7 @@ import {
     effectiveAimModifier,
     normalizeTestModifier
 } from "./combat-modifiers.js";
-import { ammunitionMultiplier, rangeBandModifier } from "./weapon-qualities.js";
+import { ammunitionMultiplier, rangeBandModifier, buildTraitsFromQualities, mergeSpecialQualities } from "./weapon-qualities.js";
 
 /**
  * Attach the focus-select behavior used by every roll dialog.
@@ -161,6 +161,23 @@ export async function prepareCombatRoll(rollData, actorRef) {
                         };
 
                         let ammo = actorRef.items.get(form.querySelector("#ammo")?.value);
+
+                        // Union the weapon's structured qualities with the
+                        // loaded ammunition's (additive, higher value wins) and
+                        // rebuild the traits so every downstream read — the
+                        // maximal ammunitionMultiplier, the skipAttackRoll check
+                        // and combatRoll itself — sees the merged set. With no/
+                        // empty ammo, mergeSpecialQualities reproduces the
+                        // weapon's own qualities, so the traits are identical and
+                        // an ammo-less roll is unchanged. None of the curated ammo
+                        // qualities affect the to-hit modifier, so the live
+                        // automation preview (refreshAutomation) need not change.
+                        rollData.weapon.traits = buildTraitsFromQualities(
+                            mergeSpecialQualities(
+                                rollData.weapon.specialQualities,
+                                ammo?.system.effect.specialQualities
+                            )
+                        );
 
                         rollData.weapon.damageFormula = `${form.querySelector("#damageFormula").value.replace(" ", "")}${ammo?.system.effect.damage.modifier ? `+${ammo?.system.effect.damage.modifier}`: ""}`;
                         rollData.weapon.damageType = form.querySelector("#damageType").value;

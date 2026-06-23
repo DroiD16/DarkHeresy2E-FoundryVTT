@@ -1,4 +1,4 @@
-import { WEAPON_QUALITIES, PSYCHIC_POWER_QUALITY_KEYS } from "./weapon-qualities.js";
+import { WEAPON_QUALITIES, PSYCHIC_POWER_QUALITY_KEYS, AMMUNITION_QUALITY_KEYS } from "./weapon-qualities.js";
 
 let Dh = {};
 
@@ -245,6 +245,12 @@ Dh.focusPowerSuggestions = ["willpower", "psyniscience", "perception", "awarenes
 // weaponSpecialDisplay helper still read the full weaponQualities map; only the
 // ADD dropdown is curated to these keys.
 Dh.psychicPowerQualityKeys = PSYCHIC_POWER_QUALITY_KEYS;
+
+// Curated subset of weaponQualities the ammunition sheet offers in its
+// add-quality dropdown (see AMMUNITION_QUALITY_KEYS). Chip rendering and the
+// weaponSpecialDisplay helper still read the full weaponQualities map; only the
+// ADD dropdown is curated to these keys.
+Dh.ammunitionQualityKeys = AMMUNITION_QUALITY_KEYS;
 
 Dh.hitLocations = {
     head: "ARMOUR.HEAD",

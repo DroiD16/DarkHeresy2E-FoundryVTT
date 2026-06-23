@@ -73,6 +73,36 @@
                         <input name="system.effect.special" type="text" value="{{system.effect.special}}" />
                     </div>
                 </div>
+                <div class="stats-row special-qualities-row">
+                    <div class="stat special-qualities">
+                        <label>{{localize "AMMUNITION.SPECIAL_QUALITIES"}}</label>
+                        {{#if editable}}
+                            <select class="add-quality-select">
+                                <option value="">{{localize "AMMUNITION.ADD_QUALITY"}}</option>
+                                {{#each qualityOptions}}<option value="{{key}}">{{label}}</option>{{/each}}
+                            </select>
+                        {{/if}}
+                    </div>
+                </div>
+                {{#if qualityChips}}
+                <div class="stats-row quality-chips-row">
+                    <div class="quality-chips border">
+                        {{#each qualityChips}}
+                            <span class="quality-chip" data-key="{{key}}">
+                                <span class="quality-chip-label">{{label}}</span>
+                                {{#if hasValue}}
+                                    <input class="quality-value-input" type="number" data-key="{{key}}"
+                                           value="{{value}}" min="0" step="1" data-dtype="Number" {{#unless @root.editable}}disabled{{/unless}} />
+                                {{/if}}
+                                {{#if @root.editable}}
+                                    <a class="remove-quality" data-key="{{key}}" title="{{localize 'AMMUNITION.REMOVE_QUALITY'}}">
+                                        <i class="fas fa-trash"></i></a>
+                                {{/if}}
+                            </span>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
             </div>
         </div>
         <div class="tab" data-group="primary" data-tab="notes">

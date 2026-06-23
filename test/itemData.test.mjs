@@ -57,6 +57,7 @@ const { default: ToolData } = await import("../script/data/item/toolData.js");
 const { default: WeaponModificationData } = await import("../script/data/item/weaponModificationData.js");
 const { default: PsychicPowerData } = await import("../script/data/item/psychicPowerData.js");
 const { default: TalentData } = await import("../script/data/item/talentData.js");
+const { default: AmmunitionData } = await import("../script/data/item/ammunitionData.js");
 
 const EQUIPMENT_KEYS = ["craftsmanship", "description", "availability", "weight"];
 
@@ -160,6 +161,30 @@ test("PsychicPowerData: inherits description+source and appends psychic power ow
     // Schema {key: String required/non-blank, value: Number nullable/min 0/int}.
     assert.equal(schema.damage.fields.specialQualities.type, "Array");
     const quality = schema.damage.fields.specialQualities.element;
+    assert.equal(quality.type, "Schema");
+    assert.equal(quality.fields.key.type, "String");
+    assert.equal(quality.fields.key.options.required, true);
+    assert.equal(quality.fields.key.options.blank, false);
+    assert.equal(quality.fields.value.type, "Number");
+    assert.equal(quality.fields.value.options.nullable, true);
+    assert.equal(quality.fields.value.options.initial, null);
+    assert.equal(quality.fields.value.options.min, 0);
+    assert.equal(quality.fields.value.options.integer, true);
+});
+
+test("AmmunitionData: inherits equipment fields and appends effect.specialQualities", () => {
+    const schema = AmmunitionData.defineSchema();
+    assertInheritsEquipment(schema);
+
+    // effect is a Schema; the free-text special field is retained (String "").
+    assert.equal(schema.effect.type, "Schema");
+    assert.equal(schema.effect.fields.special.type, "String");
+    assert.equal(schema.effect.fields.special.options.initial, "");
+
+    // effect.specialQualities is the structured chip array: an ArrayField of a
+    // Schema {key: String required/non-blank, value: Number nullable/min 0/int}.
+    assert.equal(schema.effect.fields.specialQualities.type, "Array");
+    const quality = schema.effect.fields.specialQualities.element;
     assert.equal(quality.type, "Schema");
     assert.equal(quality.fields.key.type, "String");
     assert.equal(quality.fields.key.options.required, true);

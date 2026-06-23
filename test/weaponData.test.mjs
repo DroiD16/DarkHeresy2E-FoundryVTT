@@ -96,6 +96,62 @@ test("AmmunitionData.migrateData returns the same source object", () => {
     assert.equal(result.effect.damage.modifier, 2);
 });
 
+test("AmmunitionData.migrateData normalizes specialQualities while keeping migrateDamageModifier", () => {
+    const source = {
+        effect: {
+            damage: { modifier: "2" },
+            specialQualities: [{ key: "toxic", value: 9.9 }]
+        }
+    };
+    const result = AmmunitionData.migrateData(source);
+    assert.equal(result, source, "returns the same (referential) source object");
+    assert.equal(result.effect.damage.modifier, 2);
+    assert.deepEqual(result.effect.specialQualities, [{ key: "toxic", value: 9 }]);
+});
+
+// ---------------------------------------------------------------------------
+// AmmunitionData.migrateSpecialQualities — same numeric normalizer as
+// WeaponData, but the array is NESTED under `effect`.
+// ---------------------------------------------------------------------------
+
+test("AmmunitionData.migrateSpecialQualities normalizes unsafe nested parametric values", () => {
+    const source = {
+        effect: {
+            special: "Tearing, custom text",
+            specialQualities: [
+                { key: "blast", value: -5 },
+                { key: "toxic", value: 6.8 },
+                { key: "hallucinogenic", value: "4" },
+                { key: "shocking", value: "invalid" },
+                // A non-curated key is normalized regardless of curation.
+                { key: "proven", value: 3.2 },
+                { key: "tearing", value: null }
+            ]
+        }
+    };
+    AmmunitionData.migrateSpecialQualities(source);
+    assert.deepEqual(source.effect.specialQualities, [
+        { key: "blast", value: 0 },
+        { key: "toxic", value: 6 },
+        { key: "hallucinogenic", value: 4 },
+        { key: "shocking", value: null },
+        { key: "proven", value: 3 },
+        { key: "tearing", value: null }
+    ]);
+    // Free-text special is never parsed into structured qualities (out of scope).
+    assert.equal(source.effect.special, "Tearing, custom text");
+});
+
+test("AmmunitionData.migrateSpecialQualities does not throw on missing effect", () => {
+    const undefSource = {};
+    assert.doesNotThrow(() => AmmunitionData.migrateSpecialQualities(undefSource));
+    assert.equal(undefSource.effect, undefined);
+
+    const noArray = { effect: { special: "Blast" } };
+    assert.doesNotThrow(() => AmmunitionData.migrateSpecialQualities(noArray));
+    assert.equal(noArray.effect.specialQualities, undefined);
+});
+
 // ---------------------------------------------------------------------------
 // PsychicPowerData.migrateSpecialQualities — same numeric normalizer as
 // WeaponData, but the array is NESTED under `damage`.

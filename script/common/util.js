@@ -89,6 +89,10 @@ export default class DarkHeresyUtil {
             basePenetration: weaponItem.penetration,
             ammos: weaponItem.system.ammoItems,
             traits: weaponTraits,
+            // The weapon's raw structured qualities, stashed so the combat
+            // dialog can union them with the loaded ammunition's qualities at
+            // fire time (mergeSpecialQualities -> buildTraitsFromQualities).
+            specialQualities: weaponItem.system.specialQualities,
             special: weaponItem.special,
             malfunction: weaponItem.system.malfunction,
             maximalAvailable: weaponItem.clip.max <= 0

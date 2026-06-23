@@ -63,6 +63,12 @@ export const WEAPON_QUALITIES = {
 // restricted to these rules-relevant keys.
 export const PSYCHIC_POWER_QUALITY_KEYS = ["blast", "concussive", "flame", "melta", "snare", "force", "haywire", "hallucinogenic"];
 
+// Curated subset of WEAPON_QUALITIES offered in the ammunition sheet's
+// add-quality dropdown (Dark Heresy 2E special ammunition). The full
+// WEAPON_QUALITIES map still backs labels/defaults and chip rendering; only the
+// ADD dropdown is restricted to these rules-relevant keys.
+export const AMMUNITION_QUALITY_KEYS = ["blast", "flame", "hallucinogenic", "recharge", "shocking", "tearing", "toxic"];
+
 const RANGE_BAND_MODIFIERS = Object.freeze({
     pointBlank: 30,
     pointBlankMelee: 0,
@@ -309,4 +315,34 @@ export function buildTraitsFromQualities(qualities) {
         unreliable: has("unreliable"),
         overheats: has("overheats")
     };
+}
+
+/**
+ * Merge a weapon's structured qualities with the qualities of the ammunition
+ * loaded at fire time (Dark Heresy 2E special ammunition). The merge is an
+ * additive UNION deduped by quality `key`: ammo qualities are added on top of
+ * the weapon's own qualities and NEVER remove one (ammo "strip" cases are
+ * deferred, out of scope). When the same parametric quality is present on both
+ * sides, the HIGHER numeric value wins; a present value (a number) beats an
+ * absent one (`null`), and both-absent stays `null`. Pure: it mutates neither
+ * input and reads no WEAPON_QUALITIES defaults (those are applied later by
+ * buildTraitsFromQualities). All weapon qualities are preserved, including
+ * non-curated ones such as spray/reliable.
+ * @param {{key: string, value: ?number}[]} weaponQualities The weapon's stored qualities.
+ * @param {{key: string, value: ?number}[]} ammoQualities   The loaded ammo's stored qualities.
+ * @returns {{key: string, value: ?number}[]} The merged {key, value} qualities.
+ */
+export function mergeSpecialQualities(weaponQualities, ammoQualities) {
+    const out = new Map();
+    const add = q => {
+        if (!q?.key) return;
+        const prev = out.get(q.key);
+        if (!prev) { out.set(q.key, { key: q.key, value: q.value ?? null }); return; }
+        const a = prev.value;
+        const b = q.value;
+        prev.value = a == null ? (b ?? null) : (b == null ? a : Math.max(a, b));
+    };
+    for (const q of weaponQualities ?? []) add(q);
+    for (const q of ammoQualities ?? []) add(q);
+    return [...out.values()];
 }
