@@ -5,8 +5,13 @@
     box-sizing: border-box;
     flex: 1;
     min-height: 0;
-    /* ApplicationV2 clips at the content edge. Reserve the editor's 2px lower
-       border inside that edge instead of letting it land on the clip line. */
+}
+
+/* A percentage-height tab otherwise places its last 2px border directly on
+   ApplicationV2's clipping edge. Reserve that space inside the tab itself;
+   padding on `.sheet-body` does not reduce the tab's percentage height. */
+.dark-heresy.sheet:not(.actor) .window-content > .sheet-body > .tab {
+    box-sizing: border-box;
     padding-bottom: 2px;
 }
 
@@ -25,6 +30,7 @@
 }
 
 .dark-heresy .stats {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
