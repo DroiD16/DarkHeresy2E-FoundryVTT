@@ -80,18 +80,12 @@
             </div>
         {{/if}}
     </div>
-    <div class="combat-roll-summary">
-        {{#if weapon.isRange}}
-            <div class="wrapper">
-                <table>
-                    <tr>
-                        <td><b>{{localize "DIALOG.CLIP"}}: </b>{{weapon.clip.value}}</td>
-                        <td><b>RoF:
-                            </b>1/{{#if weapon.rateOfFire.burst}}{{weapon.rateOfFire.burst}}{{else}}-{{/if}}/{{#if weapon.rateOfFire.full}}{{weapon.rateOfFire.full}}{{else}}-{{/if}}
-                        </td>
-                    </tr>
-                </table>
+    {{#if weapon.isRange}}
+        <div class="combat-roll-summary">
+            <div><b>{{localize "DIALOG.CLIP"}}: </b>{{weapon.clip.value}}</div>
+            <div><b>{{localize "WEAPON.RATE_OF_FIRE"}}:
+                </b>1/{{#if weapon.rateOfFire.burst}}{{weapon.rateOfFire.burst}}{{else}}-{{/if}}/{{#if weapon.rateOfFire.full}}{{weapon.rateOfFire.full}}{{else}}-{{/if}}
             </div>
-        {{/if}}
-    </div>
+        </div>
+    {{/if}}
 </div>

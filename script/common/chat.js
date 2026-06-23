@@ -223,7 +223,7 @@ async function onRollPhenomenaClick(ev) {
         window: { title: game.i18n.localize("CHAT.ROLL_PHENOMENA_TITLE") },
         classes: ["dark-heresy", "dialog"],
         content,
-        position: { width: 200 },
+        position: { width: "auto" },
         rejectClose: false,
         buttons: [
             {

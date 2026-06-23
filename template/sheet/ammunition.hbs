@@ -31,7 +31,7 @@
                                 {{selectOptions weaponOptions selected=system.weaponId valueAttr="id" labelAttr="name"}}
                             </select>
                             <a class="ammunition-unlink {{#unless system.weaponId}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}"
-                               title="Unlink" aria-label="Unlink"><i class="fas fa-chain-broken"></i></a>
+                               title="{{localize 'BUTTON.UNLINK'}}" aria-label="{{localize 'BUTTON.UNLINK'}}"><i class="fas fa-chain-broken"></i></a>
                         {{else}}
                             <input name="system.weapon" type="text" value="{{system.weapon}}" />
                         {{/if}}

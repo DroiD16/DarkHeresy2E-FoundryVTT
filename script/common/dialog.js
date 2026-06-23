@@ -19,6 +19,18 @@ function attachFocusSelect(root) {
 }
 
 /**
+ * Give every label in a roll dialog the width of its longest localized label.
+ * @param {HTMLElement} root Dialog root.
+ */
+function alignDialogLabels(root) {
+    for (const content of root.querySelectorAll(".window-content .dark-heresy.dialog")) {
+        const labels = content.querySelectorAll(".background.border > .wrapper > label");
+        const width = Math.ceil(Math.max(0, ...Array.from(labels, label => label.scrollWidth)));
+        if (width) content.style.setProperty("--dialog-label-width", `${width}px`);
+    }
+}
+
+/**
  * Calculate the weapon automation modifier represented by the current combat
  * dialog controls. This is preview-only; the roll pipeline recalculates from
  * rollData before resolving the test.
@@ -50,7 +62,7 @@ export async function prepareCommonRoll(rollData) {
         window: { title: rollData.name },
         classes: ["dark-heresy", "dialog"],
         content,
-        position: { width: 200 },
+        position: { width: "auto" },
         rejectClose: false,
         buttons: [
             {
@@ -88,6 +100,7 @@ export async function prepareCommonRoll(rollData) {
         ],
         render: (event, dialog) => {
             const root = dialog.element;
+            alignDialogLabels(root);
             attachFocusSelect(root);
             const sel = root.querySelector("select[name=characteristic]");
             const target = root.querySelector("#target");
@@ -125,7 +138,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
             window: { title: rollData.name },
             classes: ["dark-heresy", "dialog"],
             content,
-            position: { width: 240 },
+            position: { width: "auto" },
             rejectClose: false,
             buttons: [
                 {
@@ -218,6 +231,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
             ],
             render: (event, dialog) => {
                 const root = dialog.element;
+                alignDialogLabels(root);
                 attachFocusSelect(root);
                 const automation = root.querySelector("#automationModifier");
                 const refreshAutomation = () => {
@@ -242,7 +256,7 @@ export async function preparePsychicPowerRoll(rollData) {
         window: { title: rollData.name },
         classes: ["dark-heresy", "dialog"],
         content,
-        position: { width: 200 },
+        position: { width: "auto" },
         rejectClose: false,
         buttons: [
             {
@@ -279,6 +293,7 @@ export async function preparePsychicPowerRoll(rollData) {
         ],
         render: (event, dialog) => {
             const root = dialog.element;
+            alignDialogLabels(root);
             attachFocusSelect(root);
             const slider = root.querySelector("#rating");
             const output = root.querySelector("#psy");

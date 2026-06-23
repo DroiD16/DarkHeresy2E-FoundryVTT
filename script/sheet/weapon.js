@@ -12,7 +12,7 @@ export class WeaponSheet extends DarkHeresyItemSheet {
         // Taller than the base item sheet to fit the separate Special and
         // special-quality chip rows. The window stays resizable and a long chip
         // list scrolls internally instead of clipping its controls.
-        position: { width: 500, height: 480 }
+        position: { height: 480 }
     };
 
     static PARTS = {

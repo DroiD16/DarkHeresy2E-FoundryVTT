@@ -1,11 +1,16 @@
-/* The Advances tab's intended layout puts three sections across the top row,
-   which needs the full default width; narrower than that the flex rows reflow
-   and wrap. ApplicationV2 clamps resizing/positioning to the root element's
-   computed min-width (see ApplicationV2#_updatePosition), so pin the actor
-   sheet's minimum to its 700px default to keep it from being dragged into the
-   wrapped layout. Item sheets (500px) use different classes and are unaffected. */
-.dark-heresy.sheet.actor {
-    min-width: 700px;
+/* ApplicationV2 clamps resizing/positioning to the root element's computed
+   min-width (see ApplicationV2#_updatePosition). Keep each actor sheet at the
+   minimum width required by its layout. */
+.dark-heresy.sheet.actor.acolyte {
+    min-width: 815px;
+}
+
+.dark-heresy.sheet.actor.acolyte.lang-ru {
+    min-width: 900px;
+}
+
+.dark-heresy.sheet.actor.npc {
+    min-width: 820px;
 }
 
 .dark-heresy .tabs .item {
@@ -319,6 +324,31 @@
     flex-direction: row;
     justify-content: space-between;
     margin: 5px 0;
+}
+
+/* Keep localized labels and their controls in the same semantic column. Long
+   labels retain their natural width while the control yields the remaining
+   space instead of wrapping below it. */
+.dark-heresy.sheet.actor .header .header-row > div {
+    align-items: baseline;
+    column-gap: 8px;
+    display: flex;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.dark-heresy.sheet.actor .header .header-row > div > label {
+    flex: 0 0 auto;
+}
+
+.dark-heresy.sheet.actor .header .header-row > div > input,
+.dark-heresy.sheet.actor .header .header-row > div > select {
+    margin: 0;
+}
+
+.dark-heresy.sheet.actor .header .fate,
+.dark-heresy.sheet.actor .header .fatigue {
+    column-gap: 5px;
 }
 
 .dark-heresy.sheet .header .avatar {

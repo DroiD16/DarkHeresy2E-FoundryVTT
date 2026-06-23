@@ -5,6 +5,12 @@
     width: 100%;
 }
 
+.dark-heresy .npc .header .header-row:not(.name) {
+    column-gap: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 35fr) minmax(0, 40fr) max-content;
+}
+
 .dark-heresy .npc .header .type,
 .dark-heresy .npc .header .faction {
     flex-basis: 35%;
@@ -19,12 +25,14 @@
 .dark-heresy .npc .header .faction input,
 .dark-heresy .npc .header .threat-level input,
 .dark-heresy .npc .header .subfaction input {
+    flex: 1 1 11em;
+    min-width: 0;
     width: 11em;
     height: 22px;
 }
 
 .dark-heresy .npc .header .fate input,
 .dark-heresy .npc .header .fatigue input {
+    flex: 0 0 2em;
     width: 2em;
-    margin: 0 5px;
 }

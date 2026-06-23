@@ -13,7 +13,7 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "INSANITY.MENTAL_DISORDER"}}</b>
-                <a class="button item-create" title="Add Mental Disorder" data-type="mentalDisorder"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.mentaldisorder')}}" data-type="mentalDisorder"><i class="fas fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.mentalDisorders as |item|}}
@@ -25,7 +25,7 @@
                             <div class="name">{{item.name}}</div>
                         </div>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Mental Disorder"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.mentaldisorder')}}"><i class="fas fa-trash"></i></a>
                         </div>
                     </div>
                 {{/each}}
@@ -63,7 +63,7 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "CORRUPTION.MALIGNANCY"}}</b>
-                <a class="button item-create" title="Add Malignancy" data-type="malignancy"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.malignancy')}}" data-type="malignancy"><i class="fas fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.malignancies as |item|}}
@@ -75,7 +75,7 @@
                                 <div class="name">{{item.name}}</div>
                             </div>
                             <div class="button">
-                                <a class="item-control item-delete" title="Delete Malignancy"><i class="fas fa-trash"></i></a>
+                                <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.malignancy')}}"><i class="fas fa-trash"></i></a>
                             </div>
                         </div>
                 {{/each}}
@@ -84,7 +84,7 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "CORRUPTION.MUTATION"}}</b>
-                <a class="button item-create" title="Add Mutation" data-type="mutation"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.mutation')}}" data-type="mutation"><i class="fas fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.mutations as |item|}}
@@ -96,7 +96,7 @@
                             <div class="name">{{item.name}}</div>
                         </div>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Mutation"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.mutation')}}"><i class="fas fa-trash"></i></a>
                         </div>
                     </div>
                 {{/each}}

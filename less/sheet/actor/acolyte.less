@@ -5,6 +5,12 @@
     width: 100%;
 }
 
+.dark-heresy .acolyte .header .header-row:not(.name) {
+    column-gap: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 40fr) minmax(0, 32fr) max-content;
+}
+
 .dark-heresy .acolyte .header .home-world,
 .dark-heresy .acolyte .header .background {
     flex-basis: 40%;
@@ -19,11 +25,13 @@
 .dark-heresy .acolyte .header .background input,
 .dark-heresy .acolyte .header .role input,
 .dark-heresy .acolyte .header .elite input {
+    flex: 1 1 11em;
+    min-width: 0;
     width: 11em;
 }
 
 .dark-heresy .acolyte .header .fate input,
 .dark-heresy .acolyte .header .fatigue input {
+    flex: 0 0 2em;
     width: 2em;
-    margin: 0 5px;
 }

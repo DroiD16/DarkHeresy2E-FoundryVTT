@@ -19,23 +19,26 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     #qualityMutations = Promise.resolve();
 
     /** @inheritDoc */
-    static DEFAULT_OPTIONS = {
-        classes: ["dark-heresy", "sheet"],
-        position: { width: 500, height: 369 },
-        window: { resizable: true },
-        form: { submitOnChange: true },
-        actions: {
-            postItem: DarkHeresyItemSheet.#onPostItem,
-            // Effect-control action names match the data-action values used in
-            // BOTH effect-tab.hbs and effect-part.hbs (the two effect partials
-            // item sheets render), left at their original names so neither
-            // shared partial needs to change.
-            create: DarkHeresyItemSheet.#onEffectCreate,
-            edit: DarkHeresyItemSheet.#onEffectEdit,
-            delete: DarkHeresyItemSheet.#onEffectDelete,
-            toggle: DarkHeresyItemSheet.#onEffectToggle
-        }
-    };
+    static get DEFAULT_OPTIONS() {
+        const isRussian = game.i18n.lang === "ru";
+        return {
+            classes: ["dark-heresy", "sheet", ...(isRussian ? ["lang-ru"] : [])],
+            position: { width: isRussian ? 600 : 500, height: 369 },
+            window: { resizable: true },
+            form: { submitOnChange: true },
+            actions: {
+                postItem: DarkHeresyItemSheet.#onPostItem,
+                // Effect-control action names match the data-action values used in
+                // BOTH effect-tab.hbs and effect-part.hbs (the two effect partials
+                // item sheets render), left at their original names so neither
+                // shared partial needs to change.
+                create: DarkHeresyItemSheet.#onEffectCreate,
+                edit: DarkHeresyItemSheet.#onEffectEdit,
+                delete: DarkHeresyItemSheet.#onEffectDelete,
+                toggle: DarkHeresyItemSheet.#onEffectToggle
+            }
+        };
+    }
 
     /** @inheritDoc */
     async _prepareContext(options) {

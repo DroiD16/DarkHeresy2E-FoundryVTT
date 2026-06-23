@@ -79,6 +79,17 @@ Hooks.once("init", function() {
 
     registerDataModels();
 
+    // Foundry derives item-sheet titles from CONFIG.Item.typeLabels[type], whose
+    // default key is `TYPES.Item.<type>` using the registered (camelCase) type
+    // name (e.g. mentalDisorder). Our translation keys are lowercased, so
+    // multi-word types showed the raw key in the sheet title. Pre-seed the labels
+    // with our lowercase keys: Foundry keeps already-set labels, so this fixes the
+    // titles in every language using the existing translations, without adding keys.
+    CONFIG.Item.typeLabels ??= {};
+    for (const type of Object.keys(CONFIG.Item.dataModels)) {
+        CONFIG.Item.typeLabels[type] ??= `TYPES.Item.${type.toLowerCase()}`;
+    }
+
     initializeHandlebars();
 
     game.settings.register("dark-heresy", "worldSchemaVersion", {

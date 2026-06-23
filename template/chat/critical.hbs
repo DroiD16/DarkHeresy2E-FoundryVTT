@@ -1,13 +1,13 @@
 <div class='dark-heresy chat roll'>
     <div class='background border'>
-        <h1>Applied Damage to: </h1>
+        <h1>{{localize 'CHAT.APPLIED_DAMAGE_TO'}} </h1>
         <h3>{{target}}</h3>
         <ul style="text-align: left; display: inline-block;">
             {{#each rolls}}
-            <li>{{damage}} {{damageTypeLong type}} as {{source}} ({{localize location}})</li>
+            <li>{{damage}} {{damageTypeLong type}} {{localize 'CHAT.DAMAGE_AS'}} {{source}} ({{localize location}})</li>
             {{/each}}
         </ul>
         <br>
-        <div>Current <b>Wounds: </b>{{totalWounds}}. <b>Critical Damage: </b>{{totalCritWounds}}</div>
+        <div><b>{{localize 'CHAT.CURRENT_WOUNDS'}}: </b>{{totalWounds}}. <b>{{localize 'WOUND.CRITICAL_DAMAGE'}}: </b>{{totalCritWounds}}</div>
     </div>
 </div>
