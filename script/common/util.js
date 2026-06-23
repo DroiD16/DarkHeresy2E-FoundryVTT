@@ -6,7 +6,8 @@ export default class DarkHeresyUtil {
     // the actor sheet's create handler and any "is this still the default name?"
     // detection call this so the two can never drift apart.
     static defaultItemName(type) {
-        return `New ${game.i18n.localize(`TYPES.Item.${type.toLowerCase()}`)}`;
+        const localizedType = game.i18n.localize(`TYPES.Item.${type.toLowerCase()}`);
+        return game.i18n.format("ITEM.NEW", { type: localizedType });
     }
 
     static createCommonAttackRollData(actor, item) {

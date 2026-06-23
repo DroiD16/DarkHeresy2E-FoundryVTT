@@ -254,6 +254,7 @@
     "HEADER.DESCRIPTION": "Description",
     "INITIATIVE": "Initiative",
     "INSANITY.MENTAL_DISORDER": "Mental Disorder",
+    "ITEM.NEW": "New {type}",
     "TYPES.Item.ammunition": "Ammunition",
     "TYPES.Item.aptitude": "Aptitude",
     "TYPES.Item.armour": "Armour",

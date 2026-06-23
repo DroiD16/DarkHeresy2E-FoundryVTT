@@ -254,6 +254,7 @@
     "HEADER.DESCRIPTION": "Описание",
     "INITIATIVE": "Инициатива",
     "INSANITY.MENTAL_DISORDER": "Ум. расстройство",
+    "ITEM.NEW": "Нов. {type}",
     "TYPES.Item.ammunition": "Боеприпасы",
     "TYPES.Item.aptitude": "Склонность",
     "TYPES.Item.armour": "Броня",
