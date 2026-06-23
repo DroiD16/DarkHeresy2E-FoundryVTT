@@ -18,11 +18,6 @@
     width: 100%;
 }
 
-.dark-heresy .progression .aptitudes .item-list .items {
-    max-height: 160px;
-    height: 160px;
-}
-
 .dark-heresy .progression .aptitudes .item-list .items .item .name {
     flex-basis: 90%;
     align-items: center;
@@ -86,11 +81,6 @@
 
 .dark-heresy .progression .talents .item-list .items .talent {
     width: 100%;
-}
-
-.dark-heresy .progression .talents .item-list .items {
-    max-height: 160px;
-    height: 160px;
 }
 
 .dark-heresy .progression .talents .item-list .items .item .talent-row {
@@ -162,7 +152,6 @@
 
 .dark-heresy .progression .characteristics .item-list .header .advance {
     flex-basis: 25%;
-    margin-right: 5px;
 }
 
 .dark-heresy .progression .characteristics .item-list .header .unnatural {
@@ -177,12 +166,6 @@
 
 .dark-heresy .progression .characteristics .item-list .header .cost {
     flex-basis: 15%;
-    margin-left: 5px;
-}
-
-.dark-heresy .progression .characteristics .item-list .items {
-    max-height: 157px;
-    height: 157px;
 }
 
 .dark-heresy .progression .characteristics .item-list .items .item .name {
@@ -196,28 +179,22 @@
     flex-basis: 25%;
     text-align: center;
     height: 22px;
-    margin-right: 5px;
 }
 
 .dark-heresy .progression .characteristics .item-list .items .item .unnatural {
     font-size: 12px;
     height: 24px;
-    width: 40px;
-    margin: 1px;
 }
 
 .dark-heresy .progression .characteristics .item-list .items .item .base {
     font-size: 12px;
     height: 24px;
-    width: 40px;
-    margin: 1px;
 }
 
 .dark-heresy .progression .characteristics .item-list .items .item .cost {
     flex-basis: 15%;
     text-align: center;
     height: 22px;
-    margin-left: 5px;
 }
 
 .dark-heresy .progression .psychic-powers {
@@ -279,11 +256,6 @@
     width: 100%;
 }
 
-.dark-heresy .progression .psychic-powers .item-list .items {
-    max-height: 107px;
-    height: 107px;
-}
-
 .dark-heresy .progression .psychic-powers .item-list .items .item .psychic-powers-row {
     flex-basis: 64%;
     align-items: center;
@@ -313,7 +285,6 @@
 
 .dark-heresy .progression .skills .item-list .header .advance {
     flex-basis: 25%;
-    margin-right: 5px;
 }
 
 .dark-heresy .progression .skills .item-list .header .total {
@@ -323,16 +294,10 @@
 
 .dark-heresy .progression .skills .item-list .header .cost {
     flex-basis: 15%;
-    margin-left: 5px;
 }
 
 .dark-heresy .progression .skills .item-list .header .starter {
     flex-grow: 1;
-}
-
-.dark-heresy .progression .skills .item-list .items {
-    max-height: 382px;
-    height: 382px;
 }
 
 .dark-heresy .progression .skills .item-list .items .item .name {
@@ -346,21 +311,17 @@
     flex-basis: 25%;
     text-align: center;
     height: 22px;
-    margin-right: 5px;
 }
 
 .dark-heresy .progression .skills .item-list .items .item .total {
     font-size: 12px;
     height: 24px;
-    width: 40px;
-    margin: 1px;
 }
 
 .dark-heresy .progression .skills .item-list .items .item .cost {
     flex-basis: 15%;
     text-align: center;
     height: 22px;
-    margin-left: 5px;
 }
 
 .dark-heresy .progression .skills .item-list .items .item .starter {
@@ -425,7 +386,8 @@
 /* The legacy flex rules give cost fields 5px side margins. In a grid cell that
    makes the input wider than its track, so override both margin and width as a
    matched pair. */
-.dark-heresy .progression .progression-talents-table.aligned-table > .items > .item > input.item-cost {
+.dark-heresy .progression .progression-talents-table.aligned-table > .items > .item > input.item-cost,
+.dark-heresy .progression .progression-psychic-table.aligned-table > .items > .item > input.item-cost {
     justify-self: center;
     margin-left: 0;
     margin-right: 0;
