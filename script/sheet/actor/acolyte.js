@@ -1,10 +1,13 @@
 import { DarkHeresySheet } from "./actor.js";
 
 export class AcolyteSheet extends DarkHeresySheet {
-    static DEFAULT_OPTIONS = {
-        classes: ["acolyte"],
-        position: { width: 815 }
-    };
+    static get DEFAULT_OPTIONS() {
+        const isRussian = game.i18n.lang === "ru";
+        return {
+            classes: ["acolyte", ...(isRussian ? ["lang-ru"] : [])],
+            position: { width: isRussian ? 900 : 815 }
+        };
+    }
 
     static PARTS = {
         form: {
