@@ -1,4 +1,5 @@
 import { DarkHeresyItemSheet } from "./item.js";
+import { linkAmmunition, unlinkAmmunition } from "../common/ammunition-link.js";
 
 export class AmmunitionSheet extends DarkHeresyItemSheet {
     static DEFAULT_OPTIONS = {
@@ -6,7 +7,7 @@ export class AmmunitionSheet extends DarkHeresyItemSheet {
         // Taller than the base item sheet so the special-quality add row and chip
         // list fit below the existing stats. The window stays resizable and a long
         // chip list scrolls internally instead of clipping its controls.
-        position: { width: 500, height: 420 }
+        position: { width: 500, height: 460 }
     };
 
     static PARTS = {
@@ -26,6 +27,12 @@ export class AmmunitionSheet extends DarkHeresyItemSheet {
     /** @inheritDoc */
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
+        context.hasActor = !!this.item.actor;
+        context.weaponOptions = this.item.actor
+            ? this.item.actor.itemTypes.weapon
+                .toSorted((a, b) => a.sort - b.sort)
+                .map(weapon => ({ id: weapon.id, name: weapon.name }))
+            : [];
         // Special-qualities chip editor, mirroring the weapon sheet but nested
         // under `effect`. Chips read the FULL weaponQualities map so a stored
         // quality outside the curated set still renders; only the add-dropdown
@@ -68,6 +75,21 @@ export class AmmunitionSheet extends DarkHeresyItemSheet {
         // carry no `name`, so the form's own submitOnChange never includes
         // specialQualities and cannot clobber these writes.
         const element = this.element;
+
+        element.addEventListener("change", event => {
+            const select = event.target.closest(".ammunition-weapon-select");
+            if (!select || !this.isEditable || !this.item.actor) return;
+            const weapon = this.item.actor.items.get(select.value);
+            if (weapon) linkAmmunition(weapon, this.item);
+            else unlinkAmmunition(this.item);
+        });
+
+        element.addEventListener("click", event => {
+            const button = event.target.closest(".ammunition-unlink");
+            if (!button || !this.isEditable || !this.item.actor) return;
+            event.preventDefault();
+            unlinkAmmunition(this.item);
+        });
 
         // Add: choosing a quality in the add-dropdown appends it (deduped) and
         // resets the select back to its placeholder.

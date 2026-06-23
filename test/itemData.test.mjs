@@ -58,6 +58,7 @@ const { default: WeaponModificationData } = await import("../script/data/item/we
 const { default: PsychicPowerData } = await import("../script/data/item/psychicPowerData.js");
 const { default: TalentData } = await import("../script/data/item/talentData.js");
 const { default: AmmunitionData } = await import("../script/data/item/ammunitionData.js");
+const { default: WeaponData } = await import("../script/data/item/weaponData.js");
 
 const EQUIPMENT_KEYS = ["craftsmanship", "description", "availability", "weight"];
 
@@ -194,6 +195,12 @@ test("AmmunitionData: inherits equipment fields and appends effect.specialQualit
     assert.equal(quality.fields.value.options.initial, null);
     assert.equal(quality.fields.value.options.min, 0);
     assert.equal(quality.fields.value.options.integer, true);
+});
+
+test("WeaponData: ammunition link is one string ID", () => {
+    const schema = WeaponData.defineSchema();
+    assert.equal(schema.ammo.type, "String");
+    assert.equal(schema.ammo.options.initial, "");
 });
 
 test("TalentData: inherits description+source and appends talent own fields", () => {

@@ -89,6 +89,15 @@
                     </div>
                 </div>
                 <div class="stats-row attack-malfunction-row">
+                    <div class="stat ammunition">
+                        <label>{{localize "AMMUNITION.HEADER"}}</label>
+                        <select class="weapon-ammunition-select" {{#unless hasActor}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}>
+                            <option value=""></option>
+                            {{selectOptions ammunitionOptions selected=system.ammo valueAttr="id" labelAttr="name"}}
+                        </select>
+                        <a class="weapon-ammunition-unlink {{#unless system.ammo}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}"
+                           title="Unlink" aria-label="Unlink"><i class="fas fa-chain-broken"></i></a>
+                    </div>
                     <div class="stat malfunction">
                         <label>{{localize "WEAPON.MALFUNCTION"}}</label>
                         <input type="checkbox" name="system.malfunction" data-dtype="Boolean" {{#if system.malfunction}}checked{{/if}} />

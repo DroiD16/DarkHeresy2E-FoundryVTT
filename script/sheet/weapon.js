@@ -1,4 +1,5 @@
 import { DarkHeresyItemSheet } from "./item.js";
+import { linkAmmunition, unlinkWeaponAmmunition } from "../common/ammunition-link.js";
 
 export class WeaponSheet extends DarkHeresyItemSheet {
     static DEFAULT_OPTIONS = {
@@ -26,6 +27,12 @@ export class WeaponSheet extends DarkHeresyItemSheet {
     /** @inheritDoc */
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
+        context.hasActor = !!this.item.actor;
+        context.ammunitionOptions = this.item.actor
+            ? this.item.actor.itemTypes.ammunition
+                .toSorted((a, b) => a.sort - b.sort)
+                .map(ammunition => ({ id: ammunition.id, name: ammunition.name }))
+            : [];
         const cfg = game.darkHeresy.config.weaponQualities;
         const current = this.item.system.specialQualities ?? [];
         // Chips for the stored qualities: localized label, the parametric value
@@ -75,6 +82,21 @@ export class WeaponSheet extends DarkHeresyItemSheet {
         // carry no `name`, so the form's own submitOnChange never includes
         // specialQualities and cannot clobber these writes.
         const element = this.element;
+
+        element.addEventListener("change", event => {
+            const select = event.target.closest(".weapon-ammunition-select");
+            if (!select || !this.isEditable || !this.item.actor) return;
+            const ammunition = this.item.actor.items.get(select.value);
+            if (ammunition) linkAmmunition(this.item, ammunition);
+            else unlinkWeaponAmmunition(this.item);
+        });
+
+        element.addEventListener("click", event => {
+            const button = event.target.closest(".weapon-ammunition-unlink");
+            if (!button || !this.isEditable || !this.item.actor) return;
+            event.preventDefault();
+            unlinkWeaponAmmunition(this.item);
+        });
 
         // Add: choosing a quality in the add-dropdown appends it (deduped) and
         // resets the select back to its placeholder.
@@ -154,10 +176,7 @@ export class WeaponSheet extends DarkHeresyItemSheet {
 
         // It has to be ammunition from the same actor
         if (item?.type === "ammunition" && item?.actor.uuid === this.item.actor.uuid) {
-            item.update({ "system.weaponId": this.item.id });
-            const newAmmos = new Set(this.item.system.ammo);
-            newAmmos.add(item.id);
-            this.item.update({ "system.ammo": newAmmos });
+            await linkAmmunition(this.item, item);
         }
     }
 }

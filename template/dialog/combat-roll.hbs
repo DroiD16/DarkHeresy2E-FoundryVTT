@@ -73,12 +73,10 @@
                 <input id="maximal" type="checkbox" {{#unless weapon.maximalAvailable}}disabled{{/unless}} />
             </div>
         {{/if}}
-        {{#if weapon.ammos}}
+        {{#if weapon.ammo}}
             <div class="wrapper">
                 <label>{{localize "DIALOG.AMMO"}}</label>
-                <select id="ammo">
-                    {{selectOptions weapon.ammos valueAttr="id" nameAttr="name" labelAttr="name"}}
-                </select>
+                <span>{{weapon.ammo.name}}</span>
             </div>
         {{/if}}
     </div>

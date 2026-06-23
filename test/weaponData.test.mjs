@@ -68,6 +68,20 @@ test("WeaponData.migrateData leaves legacy Special text untouched", () => {
     assert.deepEqual(source.specialQualities, []);
 });
 
+test("WeaponData.migrateAmmunitionLink normalizes legacy arrays to one ID", () => {
+    const first = { ammo: ["ammo-1", "ammo-2"] };
+    WeaponData.migrateAmmunitionLink(first);
+    assert.equal(first.ammo, "ammo-1");
+
+    const empty = { ammo: [] };
+    WeaponData.migrateAmmunitionLink(empty);
+    assert.equal(empty.ammo, "");
+
+    const current = { ammo: "ammo-3" };
+    WeaponData.migrateAmmunitionLink(current);
+    assert.equal(current.ammo, "ammo-3");
+});
+
 test("migrateSpecialQualities normalizes unsafe parametric values", () => {
     const source = {
         specialQualities: [

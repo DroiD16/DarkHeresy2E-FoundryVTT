@@ -6,7 +6,7 @@ export class PsychicPowerSheet extends DarkHeresyItemSheet {
         // Taller than the prior 397 so the special-quality add row and chip list
         // fit below the existing stats. The window stays resizable and a long
         // chip list scrolls internally instead of clipping its controls.
-        position: { height: 440 }
+        position: { height: 480 }
     };
 
     static PARTS = {

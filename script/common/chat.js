@@ -1,6 +1,8 @@
 import { commonRoll, combatRoll, damageRoll } from "./roll.js";
 import { prepareCommonRoll } from "./dialog.js";
 import DarkHeresyUtil from "./util.js";
+import { resolveRollItem } from "./roll-documents.js";
+import { reloadWeapon } from "./ammunition-reload.js";
 
 
 /**
@@ -171,15 +173,34 @@ function onDamageClick(ev) {
 }
 
 /**
- * Reloads the associated weapon who is empty Without considering ammo in the users inventory
+ * Reload the associated empty weapon, consuming one linked ammunition magazine
+ * when available.
  * @param {Event} ev
  */
 async function onReloadClick(ev) {
     let id = ev.currentTarget.closest(".message")?.dataset.messageId;
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
-    let weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
-    await weapon.update({"system.clip.value": rollData.weapon.clip.max});
+    const weapon = resolveRollItem(rollData);
+    await reloadWeapon(weapon, { warn: reloadWithoutAmmunitionToChat });
+}
+
+/**
+ * Post a warning that a weapon was reloaded despite an empty ammunition stack.
+ * @param {Item} weapon Reloaded weapon.
+ * @param {Item} ammunition Depleted ammunition.
+ * @returns {Promise<ChatMessage>}
+ */
+async function reloadWithoutAmmunitionToChat(weapon, ammunition) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+        "systems/dark-heresy/template/chat/reload-warning.hbs",
+        { weapon, ammunition }
+    );
+    return ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({ actor: weapon.actor }),
+        content
+    });
 }
 
 /**

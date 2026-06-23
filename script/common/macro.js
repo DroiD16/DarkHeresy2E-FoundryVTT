@@ -78,7 +78,7 @@ export default class DhMacroUtil {
 
     static rollWeapon(actor, item) {
         let rollData = DarkHeresyUtil.createWeaponRollData(actor, item);
-        prepareCombatRoll(rollData);
+        prepareCombatRoll(rollData, actor);
     }
 
     static getActor() {

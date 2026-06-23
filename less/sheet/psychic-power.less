@@ -152,12 +152,15 @@
     width: 8em;
 }
 
-.dark-heresy.psychic-power .stats .stats-row .stat.special input {
-    width: 427px;
+.dark-heresy.psychic-power .stats .stats-row .stat.special,
+.dark-heresy.psychic-power .stats .stats-row .stat.short-description {
+    flex: 1;
 }
 
+.dark-heresy.psychic-power .stats .stats-row .stat.special input,
 .dark-heresy.psychic-power .stats .stats-row .stat.short-description input {
-    width: 372px;
+    flex: 1;
+    min-width: 0;
 }
 
 /* Structured special-qualities chip editor, mirroring the weapon sheet's chip

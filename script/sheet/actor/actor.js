@@ -1,5 +1,6 @@
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll } from "../../common/dialog.js";
 import DarkHeresyUtil from "../../common/util.js";
+import { linkAmmunition, unlinkWeaponAmmunition } from "../../common/ammunition-link.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -194,12 +195,20 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onAmmoUnlink(target) {
-        const ammoId = target.closest(".linked-item").dataset.ammoId;
         const weaponId = target.closest(".item").dataset.itemId;
+        const weapon = this.actor.items.get(weaponId);
+        if (weapon) return unlinkWeaponAmmunition(weapon);
+    }
 
-        const newAmmos = this.actor.items.get(weaponId).system.ammo.filter(ammo => ammo !== ammoId);
-        this.actor.items.get(weaponId).update({ "system.ammo": newAmmos });
-        this.actor.items.get(ammoId).update({ "system.weaponId": "" });
+    /** @inheritDoc */
+    async _onDropItem(event, item) {
+        const targetId = event.target.closest(".gear.item[data-item-id]")?.dataset.itemId;
+        const weapon = this.actor.items.get(targetId);
+        if (weapon?.type === "weapon" && item?.type === "ammunition" && item.actor === this.actor) {
+            await linkAmmunition(weapon, item);
+            return item;
+        }
+        return super._onDropItem(event, item);
     }
 
     async _prepareCustomRoll() {

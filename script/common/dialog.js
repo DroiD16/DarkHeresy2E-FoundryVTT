@@ -160,7 +160,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
                             text: aim?.options[aim.selectedIndex].text
                         };
 
-                        let ammo = actorRef.items.get(form.querySelector("#ammo")?.value);
+                        const ammo = actorRef.items.get(rollData.weapon.ammo?.id);
 
                         // Union the weapon's structured qualities with the
                         // loaded ammunition's (additive, higher value wins) and

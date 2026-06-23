@@ -46,7 +46,7 @@
                                         class="fas fa-trash"></i></a>
                             </div>
                         </div>
-                        {{#each item.system.ammoItems as |ammo|}}
+                        {{#with item.system.ammoItem as |ammo|}}
                             <div class="linked-item flex row" data-ammo-id="{{ammo.id}}">
                                 &#8627 {{ammo.name}}
                                 <div class="button">
@@ -54,7 +54,7 @@
                                             class="fas fa-chain-broken"></i></a>
                                 </div>
                             </div>
-                        {{/each}}
+                        {{/with}}
                     </div>
                 {{/each}}
             </div>

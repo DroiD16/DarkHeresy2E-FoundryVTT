@@ -45,7 +45,7 @@ export default class WeaponData extends EquipmentItemData {
             // is otherwise derivable from the weapon's qualities.
             malfunction: new fields.BooleanField({ initial: false }),
             attack: new fields.NumberField({ initial: 0 }),
-            ammo: new fields.ArrayField(new fields.StringField({ blank: false}))
+            ammo: new fields.StringField({ initial: "" })
         };
 
     }
@@ -60,10 +60,9 @@ export default class WeaponData extends EquipmentItemData {
     prepareAmmoFetch() {
         // We only store a reference to the ammo, here we get the whole item and store it in memory only
         // Ammo can only be connected to weapons for actor owned weapons
-        if (this.parent.actor && this.ammo.length > 0) {
-            this.ammoItems = [];
-            this.ammo.forEach(ammo => this.ammoItems.push(this.parent.actor.items.get(ammo)));
-        }
+        this.ammoItem = this.parent.actor && this.ammo
+            ? this.parent.actor.items.get(this.ammo) ?? null
+            : null;
     }
 
 
@@ -74,6 +73,7 @@ export default class WeaponData extends EquipmentItemData {
         this.migrateRateOfFire(source);
         this.migrateMalfunction(source);
         this.migrateSpecialQualities(source);
+        this.migrateAmmunitionLink(source);
 
         return source;
     }
@@ -97,6 +97,14 @@ export default class WeaponData extends EquipmentItemData {
             const value = Number(quality.value);
             quality.value = Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : null;
         }
+    }
+
+    // The upstream implementation briefly allowed multiple linked ammunition
+    // items. The active-ammunition model is singular again; preserve the first
+    // stored ID when an old array is encountered and normalize an empty array to
+    // the schema's empty-string sentinel.
+    static migrateAmmunitionLink(source) {
+        if (Array.isArray(source.ammo)) source.ammo = source.ammo.find(id => typeof id === "string" && id) ?? "";
     }
 
     static migrateRateOfFire(source) {

@@ -80,6 +80,12 @@
                     </div>
                 </div>
                 <div class="stats-row">
+                    <div class="stat short-description">
+                        <label>{{localize "PSYCHIC_POWER.SHORT_DESCRIPTION"}}</label>
+                        <input name="system.shortDescription" type="text" value="{{system.shortDescription}}" />
+                    </div>
+                </div>
+                <div class="stats-row">
                     <div class="stat special">
                         <label>{{localize "PSYCHIC_POWER.SPECIAL"}}</label>
                         <input name="system.damage.special" type="text" value="{{system.damage.special}}" />
@@ -115,12 +121,6 @@
                     </div>
                 </div>
                 {{/if}}
-                <div class="stats-row">
-                    <div class="stat short-description">
-                        <label style="width: 90px">{{localize "PSYCHIC_POWER.SHORT_DESCRIPTION"}}</label>
-                        <input name="system.shortDescription" type="text" value="{{system.shortDescription}}" />
-                    </div>
-                </div>
             </div>
         </div>
         <div class="tab" data-group="primary" data-tab="effect">

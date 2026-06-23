@@ -87,7 +87,7 @@ export default class DarkHeresyUtil {
             // The weapon's intrinsic (pre-bonus) penetration, used by the Lance
             // quality which scales only the base value per degree of success.
             basePenetration: weaponItem.penetration,
-            ammos: weaponItem.system.ammoItems,
+            ammo: weaponItem.system.ammoItem,
             traits: weaponTraits,
             // The weapon's raw structured qualities, stashed so the combat
             // dialog can union them with the loaded ammunition's qualities at

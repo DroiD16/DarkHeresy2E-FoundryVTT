@@ -25,7 +25,16 @@
                 <div class="stats-row">
                     <div class="stat weapon">
                         <label>{{localize "AMMUNITION.WEAPON"}}</label>
-                        <input name="system.weapon" type="text" value="{{system.weapon}}" />
+                        {{#if hasActor}}
+                            <select class="ammunition-weapon-select" {{#unless editable}}disabled{{/unless}}>
+                                <option value=""></option>
+                                {{selectOptions weaponOptions selected=system.weaponId valueAttr="id" labelAttr="name"}}
+                            </select>
+                            <a class="ammunition-unlink {{#unless system.weaponId}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}"
+                               title="Unlink" aria-label="Unlink"><i class="fas fa-chain-broken"></i></a>
+                        {{else}}
+                            <input name="system.weapon" type="text" value="{{system.weapon}}" />
+                        {{/if}}
                     </div>
                     <div class="stat quantity">
                         <label>{{localize "AMMUNITION.QUANTITY"}}</label>

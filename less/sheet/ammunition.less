@@ -3,8 +3,27 @@
     max-height: 165px;
 }
 
-.dark-heresy.ammunition .stats .stats-row .stat.weapon input {
-    width: 26em;
+.dark-heresy.ammunition .stats .stats-row .stat.weapon {
+    flex: 1;
+    margin-right: 6px;
+}
+
+.dark-heresy.ammunition .stats .stats-row .stat.weapon input,
+.dark-heresy.ammunition .stats .stats-row .stat.weapon select {
+    flex: 1;
+    min-width: 0;
+}
+
+.dark-heresy.ammunition .stat.weapon .ammunition-unlink {
+    flex: 0 0 auto;
+    cursor: pointer;
+    padding: 0 3px;
+}
+
+.dark-heresy.ammunition .stat.weapon .ammunition-unlink.disabled {
+    cursor: default;
+    opacity: 0.35;
+    pointer-events: none;
 }
 
 .dark-heresy.ammunition .stats .stats-row .stat.quantity input {
