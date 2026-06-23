@@ -68,8 +68,21 @@ export default class WeaponData extends EquipmentItemData {
 
         this.migrateRateOfFire(source);
         this.migrateSpecialQualities(source);
+        this.migrateMalfunction(source);
 
         return source;
+    }
+
+    // Migrate the legacy string `malfunction` ("" | "jammed" | "overheated") to
+    // the boolean field. V13's BooleanField casts a string to true only when it
+    // is exactly "true", so "jammed"/"overheated" would otherwise silently become
+    // false and a malfunctioning weapon would appear cleared on load. Convert any
+    // non-empty legacy string to true; "" -> false. Idempotent (a boolean source
+    // is left untouched).
+    static migrateMalfunction(source) {
+        if (typeof source.malfunction === "string") {
+            source.malfunction = source.malfunction !== "";
+        }
     }
 
     // Migrate the legacy free-text `special` field into the structured
