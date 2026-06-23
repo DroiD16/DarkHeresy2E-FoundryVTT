@@ -311,3 +311,20 @@
     max-height: 141px;
     height: 141px;
 }
+
+.dark-heresy .combat .combat-weapons-table {
+    --table-columns: 20fr 10fr 5fr 10fr 10fr 5fr 5fr 6fr 10fr 5fr 14fr;
+    height: 127px;
+}
+
+.dark-heresy .combat .combat-psychic-table {
+    --table-columns: 20fr 10fr 10fr 10fr 10fr 10fr 5fr 5fr 20fr;
+    height: 168px;
+}
+
+.dark-heresy .combat .combat-weapons-table > .items,
+.dark-heresy .combat .combat-psychic-table > .items {
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+}

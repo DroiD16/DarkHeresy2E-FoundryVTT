@@ -367,3 +367,57 @@
     width: 15px;
     height: 15px;
 }
+
+.dark-heresy .progression .progression-aptitudes-table {
+    --table-columns: 90fr 10fr;
+    height: 187px;
+}
+
+.dark-heresy .progression .progression-talents-table {
+    --table-columns: 60fr 25fr 9fr 6fr;
+    height: 187px;
+}
+
+.dark-heresy .progression .progression-characteristics-table {
+    --table-columns: 30fr 25fr 13fr 11fr 15fr;
+    height: 184px;
+}
+
+.dark-heresy .progression .progression-psychic-table {
+    --table-columns: 64fr 28fr 8fr;
+    height: 134px;
+}
+
+.dark-heresy .progression .psychic-powers .progression-psychic-table > .header {
+    display: grid;
+}
+
+.dark-heresy .progression .progression-skills-table {
+    --table-columns: 40fr 25fr 11fr 15fr 9fr;
+    height: 409px;
+}
+
+.dark-heresy .progression .aligned-table > .items {
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+}
+
+.dark-heresy .progression .progression-skills-table > .items > .header {
+    display: grid;
+    grid-template-columns: var(--table-columns);
+    width: 100%;
+}
+
+.dark-heresy .progression .progression-skills-table > .items > .header > .name {
+    grid-column: 1 / -1;
+}
+
+/* Inputs keep their compact visual treatment, but the grid owns their width. */
+.dark-heresy .progression .aligned-table > .items > .item > input,
+.dark-heresy .progression .aligned-table > .items > .item > select {
+    box-sizing: border-box;
+    margin-left: 2px;
+    margin-right: 2px;
+    width: calc(100% - 4px);
+}

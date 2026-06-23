@@ -164,3 +164,53 @@
     text-align: left;
     padding-left: 10px;
 }
+
+/* Equipment already scrolls as one section. Nested scrollbars made each body
+   narrower than its heading and caused the visible column drift. */
+.dark-heresy .gear .all-gear .aligned-table > .items {
+    overflow-y: visible;
+    padding-right: 0;
+}
+
+.dark-heresy .gear .gear-weapons-table {
+    --table-columns: 30% 30fr 28fr 10fr 7fr 10fr 7% 7%;
+}
+
+.dark-heresy .gear .gear-modifications-table {
+    --table-columns: 30% 10fr 50fr 7% 7%;
+}
+
+.dark-heresy .gear .gear-ammunition-table {
+    --table-columns: 30% 42fr 10fr 7fr 7% 7%;
+}
+
+.dark-heresy .gear .gear-armour-table,
+.dark-heresy .gear .gear-force-fields-table,
+.dark-heresy .gear .gear-description-table {
+    --table-columns: 30% 55fr 7% 7%;
+}
+
+.dark-heresy .gear .gear-cybernetics-table {
+    --table-columns: 30% 10fr 45fr 7% 7%;
+}
+
+.dark-heresy .gear .gear-weapons-table > .items > .item {
+    display: block;
+}
+
+.dark-heresy .gear .gear-weapons-table > .items > .item > .row {
+    grid-template-columns: var(--table-columns);
+}
+
+.dark-heresy .gear .aligned-table > .items > .item > *,
+.dark-heresy .gear .aligned-table > .items > .item > .row > * {
+    align-self: center;
+}
+
+.dark-heresy .gear .gear-weapons-table > .items > .item > .linked-item {
+    box-sizing: border-box;
+    column-gap: 4px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding-left: 0;
+}

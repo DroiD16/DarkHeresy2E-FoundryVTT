@@ -248,6 +248,65 @@
     margin-right: 5px;
 }
 
+/* Multi-column actor lists use one explicit track definition for both their
+   heading and rows. This avoids independent flex shrinking when translated
+   content or a vertical scrollbar changes the available width. */
+.dark-heresy .aligned-table > .header,
+.dark-heresy .aligned-table > .items > .item,
+.dark-heresy .aligned-table > .items > .item > .row {
+    align-items: center;
+    display: grid;
+    grid-template-columns: var(--table-columns);
+    width: 100%;
+}
+
+.dark-heresy .aligned-table > .header,
+.dark-heresy .aligned-table > .items > .item {
+    box-sizing: border-box;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.dark-heresy .aligned-table > .items {
+    padding-right: 0;
+}
+
+.dark-heresy .aligned-table > .header > *,
+.dark-heresy .aligned-table > .items > .item > *,
+.dark-heresy .aligned-table > .items > .item > .row > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.dark-heresy .aligned-table > .header {
+    height: auto;
+    min-height: 22px;
+}
+
+.dark-heresy .aligned-table .name > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.dark-heresy .aligned-table.is-scrollable {
+    overflow-y: auto;
+    scrollbar-color: #4e4438ff transparent;
+    scrollbar-width: thin;
+}
+
+.dark-heresy .aligned-table.is-scrollable > .header {
+    flex: 0 0 auto;
+}
+
+.dark-heresy .aligned-table.is-scrollable > .items {
+    flex: 0 0 auto;
+    height: auto;
+    max-height: none;
+    overflow-y: visible;
+}
+
 .dark-heresy.sheet .header input,
 .dark-heresy.sheet .header span {
     flex-grow: 1;

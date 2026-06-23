@@ -14,7 +14,7 @@
     </div>
     <div class="all-gear border">
         <h1>{{localize "TITLE.EQUIPMENT"}}</h1>
-        <div class="item-list">
+        <div class="item-list gear-weapons-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "WEAPON.HEADER"}}</b>
                 <b class="class">{{localize "WEAPON.CLASS"}}</b>
@@ -48,18 +48,18 @@
                         </div>
                         {{#with item.system.ammoItem as |ammo|}}
                             <div class="linked-item flex row" data-ammo-id="{{ammo.id}}">
-                                &#8627 {{ammo.name}}
                                 <div class="button">
                                     <a class="item-control ammo-unlink" title="Unlink Ammo"><i
                                             class="fas fa-chain-broken"></i></a>
                                 </div>
+                                <div>&#8627 {{ammo.name}}</div>
                             </div>
                         {{/with}}
                     </div>
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-modifications-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "WEAPON_MODIFICATION.HEADER"}}</b>
                 <b class="installed">{{localize "WEAPON_MODIFICATION.INSTALLED"}}</b>
@@ -89,13 +89,13 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-ammunition-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "AMMUNITION.HEADER"}}</b>
                 <b class="weapon">{{localize "AMMUNITION.WEAPON"}}</b>
                 <b class="quantity">{{localize "AMMUNITION.QUANTITY"}}</b>
-                <b class="weight">{{localize "AMMUNITION.WEIGHT"}}</b>
                 <b class="sum-weight">{{localize "AMMUNITION.SUM"}}</b>
+                <b class="weight">{{localize "AMMUNITION.WEIGHT"}}</b>
                 <a class="button item-create" title="Add Ammunition" data-type="ammunition"><i
                         class="fas fa-plus"></i></a>
             </div>
@@ -110,8 +110,8 @@
                         </div>
                         <div class="weapon">{{item.weapon}}</div>
                         <div class="quantity">{{item.quantity}}</div>
-                        <div class="weight">{{item.weight}}</div>
                         <div class="sum-weight">{{item.weightSum}}</div>
+                        <div class="weight">{{item.weight}}</div>
                         <div class="button">
                             <a class="item-control item-delete" title="Delete Ammunition"><i
                                     class="fas fa-trash"></i></a>
@@ -120,7 +120,7 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-armour-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "ARMOUR.HEADER"}}</b>
                 <b class="part">{{localize "ARMOUR.PART"}}</b>
@@ -145,7 +145,7 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-force-fields-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "FORCE_FIELD.HEADER"}}</b>
                 <b class="craftsmanship">{{localize "FORCE_FIELD.CRAFTSMANSHIP"}}</b>
@@ -172,7 +172,7 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-description-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "GEAR.HEADER"}}</b>
                 <b class="short-description">{{localize "GEAR.SHORT_DESCRIPTION"}}</b>
@@ -197,7 +197,7 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-description-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "DRUG.HEADER"}}</b>
                 <b class="short-description">{{localize "DRUG.SHORT_DESCRIPTION"}}</b>
@@ -222,7 +222,7 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-description-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "TOOL.HEADER"}}</b>
                 <b class="short-description">{{localize "TOOL.SHORT_DESCRIPTION"}}</b>
@@ -247,7 +247,7 @@
                 {{/each}}
             </div>
         </div>
-        <div class="item-list">
+        <div class="item-list gear-cybernetics-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "CYBERNETIC.HEADER"}}</b>
                 <b class="installed">{{localize "CYBERNETIC.INSTALLED"}}</b>
