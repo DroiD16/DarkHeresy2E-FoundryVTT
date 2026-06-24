@@ -207,9 +207,10 @@ async function reloadWithoutAmmunitionToChat(weapon, ammunition) {
 }
 
 /**
- * Post a reminder that a weapon with several linked ammunition types was reloaded
- * without auto-subtracting any magazine — the player must subtract the rounds for
- * whichever ammo they actually loaded.
+ * Post a reminder that a weapon was reloaded without auto-subtracting any
+ * magazine — the player must subtract the rounds themselves. Fires whenever the
+ * system can't track the count: no linked ammunition (0) or several loaded types
+ * (>1). Only the exactly-one-linked case auto-subtracts instead.
  * @param {Item} weapon Reloaded weapon.
  * @returns {Promise<ChatMessage>}
  */

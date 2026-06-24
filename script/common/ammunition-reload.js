@@ -1,16 +1,17 @@
 /**
- * Refill a weapon's clip. The ammunition-quantity bookkeeping depends on how many
- * ammunition items are linked:
- *  - 0 linked  -> refill the clip only (free reload; no side effect).
- *  - 1 linked  -> refill the clip and consume one magazine. A depleted linked
- *                 ammunition does not block the reload but invokes `warn`.
- *  - >1 linked -> refill the clip, consume NOTHING, and invoke `remind`: with
- *                 several loaded ammo types the system cannot know which one the
- *                 player loaded, so it asks the player to subtract the rounds.
+ * Refill a weapon's clip. The system only auto-tracks ammunition quantity when
+ * exactly ONE ammunition item is linked; otherwise it cannot know which rounds
+ * the player loaded, so it reminds them to subtract manually:
+ *  - exactly 1 linked -> refill the clip and consume one magazine. A depleted
+ *                        linked ammunition does not block the reload but invokes
+ *                        `warn`.
+ *  - 0 or >1 linked   -> refill the clip, consume NOTHING, and invoke `remind`:
+ *                        with no tracked ammo (0) or several loaded types (>1)
+ *                        the player subtracts the rounds themselves.
  * @param {Item} weapon The owned weapon to reload.
  * @param {object} [options] Optional side effects.
  * @param {(weapon: Item, ammunition: Item) => Promise<*>} [options.warn] One-ammo depleted warning.
- * @param {(weapon: Item) => Promise<*>} [options.remind] Multi-ammo manual-subtract reminder.
+ * @param {(weapon: Item) => Promise<*>} [options.remind] Manual-subtract reminder (0 or >1 linked).
  * @returns {Promise<void>}
  */
 export async function reloadWeapon(weapon, { warn = async () => {}, remind = async () => {} } = {}) {
@@ -33,5 +34,5 @@ export async function reloadWeapon(weapon, { warn = async () => {}, remind = asy
     else await weapon.update({ "system.clip.value": weapon.system.clip.max });
 
     if (depleted) await warn(weapon, single);
-    else if (ammoItems.length > 1) await remind(weapon);
+    else if (ammoItems.length !== 1) await remind(weapon);
 }

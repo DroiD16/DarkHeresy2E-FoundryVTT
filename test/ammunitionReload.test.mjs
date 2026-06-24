@@ -63,17 +63,19 @@ test("reload with one depleted ammo warns without going negative", async () => {
     assert.equal(reminded, false);
 });
 
-test("reload with NO linked ammo fills clip only", async () => {
+test("reload with NO linked ammo fills clip, consumes nothing, reminds", async () => {
+    // With no tracked ammo item the system can't subtract a magazine, so it posts
+    // the same manual-subtract reminder as the multi-ammo case.
     const { weapon, updates } = makeReloadFixture({ ammoItems: [] });
     let warned = false;
-    let reminded = false;
+    let reminderArgs;
     await reloadWeapon(weapon, {
         warn: async () => { warned = true; },
-        remind: async () => { reminded = true; }
+        remind: async (...args) => { reminderArgs = args; }
     });
     assert.deepEqual(updates, [{ _id: "weapon", "system.clip.value": 12 }]);
     assert.equal(warned, false);
-    assert.equal(reminded, false);
+    assert.deepEqual(reminderArgs, [weapon]);
 });
 
 test("reload with MULTIPLE linked ammo fills clip, consumes nothing, reminds", async () => {
