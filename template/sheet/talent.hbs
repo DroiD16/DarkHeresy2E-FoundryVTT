@@ -34,17 +34,37 @@
                     </div>
                 </div>
                 <div class="stats-row">
-                    <div class="stat aptitudes">
-                        <label>{{localize "TALENT.APTITUDES"}}</label>
-                        <input name="system.aptitudes" type="text" value="{{system.aptitudes}}" />
-                    </div>
-                </div>
-                <div class="stats-row">
                     <div class="stat benefit">
                         <label>{{localize "TALENT.BENEFIT"}}</label>
                         <input name="system.benefit" type="text" value="{{system.benefit}}" />
                     </div>
                 </div>
+                <div class="stats-row aptitudes-row">
+                    <div class="stat aptitudes">
+                        <label>{{localize "TALENT.APTITUDES"}}</label>
+                        {{#if editable}}
+                            <select class="add-quality-select">
+                                <option value="">{{localize "TALENT.ADD_APTITUDE"}}</option>
+                                {{#each qualityOptions}}<option value="{{key}}">{{label}}</option>{{/each}}
+                            </select>
+                        {{/if}}
+                    </div>
+                </div>
+                {{#if qualityChips}}
+                <div class="stats-row aptitude-chips-row">
+                    <div class="quality-chips border">
+                        {{#each qualityChips}}
+                            <span class="quality-chip" data-key="{{key}}">
+                                <span class="quality-chip-label">{{label}}</span>
+                                {{#if @root.editable}}
+                                    <a class="remove-quality" data-key="{{key}}" title="{{localize 'TALENT.REMOVE_APTITUDE'}}">
+                                        <i class="fas fa-trash"></i></a>
+                                {{/if}}
+                            </span>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
             </div>
         </div>
         {{!-- Effects Tab --}}

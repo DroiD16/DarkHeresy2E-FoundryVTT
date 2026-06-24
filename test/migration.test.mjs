@@ -347,6 +347,28 @@ test("psychicPower: an already-canonical focus test yields no change", () => {
     assert.deepEqual(update, {});
 });
 
+test("talent: legacy comma-separated aptitudes string -> structured list", () => {
+    const update = buildItemMigrationUpdate("talent", { aptitudes: "Strength, Agility" }, noFocus);
+    assert.deepEqual(update, {
+        "system.aptitudes": [
+            { key: "Strength", value: null },
+            { key: "Agility", value: null }
+        ]
+    });
+});
+
+test("talent: an already-structured aptitude list is normalized (idempotent)", () => {
+    const structured = [{ key: "Strength", value: null }, { key: "Agility", value: null }];
+    const update = buildItemMigrationUpdate("talent", { aptitudes: structured }, noFocus);
+    assert.deepEqual(update, { "system.aptitudes": structured });
+});
+
+test("talent: empty aptitudes are NOT persisted (left to the read shim)", () => {
+    assert.deepEqual(buildItemMigrationUpdate("talent", { aptitudes: "" }, noFocus), {});
+    assert.deepEqual(buildItemMigrationUpdate("talent", { aptitudes: [] }, noFocus), {});
+    assert.deepEqual(buildItemMigrationUpdate("talent", {}, noFocus), {});
+});
+
 test("unknown item type yields an empty delta", () => {
     const update = buildItemMigrationUpdate("gear", { description: "x" }, noFocus);
     assert.deepEqual(update, {});
@@ -356,5 +378,6 @@ test("buildItemMigrationUpdate tolerates missing nested groups", () => {
     assert.deepEqual(buildItemMigrationUpdate("weapon", {}, noFocus), {});
     assert.deepEqual(buildItemMigrationUpdate("ammunition", {}, noFocus), {});
     assert.deepEqual(buildItemMigrationUpdate("psychicPower", {}, noFocus), {});
+    assert.deepEqual(buildItemMigrationUpdate("talent", {}, noFocus), {});
     assert.deepEqual(buildItemMigrationUpdate("weapon", undefined, noFocus), {});
 });

@@ -96,7 +96,7 @@
 
         {{#if item.isTalent}}
         <p><strong>{{localize "TALENT.PREREQUISITES"}}:</strong> {{item.prerequisites}}</p>
-        <p><strong>{{localize "TALENT.APTITUDES"}}:</strong> {{item.aptitudes}}</p>
+        <p><strong>{{localize "TALENT.APTITUDES"}}:</strong> {{talentAptitudesDisplay item.aptitudes}}</p>
         <p><strong>{{localize "TALENT.TIER"}}:</strong> {{item.tier}}</p>
         <p><strong>{{localize "HEADER.DESCRIPTION"}}:</strong> {{{item.description}}}</p>
         {{/if}}

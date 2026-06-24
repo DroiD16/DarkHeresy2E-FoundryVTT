@@ -216,11 +216,24 @@ test("TalentData: inherits description+source and appends talent own fields", ()
     assert.equal(schema.source.options.initial, "");
 
     // Own string fields, all String initial ""
-    for (const key of ["prerequisites", "aptitudes", "benefit"]) {
+    for (const key of ["prerequisites", "benefit"]) {
         assert.ok(key in schema, `own key ${key} present`);
         assert.equal(schema[key].type, "String");
         assert.equal(schema[key].options.initial, "");
     }
+
+    // aptitudes is the structured chip array: an ArrayField of a Schema
+    // {key: String required/non-blank, value: Number nullable/min 0/int},
+    // mirroring the weapon/ammunition/psychic special-quality shape.
+    assert.equal(schema.aptitudes.type, "Array");
+    const aptitude = schema.aptitudes.element;
+    assert.equal(aptitude.type, "Schema");
+    assert.equal(aptitude.fields.key.type, "String");
+    assert.equal(aptitude.fields.key.options.required, true);
+    assert.equal(aptitude.fields.key.options.blank, false);
+    assert.equal(aptitude.fields.value.type, "Number");
+    assert.equal(aptitude.fields.value.options.nullable, true);
+    assert.equal(aptitude.fields.value.options.initial, null);
 
     // tier and cost are numeric
     assert.equal(schema.tier.type, "Number");

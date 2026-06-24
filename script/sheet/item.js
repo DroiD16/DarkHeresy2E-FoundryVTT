@@ -99,7 +99,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
         const editor = this.constructor.QUALITY_EDITOR;
         if (!editor) return;
 
-        const cfg = game.darkHeresy.config.weaponQualities;
+        const cfg = game.darkHeresy.config[editor.config ?? "weaponQualities"];
         const current = foundry.utils.getProperty(this.item, editor.systemPath) ?? [];
         context.qualityChips = current.map(quality => {
             const entry = cfg[quality.key];
@@ -130,7 +130,8 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
             const key = select.value;
             select.value = "";
             if (!key) return;
-            const entry = game.darkHeresy.config.weaponQualities[key];
+            const cfg = game.darkHeresy.config[this.constructor.QUALITY_EDITOR.config ?? "weaponQualities"];
+            const entry = cfg[key];
             if (!entry) return;
             this.#mutateQualities(current => {
                 if (current.some(quality => quality.key === key)) return null;

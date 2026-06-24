@@ -123,6 +123,22 @@ function registerHandlebarsHelpers() {
         return key ? game.i18n.localize(key) : name;
     });
 
+    // Display-only, localized rendering of a talent's structured aptitudes for
+    // the chat card: each stored {key} becomes its localized aptitude label
+    // (canonical English tags map via config.aptitudes; unknown/custom keys fall
+    // back to the raw key so nothing is silently blanked), joined by commas. The
+    // stored canonical key is never written back; XP cost continues to match it.
+    Handlebars.registerHelper("talentAptitudesDisplay", function(aptitudes) {
+        const map = game.darkHeresy?.config?.aptitudes ?? {};
+        return (Array.isArray(aptitudes) ? aptitudes : [])
+            .map(a => {
+                const key = map[a?.key];
+                return key ? game.i18n.localize(key) : a?.key;
+            })
+            .filter(label => label != null && label !== "")
+            .join(", ");
+    });
+
     // Display-only localization of a psychic power's Focus Power test value:
     // when `name` is one of the canonical char/skill KEYS in the focus-power
     // test map, return its localized label; otherwise return the raw value

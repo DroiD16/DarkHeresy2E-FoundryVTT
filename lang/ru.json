@@ -453,6 +453,8 @@
     "TALENT.PREREQUISITES": "Требования",
     "TALENT.TIER": "Ранг",
     "TALENT.APTITUDES": "Склонности",
+    "TALENT.ADD_APTITUDE": "Добавить склонность…",
+    "TALENT.REMOVE_APTITUDE": "Удалить",
     "TOOL.HEADER": "Инструменты",
     "TOOL.NAME": "Название",
     "TOOL.SHORT_DESCRIPTION": "Описание",

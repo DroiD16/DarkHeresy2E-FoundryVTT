@@ -1,5 +1,6 @@
 import { parseSpecialToQualities, resolveFocusTestKey } from "./quality-parser.js";
 import { AMMUNITION_QUALITY_KEYS } from "./weapon-qualities.js";
+import { parseTalentAptitudes } from "./talent-aptitudes.js";
 
 /**
  * Run the world migration if the stored schema version is behind the target.
@@ -16,13 +17,16 @@ import { AMMUNITION_QUALITY_KEYS } from "./weapon-qualities.js";
  * Schema version 7 adds a one-time ITEM migration (`migrateItems`) covering world
  * items, actor-embedded items (live actors and world Actor compendiums), and
  * world Item compendiums: it persists the
- * legacy weapon `ammo` link (array -> single id) and seeds structured
- * `specialQualities` from the decorative free-text `special` fields (and
- * normalizes a free-text psychic `focusPower.test` to its canonical key). It is
- * idempotent — it only seeds qualities when none exist yet, so curated chips are
- * never duplicated or resurrected. The free-text fields are left intact. The
- * read-time `migrateData` shims (rateOfFire/damageModifier/ammo) stay in place as
- * a safety net for imported or compendium documents the runner cannot reach.
+ * legacy weapon `ammo` link (array -> single id), seeds structured
+ * `specialQualities` from the decorative free-text `special` fields, normalizes a
+ * free-text psychic `focusPower.test` to its canonical key, and converts the
+ * legacy comma-separated talent `aptitudes` string to the structured aptitude
+ * list. It is idempotent — it only seeds qualities when none exist yet, so curated
+ * chips are never duplicated or resurrected, and the talent conversion normalizes
+ * either shape. The free-text fields are left intact. The read-time `migrateData`
+ * shims (rateOfFire/damageModifier/ammo and the talent aptitudes shim) stay in
+ * place as a safety net for imported or compendium documents the runner cannot
+ * reach.
  *
  * KNOWN LIMITATION: Worlds that were already sealed at worldSchemaVersion = 6 by the
  * previously-broken build will not re-run these migrations (nor will an actor that
@@ -301,6 +305,8 @@ export const migrateCompendium = async function(pack, worldSchemaVersion) {
  *  - ammunition:    seed `effect.specialQualities` from `effect.special`.
  *  - psychicPower:  seed `damage.specialQualities` from `damage.special`; resolve
  *                   `focusPower.test` to a canonical key when it is free text.
+ *  - talent:        convert the legacy comma-separated `aptitudes` string to the
+ *                   structured `{key, value}` list (normalizing either shape).
  *
  * Quality seeding is skipped when the target already has qualities, so curated
  * chips are never duplicated or resurrected and the migration is idempotent. The
@@ -332,6 +338,15 @@ export const buildItemMigrationUpdate = (type, system, resolveFocus = () => null
             system.damage?.specialQualities, system.damage?.special, null);
         const key = resolveFocus(system.focusPower?.test);
         if (key) update["system.focusPower.test"] = key;
+    } else if (type === "talent") {
+        // Convert the legacy comma-separated aptitude string to the structured
+        // list. `system.aptitudes` may already be the array (the TalentData
+        // read-shim runs before this and on documents created in the new schema),
+        // so parseTalentAptitudes normalizes either shape and the conversion is
+        // idempotent. Empty results are skipped so talents with no aptitudes are
+        // not rewritten.
+        const aptitudes = parseTalentAptitudes(system.aptitudes);
+        if (aptitudes.length > 0) update["system.aptitudes"] = aptitudes;
     }
     return update;
 };

@@ -4,8 +4,11 @@
 }
 
 .dark-heresy.talent .stats {
-    height: 165px;
+    height: 100%;
     align-content: baseline;
+    /* The aptitude add row and chip list grow this box; scroll instead of
+       clipping the controls if a talent lists an unusually long set. */
+    overflow-y: auto;
 }
 
 .dark-heresy.talent .stats .stats-row .stat.prerequisites {
@@ -20,4 +23,49 @@
 .dark-heresy.talent .stats .stats-row .stat.tier input {
     width: 2em;
     text-align: center;
+}
+
+/* Aptitudes chip editor (shared QUALITY_EDITOR markup), mirroring the weapon
+   special-qualities styling. Aptitudes carry no numeric value, so there is no
+   value input — only the label and the remove control. */
+.dark-heresy.talent .stats .stats-row.aptitudes-row {
+    align-items: center;
+}
+
+.dark-heresy.talent .stat.aptitudes {
+    align-items: center;
+}
+
+.dark-heresy.talent .quality-chips {
+    box-sizing: border-box;
+    display: flex;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 4px;
+    max-height: 60px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.dark-heresy.talent .quality-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    /* The aptitude zebra-odd shade, so chips read as the same UI family. */
+    background: rgba(0, 0, 0, 0.2);
+    font-family: var(--font-text);
+    color: var(--color-text);
+}
+
+.dark-heresy.talent .quality-chip .remove-quality {
+    cursor: pointer;
+    color: var(--color-text);
+    line-height: 1;
+}
+
+.dark-heresy.talent .quality-chip .remove-quality:hover {
+    color: var(--color-foreground);
 }

@@ -188,6 +188,16 @@ Dh.aptitudes = {
     General: "APTITUDE.GENERAL"
 };
 
+// Derived from Dh.aptitudes for the talent sheet's aptitude chip editor, which
+// reads it through the shared QUALITY_EDITOR (config: "talentAptitudes"). Each
+// entry mirrors the weaponQualities entry shape ({labelKey, hasValue}); an
+// aptitude never carries a numeric value, so hasValue is always false. The keys
+// stay the canonical English tags, matched verbatim against the actor's aptitude
+// Item names for XP cost. Must be defined AFTER Dh.aptitudes.
+Dh.talentAptitudes = Object.fromEntries(
+    Object.entries(Dh.aptitudes).map(([name, labelKey]) => [name, { labelKey, hasValue: false }])
+);
+
 // Single source of truth for the psychic-power Focus Power test field: the
 // canonical char/skill KEY (the actor schema property, e.g. "weaponSkill",
 // "commonLore") -> its i18n label key. Mirrors the aptitude map's role:

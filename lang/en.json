@@ -453,6 +453,8 @@
     "TALENT.PREREQUISITES": "Prerequisites",
     "TALENT.TIER": "Tier",
     "TALENT.APTITUDES": "Aptitudes",
+    "TALENT.ADD_APTITUDE": "Add aptitude…",
+    "TALENT.REMOVE_APTITUDE": "Remove",
     "TOOL.HEADER": "Tool",
     "TOOL.NAME": "Name",
     "TOOL.SHORT_DESCRIPTION": "Short Description",
