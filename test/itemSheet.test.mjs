@@ -159,7 +159,7 @@ test("quality mutations are serialized and use the configured nested path", asyn
 
 test("weapon drop ignores unowned ammunition and links same-actor ammunition", async () => {
     const actor = { uuid: "Actor.same" };
-    const weapon = { id: "weapon", type: "weapon", actor, system: { ammo: "" } };
+    const weapon = { id: "weapon", type: "weapon", actor, system: { ammo: [] } };
     const ammunition = { id: "ammo", type: "ammunition", actor, system: { weaponId: "" } };
     actor.items = [weapon, ammunition];
     actor.items.get = id => actor.items.find(item => item.id === id);
@@ -176,20 +176,20 @@ test("weapon drop ignores unowned ammunition and links same-actor ammunition", a
     const sheet = new WeaponSheet({ document: weapon });
     globalThis.fromUuidSync = () => ({ type: "ammunition", actor: null });
     await assert.doesNotReject(sheet._onDrop({}));
-    assert.equal(weapon.system.ammo, "");
+    assert.deepEqual(weapon.system.ammo, []);
 
     globalThis.fromUuidSync = () => ammunition;
     await sheet._onDrop({});
-    assert.equal(weapon.system.ammo, "ammo");
+    assert.deepEqual(weapon.system.ammo, ["ammo"]);
     assert.equal(ammunition.system.weaponId, "weapon");
 
-    weapon.system.ammo = "";
+    weapon.system.ammo = [];
     ammunition.system.weaponId = "";
     globalThis.fromUuidSync = () => ({
         ...ammunition,
         actor: { uuid: actor.uuid }
     });
     await sheet._onDrop({});
-    assert.equal(weapon.system.ammo, "ammo");
+    assert.deepEqual(weapon.system.ammo, ["ammo"]);
     assert.equal(ammunition.system.weaponId, "weapon");
 });

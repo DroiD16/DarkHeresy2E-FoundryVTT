@@ -182,7 +182,10 @@ async function onReloadClick(ev) {
     let msg = game.messages.get(id);
     let rollData = msg.getRollData();
     const weapon = resolveRollItem(rollData);
-    await reloadWeapon(weapon, { warn: reloadWithoutAmmunitionToChat });
+    await reloadWeapon(weapon, {
+        warn: reloadWithoutAmmunitionToChat,
+        remind: reloadManualReminderToChat
+    });
 }
 
 /**
@@ -195,6 +198,25 @@ async function reloadWithoutAmmunitionToChat(weapon, ammunition) {
     const content = await foundry.applications.handlebars.renderTemplate(
         "systems/dark-heresy/template/chat/reload-warning.hbs",
         { weapon, ammunition }
+    );
+    return ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({ actor: weapon.actor }),
+        content
+    });
+}
+
+/**
+ * Post a reminder that a weapon with several linked ammunition types was reloaded
+ * without auto-subtracting any magazine — the player must subtract the rounds for
+ * whichever ammo they actually loaded.
+ * @param {Item} weapon Reloaded weapon.
+ * @returns {Promise<ChatMessage>}
+ */
+async function reloadManualReminderToChat(weapon) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+        "systems/dark-heresy/template/chat/reload-manual.hbs",
+        { weapon }
     );
     return ChatMessage.create({
         user: game.user.id,

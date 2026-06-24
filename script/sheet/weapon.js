@@ -1,5 +1,5 @@
 import { DarkHeresyItemSheet } from "./item.js";
-import { linkAmmunition, unlinkWeaponAmmunition } from "../common/ammunition-link.js";
+import { linkAmmunition, unlinkWeaponAmmunitionOne } from "../common/ammunition-link.js";
 
 export class WeaponSheet extends DarkHeresyItemSheet {
     static QUALITY_EDITOR = {
@@ -22,6 +22,12 @@ export class WeaponSheet extends DarkHeresyItemSheet {
             templates: ["systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs"]
         }
     };
+
+    // Re-entrancy guard for ammunition link/unlink. Set while an update is in
+    // flight so a second fast click/select can't snapshot the same stored `ammo`
+    // array and clobber the first write. Lives on the instance, which (with the
+    // listeners bound once on the persistent frame) survives re-renders.
+    #ammoMutating = false;
 
     /** @inheritDoc */
     async _prepareContext(options) {
@@ -49,19 +55,37 @@ export class WeaponSheet extends DarkHeresyItemSheet {
 
         const element = this.element;
 
-        element.addEventListener("change", event => {
-            const select = event.target.closest(".weapon-ammunition-select");
+        element.addEventListener("change", async event => {
+            const select = event.target.closest(".weapon-ammunition-add");
             if (!select || !this.isEditable || !this.item.actor) return;
             const ammunition = this.item.actor.items.get(select.value);
-            if (ammunition) linkAmmunition(this.item, ammunition);
-            else unlinkWeaponAmmunition(this.item);
+            // Reset the add-select back to its blank prompt so the same ammo can be
+            // re-picked and so the control never appears to "hold" a selection.
+            select.value = "";
+            // Ignore a re-entrant link while a prior link/unlink is still writing:
+            // both would snapshot the same stored `ammo` array and the later write
+            // would clobber the earlier change. The user re-picks after the render.
+            if (!ammunition || this.#ammoMutating) return;
+            this.#ammoMutating = true;
+            try {
+                await linkAmmunition(this.item, ammunition);
+            } finally {
+                this.#ammoMutating = false;
+            }
         });
 
-        element.addEventListener("click", event => {
+        element.addEventListener("click", async event => {
             const button = event.target.closest(".weapon-ammunition-unlink");
             if (!button || !this.isEditable || !this.item.actor) return;
             event.preventDefault();
-            unlinkWeaponAmmunition(this.item);
+            const ammoId = button.dataset.ammoId;
+            if (!ammoId || this.#ammoMutating) return;
+            this.#ammoMutating = true;
+            try {
+                await unlinkWeaponAmmunitionOne(this.item, ammoId);
+            } finally {
+                this.#ammoMutating = false;
+            }
         });
 
     }
@@ -82,6 +106,14 @@ export class WeaponSheet extends DarkHeresyItemSheet {
         // from the same collection even if the drop returned a rehydrated copy.
         if (item?.type !== "ammunition" || item.actor?.uuid !== this.item.actor.uuid) return;
         const ammunition = this.item.actor.items.get(item.id);
-        if (ammunition?.type === "ammunition") await linkAmmunition(this.item, ammunition);
+        // Share the link/unlink re-entrancy guard so a drop can't race the
+        // add-select or a chip-unlink and clobber the stored `ammo` array.
+        if (ammunition?.type !== "ammunition" || this.#ammoMutating) return;
+        this.#ammoMutating = true;
+        try {
+            await linkAmmunition(this.item, ammunition);
+        } finally {
+            this.#ammoMutating = false;
+        }
     }
 }

@@ -1,6 +1,6 @@
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll } from "../../common/dialog.js";
 import DarkHeresyUtil from "../../common/util.js";
-import { linkAmmunition, unlinkWeaponAmmunition } from "../../common/ammunition-link.js";
+import { linkAmmunition, unlinkWeaponAmmunitionOne } from "../../common/ammunition-link.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -11,6 +11,12 @@ const { ActorSheetV2 } = foundry.applications.sheets;
  * @extends {ActorSheetV2}
  */
 export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+
+    // Re-entrancy guard for ammunition unlink from the gear tab. Set while an
+    // update is in flight so two fast chip-unlink clicks can't both snapshot the
+    // same stored `ammo` array and have the later write resurrect the id the
+    // earlier removed. Lives on the (re-render-stable) instance.
+    #ammoMutating = false;
 
     /** @inheritDoc */
     static DEFAULT_OPTIONS = {
@@ -194,10 +200,17 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
 
-    _onAmmoUnlink(target) {
-        const weaponId = target.closest(".item").dataset.itemId;
+    async _onAmmoUnlink(target) {
+        const ammoId = target.closest(".linked-item")?.dataset.ammoId;
+        const weaponId = target.closest(".item")?.dataset.itemId;
         const weapon = this.actor.items.get(weaponId);
-        if (weapon) return unlinkWeaponAmmunition(weapon);
+        if (!weapon || !ammoId || this.#ammoMutating) return;
+        this.#ammoMutating = true;
+        try {
+            await unlinkWeaponAmmunitionOne(weapon, ammoId);
+        } finally {
+            this.#ammoMutating = false;
+        }
     }
 
     /** @inheritDoc */
@@ -205,7 +218,18 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         const targetId = event.target.closest(".gear.item[data-item-id]")?.dataset.itemId;
         const weapon = this.actor.items.get(targetId);
         if (weapon?.type === "weapon" && item?.type === "ammunition" && item.actor === this.actor) {
-            await linkAmmunition(weapon, item);
+            // Share the unlink re-entrancy guard so a drop-link can't race a
+            // chip-unlink and clobber the weapon's stored `ammo` array. A drop
+            // arriving mid-mutation is ignored (the item is still "handled" so no
+            // duplicate is created); the user can re-drop after the render.
+            if (!this.#ammoMutating) {
+                this.#ammoMutating = true;
+                try {
+                    await linkAmmunition(weapon, item);
+                } finally {
+                    this.#ammoMutating = false;
+                }
+            }
             return item;
         }
         return super._onDropItem(event, item);

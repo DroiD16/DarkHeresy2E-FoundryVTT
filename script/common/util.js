@@ -1,5 +1,23 @@
 import { ammunitionMultiplier, buildTraitsFromQualities } from "./weapon-qualities.js";
 
+/**
+ * Map a weapon's resolved ammunition items to the lean descriptors the combat
+ * dialog needs. Kept as a pure module function (NOT full Documents — rollData is
+ * serialized into the chat message for the reroll path) so the 0/1/>1 boundary
+ * that decides the dialog control (>1 -> native selector; exactly 1 -> name span;
+ * 0 -> nothing) is unit-testable in isolation.
+ * @param {Array<{id: string, name: string}>} ammoItems The derived ammoItems array.
+ * @returns {{ammos: Array<{id,name}>, hasMultipleAmmo: boolean, singleAmmo: ({id,name}|null)}}
+ */
+export function ammoDialogData(ammoItems) {
+    const ammos = (ammoItems ?? []).map(a => ({ id: a.id, name: a.name }));
+    return {
+        ammos,
+        hasMultipleAmmo: ammos.length > 1,
+        singleAmmo: ammos.length === 1 ? ammos[0] : null
+    };
+}
+
 export default class DarkHeresyUtil {
 
     // Single source of truth for the name an item gets at creation time. Both
@@ -88,7 +106,10 @@ export default class DarkHeresyUtil {
             // The weapon's intrinsic (pre-bonus) penetration, used by the Lance
             // quality which scales only the base value per degree of success.
             basePenetration: weaponItem.penetration,
-            ammo: weaponItem.system.ammoItem,
+            // Lean {id,name} list + the dialog discriminators (>1 -> selector;
+            // exactly 1 -> name span). See ammoDialogData below — extracted so the
+            // 0/1/>1 boundary is unit-testable without the full rollData surface.
+            ...ammoDialogData(weaponItem.system.ammoItems),
             traits: weaponTraits,
             // The weapon's raw structured qualities, stashed so the combat
             // dialog can union them with the loaded ammunition's qualities at

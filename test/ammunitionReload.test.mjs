@@ -3,21 +3,20 @@ import assert from "node:assert/strict";
 
 import { reloadWeapon } from "../script/common/ammunition-reload.js";
 
-function makeReloadFixture({ quantity, linked = true }) {
-    const ammunition = {
-        id: "ammo",
-        type: "ammunition",
-        system: { quantity }
-    };
+function makeAmmo(id, quantity) {
+    return { id, type: "ammunition", system: { quantity } };
+}
+
+function makeReloadFixture({ ammoItems = [] } = {}) {
     const weapon = {
         id: "weapon",
         type: "weapon",
         system: {
-            ammo: linked ? ammunition.id : "",
+            ammoItems,
             clip: { value: 0, max: 12 }
         }
     };
-    const items = [weapon, ammunition];
+    const items = [weapon, ...ammoItems];
     items.get = id => items.find(item => item.id === id);
     const updates = [];
     const actor = {
@@ -27,36 +26,70 @@ function makeReloadFixture({ quantity, linked = true }) {
         }
     };
     weapon.actor = actor;
-    ammunition.actor = actor;
-    return { weapon, ammunition, updates };
+    for (const ammo of ammoItems) ammo.actor = actor;
+    return { weapon, ammoItems, updates };
 }
 
-test("reloadWeapon fills the clip and consumes one magazine", async () => {
-    const { weapon, updates } = makeReloadFixture({ quantity: 3 });
+test("reload with one linked ammo fills clip and consumes one magazine", async () => {
+    const { weapon, updates } = makeReloadFixture({ ammoItems: [makeAmmo("ammo", 3)] });
     let warned = false;
-    await reloadWeapon(weapon, { warn: async () => { warned = true; } });
+    let reminded = false;
+    await reloadWeapon(weapon, {
+        warn: async () => { warned = true; },
+        remind: async () => { reminded = true; }
+    });
     assert.deepEqual(updates, [
         { _id: "weapon", "system.clip.value": 12 },
         { _id: "ammo", "system.quantity": 2 }
     ]);
     assert.equal(warned, false);
+    assert.equal(reminded, false);
 });
 
-test("reloadWeapon permits an empty stack and warns without going negative", async () => {
-    const { weapon, ammunition, updates } = makeReloadFixture({ quantity: 0 });
+test("reload with one depleted ammo warns without going negative", async () => {
+    const ammo = makeAmmo("ammo", 0);
+    const { weapon, updates } = makeReloadFixture({ ammoItems: [ammo] });
     let warningArgs;
-    await reloadWeapon(weapon, { warn: async (...args) => { warningArgs = args; } });
+    let reminded = false;
+    await reloadWeapon(weapon, {
+        warn: async (...args) => { warningArgs = args; },
+        remind: async () => { reminded = true; }
+    });
     assert.deepEqual(updates, [
         { _id: "weapon", "system.clip.value": 12 },
         { _id: "ammo", "system.quantity": 0 }
     ]);
-    assert.deepEqual(warningArgs, [weapon, ammunition]);
+    assert.deepEqual(warningArgs, [weapon, ammo]);
+    assert.equal(reminded, false);
 });
 
-test("reloadWeapon without linked ammunition keeps the old free reload", async () => {
-    const { weapon, updates } = makeReloadFixture({ quantity: 5, linked: false });
+test("reload with NO linked ammo fills clip only", async () => {
+    const { weapon, updates } = makeReloadFixture({ ammoItems: [] });
     let warned = false;
-    await reloadWeapon(weapon, { warn: async () => { warned = true; } });
+    let reminded = false;
+    await reloadWeapon(weapon, {
+        warn: async () => { warned = true; },
+        remind: async () => { reminded = true; }
+    });
     assert.deepEqual(updates, [{ _id: "weapon", "system.clip.value": 12 }]);
     assert.equal(warned, false);
+    assert.equal(reminded, false);
+});
+
+test("reload with MULTIPLE linked ammo fills clip, consumes nothing, reminds", async () => {
+    const ammo1 = makeAmmo("ammo1", 4);
+    const ammo2 = makeAmmo("ammo2", 7);
+    const { weapon, updates } = makeReloadFixture({ ammoItems: [ammo1, ammo2] });
+    let warned = false;
+    let reminderArgs;
+    await reloadWeapon(weapon, {
+        warn: async () => { warned = true; },
+        remind: async (...args) => { reminderArgs = args; }
+    });
+    assert.deepEqual(updates, [{ _id: "weapon", "system.clip.value": 12 }]);
+    assert.equal(warned, false);
+    assert.deepEqual(reminderArgs, [weapon]);
+    // Neither ammo quantity was changed.
+    assert.equal(ammo1.system.quantity, 4);
+    assert.equal(ammo2.system.quantity, 7);
 });

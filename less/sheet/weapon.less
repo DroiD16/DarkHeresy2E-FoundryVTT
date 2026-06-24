@@ -77,16 +77,23 @@
     min-width: 0;
 }
 
-.dark-heresy.weapon .stat.ammunition .weapon-ammunition-unlink {
+.dark-heresy.weapon .linked-ammunition-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+}
+
+.dark-heresy.weapon .linked-ammunition-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.dark-heresy.weapon .linked-ammunition-chip .weapon-ammunition-unlink {
     flex: 0 0 auto;
     cursor: pointer;
     padding: 0 3px;
-}
-
-.dark-heresy.weapon .stat.ammunition .weapon-ammunition-unlink.disabled {
-    cursor: default;
-    opacity: 0.35;
-    pointer-events: none;
 }
 
 .dark-heresy.weapon .stats .stats-row .stat.special input {

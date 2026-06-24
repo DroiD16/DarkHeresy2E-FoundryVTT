@@ -270,13 +270,11 @@ test("migrateCompendium: non-Actor pack is a no-op (no migrate, no getDocuments)
 
 const noFocus = () => null;
 
-test("weapon: non-empty ammo link is persisted; free-text seeds specialQualities when empty", () => {
+test("weapon: free-text seeds specialQualities when empty", () => {
     const update = buildItemMigrationUpdate("weapon", {
-        ammo: "ammo-1",
         special: "Accurate, Proven (3), Razor Sharp",
         specialQualities: []
     }, noFocus);
-    assert.equal(update["system.ammo"], "ammo-1");
     assert.deepEqual(update["system.specialQualities"], [
         { key: "accurate", value: null },
         { key: "proven", value: 3 },
@@ -284,20 +282,20 @@ test("weapon: non-empty ammo link is persisted; free-text seeds specialQualities
     ]);
 });
 
-test("weapon: empty ammo is NOT persisted (left to the read shim)", () => {
+test("weapon: migration never touches the ammo link", () => {
+    // `ammo` is an ArrayField restored to the upstream shape; the persist step was
+    // removed, so migration never writes `system.ammo` regardless of its value.
     const update = buildItemMigrationUpdate("weapon", {
-        ammo: "",
+        ammo: ["a1"],
         special: "",
         specialQualities: []
     }, noFocus);
-    assert.ok(!("system.ammo" in update), "empty ammo omitted");
-    assert.ok(!("system.specialQualities" in update), "no qualities seeded from empty free text");
+    assert.ok(!("system.ammo" in update), "ammo never persisted by migration");
     assert.deepEqual(update, {});
 });
 
 test("weapon: existing curated chips are preserved (free text NOT re-parsed)", () => {
     const update = buildItemMigrationUpdate("weapon", {
-        ammo: "",
         special: "Accurate, Tearing",
         specialQualities: [{ key: "proven", value: 5 }]
     }, noFocus);
