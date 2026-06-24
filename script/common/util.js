@@ -116,7 +116,7 @@ export default class DarkHeresyUtil {
         rollData.weapon = foundry.utils.mergeObject(rollData.weapon, {
             damageFormula: power.damage.formula,
             penetrationFormula: power.damage.penetration,
-            traits: buildTraitsFromQualities(power.system.damage.specialQualities),
+            traits: buildTraitsFromQualities(power.damage.specialQualities),
             special: power.damage.special
         });
         rollData.attackType.name = power.damage.zone;

@@ -67,6 +67,9 @@ export const PSYCHIC_POWER_QUALITY_KEYS = ["blast", "concussive", "flame", "melt
 // add-quality dropdown (Dark Heresy 2E special ammunition). The full
 // WEAPON_QUALITIES map still backs labels/defaults and chip rendering; only the
 // ADD dropdown is restricted to these rules-relevant keys.
+// NOTE: of these, only `tearing` is wired into the combat roll
+// (buildTraitsFromQualities); the rest are `trait: null` display-only reminders
+// (see the trait convention above) and have no automated effect when fired.
 export const AMMUNITION_QUALITY_KEYS = ["blast", "flame", "hallucinogenic", "recharge", "shocking", "tearing", "toxic"];
 
 const RANGE_BAND_MODIFIERS = Object.freeze({

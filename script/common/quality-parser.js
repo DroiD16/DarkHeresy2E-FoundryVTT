@@ -252,6 +252,3 @@ export function resolveFocusTestKey(test) {
     if (Object.hasOwn(FOCUS_TEST_LABELS, value)) return null; // Already canonical
     return FOCUS_TEST_LOOKUP[value.toLowerCase()] ?? null;
 }
-
-// Exposed for unit tests.
-export const _internal = { ALIASES, normalizeName, ENGLISH_LABELS, FOCUS_TEST_LABELS, CHARACTERISTIC_SHORTS };

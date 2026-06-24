@@ -24,9 +24,9 @@ import { parseTalentAptitudes } from "./talent-aptitudes.js";
  * list. It is idempotent — it only seeds qualities when none exist yet, so curated
  * chips are never duplicated or resurrected, and the talent conversion normalizes
  * either shape. The free-text fields are left intact. The read-time `migrateData`
- * shims (rateOfFire/damageModifier/ammo and the talent aptitudes shim) stay in
- * place as a safety net for imported or compendium documents the runner cannot
- * reach.
+ * shims (rateOfFire/ammo on weapon, damageModifier on ammunition, and the talent
+ * aptitudes shim) stay in place as a safety net for imported or compendium
+ * documents the runner cannot reach.
  *
  * KNOWN LIMITATION: Worlds that were already sealed at worldSchemaVersion = 6 by the
  * previously-broken build will not re-run these migrations (nor will an actor that

@@ -15,7 +15,6 @@ Copy-item -Path ".\CONTRIBUTING.md" -Destination $target
 Copy-item -Path ".\README.md" -Destination $target
 Copy-item -Path ".\LICENSE" -Destination $target
 Copy-item -Path ".\system.json" -Destination $target
-Copy-item -Path ".\template.json" -Destination $target
 
 if(Test-Path -Path $targetFile -PathType Leaf) {
 	Remove-Item $targetFile
