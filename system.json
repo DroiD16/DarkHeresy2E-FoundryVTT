@@ -102,7 +102,7 @@
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "fate",
   "url": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT",
-  "manifest": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.4.0.0/system.json",
-  "download": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.4.0.0/dark-heresy.zip",
+  "manifest": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases/latest/download/system.json",
+  "download": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases/download/5.0.0-droid/dark-heresy.zip",
   "license": "LICENSE"
 }
