@@ -1,3 +1,6 @@
+import { parseSpecialToQualities, resolveFocusTestKey } from "./quality-parser.js";
+import { AMMUNITION_QUALITY_KEYS } from "./weapon-qualities.js";
+
 /**
  * Run the world migration if the stored schema version is behind the target.
  *
@@ -10,6 +13,17 @@
  * next load. The original bug was never the unconditional bump itself — it was that
  * per-actor errors were swallowed silently; they are now reported.
  *
+ * Schema version 7 adds a one-time ITEM migration (`migrateItems`) covering world
+ * items, actor-embedded items (live actors and world Actor compendiums), and
+ * world Item compendiums: it persists the
+ * legacy weapon `ammo` link (array -> single id) and seeds structured
+ * `specialQualities` from the decorative free-text `special` fields (and
+ * normalizes a free-text psychic `focusPower.test` to its canonical key). It is
+ * idempotent — it only seeds qualities when none exist yet, so curated chips are
+ * never duplicated or resurrected. The free-text fields are left intact. The
+ * read-time `migrateData` shims (rateOfFire/damageModifier/ammo) stay in place as
+ * a safety net for imported or compendium documents the runner cannot reach.
+ *
  * KNOWN LIMITATION: Worlds that were already sealed at worldSchemaVersion = 6 by the
  * previously-broken build will not re-run these migrations (nor will an actor that
  * threw during this run get a second attempt, since the version still advances). A
@@ -20,7 +34,7 @@
  * @returns {Promise<void>}
  */
 export const migrateWorld = async () => {
-    const schemaVersion = 6;
+    const schemaVersion = 7;
     const worldSchemaVersion = Number(game.settings.get("dark-heresy", "worldSchemaVersion"));
     if (worldSchemaVersion !== schemaVersion && game.user.isGM) {
         ui.notifications.info("Upgrading the world, please wait...");
@@ -43,6 +57,14 @@ export const migrateWorld = async () => {
             } catch(e) {
                 failed = true;
                 console.error(`dark-heresy | Failed to migrate compendium "${pack?.metadata?.id}":`, e);
+            }
+        }
+        if (worldSchemaVersion < 7) {
+            try {
+                if (await migrateItems()) failed = true;
+            } catch(e) {
+                failed = true;
+                console.error("dark-heresy | Failed to migrate items:", e);
             }
         }
         await game.settings.set("dark-heresy", "worldSchemaVersion", schemaVersion);
@@ -262,4 +284,185 @@ export const migrateCompendium = async function(pack, worldSchemaVersion) {
             await doc.update(update);
         }
     }
+};
+
+/**
+ * Build the plain `update` delta for one item's schema-7 migration.
+ *
+ * This is a PURE function: it reads only its arguments and must NOT reference
+ * `game`, `ui`, `foundry`, `CONFIG`, or any live document method. `resolveFocus`
+ * is injected (it maps a free-text `focusPower.test` to its canonical key, or
+ * returns null for "leave unchanged") so the function stays unit-testable.
+ *
+ * It covers, by item type:
+ *  - weapon:        persist a non-empty `ammo` link (legacy single-element array
+ *                   already presented as a string by the read shim); seed
+ *                   `specialQualities` from free-text `special` when none exist.
+ *  - ammunition:    seed `effect.specialQualities` from `effect.special`.
+ *  - psychicPower:  seed `damage.specialQualities` from `damage.special`; resolve
+ *                   `focusPower.test` to a canonical key when it is free text.
+ *
+ * Quality seeding is skipped when the target already has qualities, so curated
+ * chips are never duplicated or resurrected and the migration is idempotent. The
+ * free-text fields themselves are left intact (decorative).
+ * @param {string} type                       The item type (e.g. "weapon").
+ * @param {object} system                     The item `system` source data.
+ * @param {(test: string) => (string|null)} [resolveFocus] Focus-test resolver.
+ * @returns {object} The update delta (empty object when nothing applies).
+ */
+export const buildItemMigrationUpdate = (type, system, resolveFocus = () => null) => {
+    const update = {};
+    if (!system) return update;
+
+    if (type === "weapon") {
+        if (typeof system.ammo === "string" && system.ammo !== "") {
+            update["system.ammo"] = system.ammo;
+        }
+        addParsedQualities(update, "system.specialQualities", system.specialQualities, system.special, null);
+    } else if (type === "ammunition") {
+        addParsedQualities(update, "system.effect.specialQualities",
+            system.effect?.specialQualities, system.effect?.special, AMMUNITION_QUALITY_KEYS);
+    } else if (type === "psychicPower") {
+        // Parse the FULL quality set (allowedKeys = null), not just the curated
+        // add-dropdown subset: the legacy runtime parsed psychic `damage.special`
+        // with the full weapon-trait parser (e.g. Tearing/Proven were automated on
+        // psychic damage), so restricting here would silently drop those mechanics.
+        // The curated subset still governs only what the sheet OFFERS to add.
+        addParsedQualities(update, "system.damage.specialQualities",
+            system.damage?.specialQualities, system.damage?.special, null);
+        const key = resolveFocus(system.focusPower?.test);
+        if (key) update["system.focusPower.test"] = key;
+    }
+    return update;
+};
+
+/**
+ * Add a parsed-qualities entry to `update[path]` only when the target has no
+ * qualities yet (preserving any user-curated chips) and the free text yields at
+ * least one recognized quality.
+ * @param {object} update            The update delta being built (mutated).
+ * @param {string} path              Flattened target path (e.g. "system.specialQualities").
+ * @param {unknown} existing         The current stored qualities array.
+ * @param {string} freeText          The decorative free-text source.
+ * @param {string[]|null} allowedKeys Permitted quality keys, or null for all.
+ */
+const addParsedQualities = (update, path, existing, freeText, allowedKeys) => {
+    if (Array.isArray(existing) && existing.length > 0) return;
+    const parsed = parseSpecialToQualities(freeText, allowedKeys);
+    if (parsed.length > 0) update[path] = parsed;
+};
+
+/**
+ * Build the flattened migration delta (no `_id`) for a single item document.
+ * @param {Item} doc The item document.
+ * @returns {object} The delta (empty when nothing applies).
+ */
+const buildItemDelta = doc =>
+    buildItemMigrationUpdate(doc.type, doc.toObject().system, resolveFocusTestKey);
+
+/**
+ * Build the `{_id, ...delta}` update for a single item document (for batch
+ * collection updates), or null when nothing applies.
+ * @param {Item} doc The item document.
+ * @returns {object|null}
+ */
+const buildItemUpdate = doc => {
+    const delta = buildItemDelta(doc);
+    if (foundry.utils.isEmpty(delta)) return null;
+    return { _id: doc.id, ...delta };
+};
+
+/**
+ * Collect schema-7 update deltas for a list of item documents.
+ * @param {Iterable<Item>} items The item documents.
+ * @returns {object[]} The `{_id, ...delta}` updates (empty when nothing applies).
+ */
+const collectItemUpdates = items => {
+    const updates = [];
+    for (const item of items) {
+        const update = buildItemUpdate(item);
+        if (update) updates.push(update);
+    }
+    return updates;
+};
+
+/**
+ * Apply the schema-7 migration to one actor's embedded items.
+ * @param {Actor} actor The owning actor.
+ * @returns {Promise<void>}
+ */
+const migrateEmbeddedItems = async actor => {
+    const updates = collectItemUpdates(actor.items.contents);
+    if (updates.length > 0) {
+        await actor.updateEmbeddedDocuments("Item", updates, { diff: false, render: false });
+    }
+};
+
+/**
+ * One-time (schema-7) item migration over world items, actor-embedded items
+ * (live actors AND world Actor compendiums), and world Item compendiums.
+ *
+ * Updates are applied with `{diff: false}` so the cleaned shape is written to the
+ * database even when it already matches the (read-shim migrated) in-memory
+ * source — otherwise the persisted legacy shape would never be rewritten.
+ *
+ * Failures are isolated per collection/document and logged, so one bad document
+ * never skips the rest of the run. The schema version still advances afterward
+ * (it is shared with the non-idempotent actor steps and must not be left behind);
+ * the item steps ARE idempotent, so at worst a transiently-failed document keeps
+ * relying on the read-time shims until it is next edited.
+ * @returns {Promise<boolean>} Whether any isolated failure occurred.
+ */
+const migrateItems = async () => {
+    let failed = false;
+    const guard = async (label, fn) => {
+        try {
+            await fn();
+        } catch(e) {
+            failed = true;
+            console.error(`dark-heresy | Item migration failed (${label}):`, e);
+        }
+    };
+    const worldPacks = type =>
+        game.packs.filter(p => p.metadata.package === "world" && p.metadata.type === type);
+
+    // World items.
+    await guard("world items", async () => {
+        const updates = collectItemUpdates(game.items.contents);
+        if (updates.length > 0) {
+            await game.items.documentClass.updateDocuments(updates, { diff: false, render: false });
+        }
+    });
+
+    // Actor-embedded items on live world actors.
+    for (const actor of game.actors.contents) {
+        await guard(`actor "${actor?.name}" (${actor?.id})`, () => migrateEmbeddedItems(actor));
+    }
+
+    // Embedded items inside world Actor compendiums.
+    for (const pack of worldPacks("Actor")) {
+        await guard(`actor compendium "${pack?.metadata?.id}"`, async () => {
+            for (const actor of await pack.getDocuments()) {
+                await guard(`compendium actor "${actor?.name}" (${actor?.id})`,
+                    () => migrateEmbeddedItems(actor));
+            }
+        });
+    }
+
+    // World Item compendiums.
+    for (const pack of worldPacks("Item")) {
+        await guard(`item compendium "${pack?.metadata?.id}"`, async () => {
+            await pack.migrate();
+            for (const doc of await pack.getDocuments()) {
+                await guard(`compendium item "${doc?.name}" (${doc?.id})`, async () => {
+                    const delta = buildItemDelta(doc);
+                    if (!foundry.utils.isEmpty(delta)) {
+                        await doc.update(delta, { diff: false });
+                    }
+                });
+            }
+        });
+    }
+
+    return failed;
 };

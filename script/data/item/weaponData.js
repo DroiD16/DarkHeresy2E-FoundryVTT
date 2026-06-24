@@ -71,38 +71,16 @@ export default class WeaponData extends EquipmentItemData {
         super.migrateData(source);
 
         this.migrateRateOfFire(source);
-        this.migrateMalfunction(source);
-        this.migrateSpecialQualities(source);
         this.migrateAmmunitionLink(source);
 
         return source;
     }
 
-    // Migrate the legacy string `malfunction` ("" | "jammed" | "overheated") to
-    // the boolean field. V13's BooleanField casts a string to true only when it
-    // is exactly "true", so "jammed"/"overheated" would otherwise silently become
-    // false and a malfunctioning weapon would appear cleared on load. Convert any
-    // non-empty legacy string to true; "" -> false. Idempotent (a boolean source
-    // is left untouched).
-    static migrateMalfunction(source) {
-        if (typeof source.malfunction === "string") {
-            source.malfunction = source.malfunction !== "";
-        }
-    }
-
-    static migrateSpecialQualities(source) {
-        if (!Array.isArray(source.specialQualities)) return;
-        for (const quality of source.specialQualities) {
-            if (quality?.value === null || typeof quality?.value === "undefined") continue;
-            const value = Number(quality.value);
-            quality.value = Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : null;
-        }
-    }
-
-    // The upstream implementation briefly allowed multiple linked ammunition
-    // items. The active-ammunition model is singular again; preserve the first
-    // stored ID when an old array is encountered and normalize an empty array to
-    // the schema's empty-string sentinel.
+    // The released upstream (4.4.0.0) weapon schema stored `ammo` as an array of
+    // linked ammunition ids; the active-ammunition model is singular. Preserve
+    // the first stored id when an old array is encountered and normalize an empty
+    // array to the schema's empty-string sentinel. Kept as a read-time safety net
+    // for imported/compendium documents the one-time world migration cannot reach.
     static migrateAmmunitionLink(source) {
         if (Array.isArray(source.ammo)) source.ammo = source.ammo.find(id => typeof id === "string" && id) ?? "";
     }

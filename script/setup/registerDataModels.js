@@ -28,7 +28,12 @@ export const registerDataModels = () => {
     });
 
     foundry.utils.mergeObject(CONFIG.Item.dataModels, {
-        // The keys are the types defined in our template.json
+        // Weapon and ammunition keep small read-time `migrateData` shims that
+        // coerce released-4.4.0.0 shapes (weapon `ammo` array -> single id;
+        // ammunition `effect.damage.modifier` string -> number; weapon
+        // `rateOfFire` strings -> integers). The one-time world migration
+        // (schema 7) persists these for world/embedded/compendium documents; the
+        // shims remain for imported documents it cannot reach.
         weapon: WeaponData,
         ammunition: AmmunitionData,
         // The following description-based types need no migrateData: every field

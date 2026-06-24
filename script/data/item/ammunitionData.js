@@ -64,28 +64,17 @@ export default class AmmunitionData extends EquipmentItemData {
         super.migrateData(source);
 
         this.migrateDamageModifier(source);
-        this.migrateSpecialQualities(source);
 
         return source;
     }
 
+    // The released upstream (4.4.0.0) ammunition schema stored
+    // `effect.damage.modifier` as a string; the field is now numeric. Coerce any
+    // legacy string to an integer. Kept as a read-time safety net for
+    // imported/compendium documents the one-time world migration cannot reach.
     static migrateDamageModifier(source) {
         if (source.effect?.damage) {
             source.effect.damage.modifier = parseInt(source.effect.damage?.modifier) || 0;
-        }
-    }
-
-    // Numeric normalizer for the structured qualities, nested under `effect`.
-    // NORMALIZE ONLY: it never parses the free-text `effect.special` field into
-    // structured qualities (that migration is out of scope; the regex parser in
-    // util.js is retained for it). Mirrors WeaponData.migrateSpecialQualities,
-    // with the array read from `source.effect.specialQualities`.
-    static migrateSpecialQualities(source) {
-        if (!source.effect || !Array.isArray(source.effect.specialQualities)) return;
-        for (const quality of source.effect.specialQualities) {
-            if (quality?.value === null || typeof quality?.value === "undefined") continue;
-            const value = Number(quality.value);
-            quality.value = Number.isFinite(value) ? Math.max(0, Math.trunc(value)) : null;
         }
     }
 }

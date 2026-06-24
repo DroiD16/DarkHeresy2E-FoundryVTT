@@ -201,30 +201,6 @@ export default class DarkHeresyUtil {
     }
 
 
-    // RETAINED FOR THE PLANNED FREE-TEXT -> STRUCTURED MIGRATION. This regex
-    // parser and its helpers (hasNamedTrait, extractNumberedTrait below) are
-    // intentionally kept even though createPsychicRollData no longer calls them:
-    // a future migration will use them to seed structured `specialQualities` from
-    // existing free-text `special`/`damage.special` fields. Do NOT remove them as
-    // "dead/unused code" — that finding is invalid (see spec guard rail G1).
-    static extractWeaponTraits(traits) {
-        // These weapon traits never go above 9 or below 2
-        return {
-            accurate: this.hasNamedTrait(/(?<!in)Accurate/gi, traits),
-            rfFace: this.extractNumberedTrait(/Vengeful.*\(\d\)/gi, traits), // The alternativ die face Righteous Fury is triggered on
-            proven: this.extractNumberedTrait(/Proven.*\(\d\)/gi, traits),
-            primitive: this.extractNumberedTrait(/Primitive.*\(\d\)/gi, traits),
-            razorSharp: this.hasNamedTrait(/Razor.?-? *Sharp/gi, traits),
-            spray: this.hasNamedTrait(/Spray/gi, traits),
-            skipAttackRoll: this.hasNamedTrait(/Spray/gi, traits), // Currently, spray will always be the same as skipAttackRoll. However, in the future, there may be other skipAttackRoll weapons that are not Spray.
-            tearing: this.hasNamedTrait(/Tearing/gi, traits),
-            storm: this.hasNamedTrait(/Storm/gi, traits),
-            twinLinked: this.hasNamedTrait(/Twin.?-? *Linked/gi, traits),
-            force: this.hasNamedTrait(/Force/gi, traits),
-            inaccurate: this.hasNamedTrait(/Inaccurate/gi, traits)
-        };
-    }
-
     static getMaxPsyRating(actor) {
         let base = actor.psy.rating;
         switch (actor.psy.class) {
@@ -234,24 +210,6 @@ export default class DarkHeresyUtil {
                 return base + 4;
             case "daemonic":
                 return base + 3;
-        }
-    }
-
-    static extractNumberedTrait(regex, traits) {
-        let rfMatch = traits.match(regex);
-        if (rfMatch) {
-            regex = /\d+/gi;
-            return parseInt(rfMatch[0].match(regex)[0]);
-        }
-        return undefined;
-    }
-
-    static hasNamedTrait(regex, traits) {
-        let rfMatch = traits.match(regex);
-        if (rfMatch) {
-            return true;
-        } else {
-            return false;
         }
     }
 

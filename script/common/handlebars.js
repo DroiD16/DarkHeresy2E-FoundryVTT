@@ -1,3 +1,5 @@
+import { dropQualitiesFromText } from "./quality-parser.js";
+
 export const initializeHandlebars = () => {
     registerHandlebarsHelpers();
     preloadHandlebarsTemplates();
@@ -138,6 +140,11 @@ function registerHandlebarsHelpers() {
     // then the leftover custom free-text `special` is appended. All parts are
     // joined by commas with no stray separators for any empty/non-empty mix.
     // Unknown keys fall back to the raw key so nothing is silently blanked.
+    //
+    // The free text is kept intact in the data (the migration seeds chips without
+    // stripping it), so any token already shown as a chip is dropped from the
+    // leftover here to avoid rendering a quality twice (e.g. "Accurate, custom"
+    // beside an Accurate chip → only "custom" is appended).
     Handlebars.registerHelper("weaponSpecialDisplay", function(specialQualities, special) {
         const cfg = game.darkHeresy?.config?.weaponQualities ?? {};
         const parts = [];
@@ -151,7 +158,7 @@ function registerHandlebarsHelpers() {
                 parts.push(label);
             }
         }
-        const leftover = (special ?? "").trim();
+        const leftover = dropQualitiesFromText(special, (specialQualities ?? []).map(q => q?.key));
         if (leftover) parts.push(leftover);
         return parts.join(", ");
     });

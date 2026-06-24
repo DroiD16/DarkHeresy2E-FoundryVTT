@@ -12,6 +12,7 @@ globalThis.foundry = globalThis.foundry || {
 
 import {
     buildActorMigrationUpdate,
+    buildItemMigrationUpdate,
     legacyAptitudeItems,
     migrateCompendium
 } from "../script/common/migration.js";
@@ -259,4 +260,101 @@ test("migrateCompendium: non-Actor pack is a no-op (no migrate, no getDocuments)
     await migrateCompendium(pack, 0);
     assert.equal(log.length, 0,
         "non-Actor pack short-circuits before calling migrate or reading documents");
+});
+
+// ---------------------------------------------------------------------------
+// buildItemMigrationUpdate (schema-7 one-time item migration). Pure: the
+// focus-test resolver is injected. parseSpecialToQualities is exercised here in
+// integration; its own edge cases live in qualityParser.test.mjs.
+// ---------------------------------------------------------------------------
+
+const noFocus = () => null;
+
+test("weapon: non-empty ammo link is persisted; free-text seeds specialQualities when empty", () => {
+    const update = buildItemMigrationUpdate("weapon", {
+        ammo: "ammo-1",
+        special: "Accurate, Proven (3), Razor Sharp",
+        specialQualities: []
+    }, noFocus);
+    assert.equal(update["system.ammo"], "ammo-1");
+    assert.deepEqual(update["system.specialQualities"], [
+        { key: "accurate", value: null },
+        { key: "proven", value: 3 },
+        { key: "razorSharp", value: null }
+    ]);
+});
+
+test("weapon: empty ammo is NOT persisted (left to the read shim)", () => {
+    const update = buildItemMigrationUpdate("weapon", {
+        ammo: "",
+        special: "",
+        specialQualities: []
+    }, noFocus);
+    assert.ok(!("system.ammo" in update), "empty ammo omitted");
+    assert.ok(!("system.specialQualities" in update), "no qualities seeded from empty free text");
+    assert.deepEqual(update, {});
+});
+
+test("weapon: existing curated chips are preserved (free text NOT re-parsed)", () => {
+    const update = buildItemMigrationUpdate("weapon", {
+        ammo: "",
+        special: "Accurate, Tearing",
+        specialQualities: [{ key: "proven", value: 5 }]
+    }, noFocus);
+    assert.ok(!("system.specialQualities" in update),
+        "qualities already present -> not overwritten or appended");
+});
+
+test("ammunition: seeds effect.specialQualities, restricted to the curated ammo keys", () => {
+    const update = buildItemMigrationUpdate("ammunition", {
+        effect: {
+            special: "Tearing, Toxic (4), Proven (3)",
+            specialQualities: []
+        }
+    }, noFocus);
+    // proven is not in AMMUNITION_QUALITY_KEYS and is dropped.
+    assert.deepEqual(update["system.effect.specialQualities"], [
+        { key: "tearing", value: null },
+        { key: "toxic", value: 4 }
+    ]);
+});
+
+test("psychicPower: seeds damage.specialQualities and resolves focusPower.test", () => {
+    const resolveFocus = test => (test === "Willpower" ? "willpower" : null);
+    const update = buildItemMigrationUpdate("psychicPower", {
+        damage: {
+            special: "Force, Hallucinogenic (2), Tearing",
+            specialQualities: []
+        },
+        focusPower: { test: "Willpower" }
+    }, resolveFocus);
+    // Psychic parses the FULL quality set (not just the curated add-dropdown), so
+    // Tearing — which the legacy runtime automated on psychic damage — is preserved.
+    assert.deepEqual(update["system.damage.specialQualities"], [
+        { key: "force", value: null },
+        { key: "hallucinogenic", value: 2 },
+        { key: "tearing", value: null }
+    ]);
+    assert.equal(update["system.focusPower.test"], "willpower");
+});
+
+test("psychicPower: an already-canonical focus test yields no change", () => {
+    const update = buildItemMigrationUpdate("psychicPower", {
+        damage: { special: "", specialQualities: [] },
+        focusPower: { test: "willpower" }
+    }, noFocus);
+    assert.ok(!("system.focusPower.test" in update));
+    assert.deepEqual(update, {});
+});
+
+test("unknown item type yields an empty delta", () => {
+    const update = buildItemMigrationUpdate("gear", { description: "x" }, noFocus);
+    assert.deepEqual(update, {});
+});
+
+test("buildItemMigrationUpdate tolerates missing nested groups", () => {
+    assert.deepEqual(buildItemMigrationUpdate("weapon", {}, noFocus), {});
+    assert.deepEqual(buildItemMigrationUpdate("ammunition", {}, noFocus), {});
+    assert.deepEqual(buildItemMigrationUpdate("psychicPower", {}, noFocus), {});
+    assert.deepEqual(buildItemMigrationUpdate("weapon", undefined, noFocus), {});
 });
