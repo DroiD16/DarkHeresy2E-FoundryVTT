@@ -5,6 +5,7 @@ import {
     normalizeTestModifier
 } from "./combat-modifiers.js";
 import { ammunitionMultiplier, rangeBandModifier, buildTraitsFromQualities, mergeSpecialQualities } from "./weapon-qualities.js";
+import { appendSignedModifier } from "./roll-formulas.js";
 
 /**
  * Attach the focus-select behavior used by every roll dialog.
@@ -162,8 +163,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
                         const attackType = form.querySelector("#attackType");
                         rollData.attackType = {
                             name: attackType?.value,
-                            text: attackType?.options[attackType.selectedIndex].text,
-                            modifier: 0
+                            text: attackType?.options[attackType.selectedIndex].text
                         };
 
                         const aim = form.querySelector("#aim");
@@ -192,10 +192,16 @@ export async function prepareCombatRoll(rollData, actorRef) {
                             )
                         );
 
-                        rollData.weapon.damageFormula = `${form.querySelector("#damageFormula").value.replace(" ", "")}${ammo?.system.effect.damage.modifier ? `+${ammo?.system.effect.damage.modifier}`: ""}`;
+                        rollData.weapon.damageFormula = appendSignedModifier(
+                            form.querySelector("#damageFormula").value.replace(" ", ""),
+                            ammo?.system.effect.damage.modifier
+                        );
                         rollData.weapon.damageType = form.querySelector("#damageType").value;
                         rollData.weapon.damageBonus = parseInt(form.querySelector("#damageBonus").value, 10);
-                        rollData.weapon.penetrationFormula = `${form.querySelector("#penetration").value}${ammo?.system.effect.penetration ? `+${ammo?.system.effect.penetration}`: ""}`;
+                        rollData.weapon.penetrationFormula = appendSignedModifier(
+                            form.querySelector("#penetration").value,
+                            ammo?.system.effect.penetration
+                        );
                         rollData.flags.isDamageRoll = false;
                         rollData.flags.isCombatRoll = true;
 
