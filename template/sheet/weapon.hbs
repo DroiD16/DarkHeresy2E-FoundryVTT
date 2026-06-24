@@ -91,12 +91,10 @@
                 <div class="stats-row attack-malfunction-row">
                     <div class="stat ammunition">
                         <label>{{localize "AMMUNITION.HEADER"}}</label>
-                        <select class="weapon-ammunition-select" {{#unless hasActor}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}>
-                            <option value=""></option>
-                            {{selectOptions ammunitionOptions selected=system.ammo valueAttr="id" labelAttr="name"}}
+                        <select class="weapon-ammunition-add" {{#unless hasActor}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}>
+                            <option value="">{{localize "WEAPON.ADD_AMMUNITION"}}</option>
+                            {{selectOptions ammunitionOptions valueAttr="id" labelAttr="name"}}
                         </select>
-                        <a class="weapon-ammunition-unlink {{#unless system.ammo}}disabled{{/unless}} {{#unless editable}}disabled{{/unless}}"
-                           title="{{localize 'BUTTON.UNLINK'}}" aria-label="{{localize 'BUTTON.UNLINK'}}"><i class="fas fa-chain-broken"></i></a>
                     </div>
                     <div class="stat malfunction">
                         <label>{{localize "WEAPON.MALFUNCTION"}}</label>
@@ -107,6 +105,24 @@
                         <input name="system.attack" type="number" value="{{system.attack}}" data-dtype="Number" />
                     </div>
                 </div>
+                {{#if system.ammoItems.length}}
+                <div class="stats-row linked-ammunition-row">
+                    <div class="stat linked-ammunition">
+                        <label>{{localize "WEAPON.LINKED_AMMUNITION"}}</label>
+                        <div class="linked-ammunition-list">
+                            {{#each system.ammoItems as |ammo|}}
+                                <span class="linked-ammunition-chip" data-ammo-id="{{ammo.id}}">
+                                    <span>{{ammo.name}}</span>
+                                    {{#if @root.editable}}
+                                        <a class="weapon-ammunition-unlink" data-ammo-id="{{ammo.id}}"
+                                           title="{{localize 'AMMUNITION.UNLINK'}}" aria-label="{{localize 'AMMUNITION.UNLINK'}}"><i class="fas fa-chain-broken"></i></a>
+                                    {{/if}}
+                                </span>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
                 <div class="stats-row special-row">
                     <div class="stat special">
                         <label>{{localize "WEAPON.SPECIAL"}}</label>

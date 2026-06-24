@@ -46,7 +46,7 @@
                                         class="fas fa-trash"></i></a>
                             </div>
                         </div>
-                        {{#with item.system.ammoItem as |ammo|}}
+                        {{#each item.system.ammoItems as |ammo|}}
                             <div class="linked-item flex row" data-ammo-id="{{ammo.id}}">
                                 <div class="button">
                                     <a class="item-control ammo-unlink" title="{{localize 'AMMUNITION.UNLINK'}}"><i
@@ -54,7 +54,7 @@
                                 </div>
                                 <div>&#8627 {{ammo.name}}</div>
                             </div>
-                        {{/with}}
+                        {{/each}}
                     </div>
                 {{/each}}
             </div>

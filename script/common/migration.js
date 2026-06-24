@@ -16,15 +16,14 @@ import { parseTalentAptitudes } from "./talent-aptitudes.js";
  *
  * Schema version 7 adds a one-time ITEM migration (`migrateItems`) covering world
  * items, actor-embedded items (live actors and world Actor compendiums), and
- * world Item compendiums: it persists the
- * legacy weapon `ammo` link (array -> single id), seeds structured
+ * world Item compendiums: it seeds structured
  * `specialQualities` from the decorative free-text `special` fields, normalizes a
  * free-text psychic `focusPower.test` to its canonical key, and converts the
  * legacy comma-separated talent `aptitudes` string to the structured aptitude
  * list. It is idempotent — it only seeds qualities when none exist yet, so curated
  * chips are never duplicated or resurrected, and the talent conversion normalizes
  * either shape. The free-text fields are left intact. The read-time `migrateData`
- * shims (rateOfFire/ammo on weapon, damageModifier on ammunition, and the talent
+ * shims (rateOfFire on weapon, damageModifier on ammunition, and the talent
  * aptitudes shim) stay in place as a safety net for imported or compendium
  * documents the runner cannot reach.
  *
@@ -299,9 +298,7 @@ export const migrateCompendium = async function(pack, worldSchemaVersion) {
  * returns null for "leave unchanged") so the function stays unit-testable.
  *
  * It covers, by item type:
- *  - weapon:        persist a non-empty `ammo` link (legacy single-element array
- *                   already presented as a string by the read shim); seed
- *                   `specialQualities` from free-text `special` when none exist.
+ *  - weapon:        seed `specialQualities` from free-text `special` when none exist.
  *  - ammunition:    seed `effect.specialQualities` from `effect.special`.
  *  - psychicPower:  seed `damage.specialQualities` from `damage.special`; resolve
  *                   `focusPower.test` to a canonical key when it is free text.
@@ -321,9 +318,6 @@ export const buildItemMigrationUpdate = (type, system, resolveFocus = () => null
     if (!system) return update;
 
     if (type === "weapon") {
-        if (typeof system.ammo === "string" && system.ammo !== "") {
-            update["system.ammo"] = system.ammo;
-        }
         addParsedQualities(update, "system.specialQualities", system.specialQualities, system.special, null);
     } else if (type === "ammunition") {
         addParsedQualities(update, "system.effect.specialQualities",

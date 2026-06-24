@@ -45,7 +45,7 @@ export default class WeaponData extends EquipmentItemData {
             // is otherwise derivable from the weapon's qualities.
             malfunction: new fields.BooleanField({ initial: false }),
             attack: new fields.NumberField({ initial: 0 }),
-            ammo: new fields.StringField({ initial: "" })
+            ammo: new fields.ArrayField(new fields.StringField({ blank: false }))
         };
 
     }
@@ -58,11 +58,13 @@ export default class WeaponData extends EquipmentItemData {
     }
 
     prepareAmmoFetch() {
-        // We only store a reference to the ammo, here we get the whole item and store it in memory only
-        // Ammo can only be connected to weapons for actor owned weapons
-        this.ammoItem = this.parent.actor && this.ammo
-            ? this.parent.actor.items.get(this.ammo) ?? null
-            : null;
+        // We only store the ammo ids; here we resolve the whole items and keep them
+        // in memory only. Ammo can only be connected to weapons for actor-owned
+        // weapons. Stale ids (an ammo deleted while still listed) resolve to
+        // undefined and are filtered out so downstream reads never see a hole.
+        this.ammoItems = this.parent.actor
+            ? this.ammo.map(id => this.parent.actor.items.get(id)).filter(Boolean)
+            : [];
     }
 
 
@@ -76,13 +78,15 @@ export default class WeaponData extends EquipmentItemData {
         return source;
     }
 
-    // The released upstream (4.4.0.0) weapon schema stored `ammo` as an array of
-    // linked ammunition ids; the active-ammunition model is singular. Preserve
-    // the first stored id when an old array is encountered and normalize an empty
-    // array to the schema's empty-string sentinel. Kept as a read-time safety net
-    // for imported/compendium documents the one-time world migration cannot reach.
+    // The fork's interim schema stored `ammo` as a single string id; the field is
+    // now an ArrayField matching the upstream shape. Coerce a legacy string to an
+    // array so existing fork worlds and any imported/compendium documents (which
+    // the one-time world migration cannot reach) load cleanly: "id" -> ["id"] and
+    // "" (the never-linked case) -> [] — without this, ArrayField cleaning would
+    // turn "" into a junk [null] element. A value already in the array shape
+    // (upstream worlds, freshly-saved fork worlds) is left untouched.
     static migrateAmmunitionLink(source) {
-        if (Array.isArray(source.ammo)) source.ammo = source.ammo.find(id => typeof id === "string" && id) ?? "";
+        if (typeof source.ammo === "string") source.ammo = source.ammo ? [source.ammo] : [];
     }
 
     static migrateRateOfFire(source) {

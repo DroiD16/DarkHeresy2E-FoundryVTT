@@ -197,10 +197,11 @@ test("AmmunitionData: inherits equipment fields and appends effect.specialQualit
     assert.equal(quality.fields.value.options.integer, true);
 });
 
-test("WeaponData: ammunition link is one string ID", () => {
+test("WeaponData: ammunition link is an array of ammo ids", () => {
     const schema = WeaponData.defineSchema();
-    assert.equal(schema.ammo.type, "String");
-    assert.equal(schema.ammo.options.initial, "");
+    assert.equal(schema.ammo.type, "Array");
+    assert.equal(schema.ammo.element.type, "String");
+    assert.equal(schema.ammo.element.options.blank, false);
 });
 
 test("TalentData: inherits description+source and appends talent own fields", () => {

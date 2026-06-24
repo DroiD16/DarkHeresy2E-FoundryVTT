@@ -28,12 +28,14 @@ export const registerDataModels = () => {
     });
 
     foundry.utils.mergeObject(CONFIG.Item.dataModels, {
-        // Weapon and ammunition keep small read-time `migrateData` shims that
-        // coerce released-4.4.0.0 shapes (weapon `ammo` array -> single id;
-        // ammunition `effect.damage.modifier` string -> number; weapon
-        // `rateOfFire` strings -> integers). The one-time world migration
-        // (schema 7) persists these for world/embedded/compendium documents; the
-        // shims remain for imported documents it cannot reach.
+        // Weapon and ammunition keep small read-time `migrateData` shims:
+        // weapon `rateOfFire` strings -> integers, ammunition
+        // `effect.damage.modifier` string -> number, and the weapon `ammo` link
+        // string -> array (the field is an ArrayField matching the upstream shape;
+        // the fork's interim singular-string links and old array-worlds both load
+        // cleanly). The one-time world migration (schema 7) seeds structured
+        // qualities, normalizes the psychic focus test, and converts talent
+        // aptitudes; the shims remain for imported documents it cannot reach.
         weapon: WeaponData,
         ammunition: AmmunitionData,
         // The following description-based types need no migrateData: every field

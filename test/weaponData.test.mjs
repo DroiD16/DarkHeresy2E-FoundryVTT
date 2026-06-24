@@ -20,11 +20,14 @@ const { default: AmmunitionData } = await import("../script/data/item/ammunition
 const { default: PsychicPowerData } = await import("../script/data/item/psychicPowerData.js");
 
 // ---------------------------------------------------------------------------
-// Retained read-time shims: rateOfFire (weapon), ammunition link (weapon),
-// damage modifier (ammunition). The numeric `specialQualities` normalizers and
-// the malfunction string->bool shim were removed (dev-only shapes never shipped;
-// the schema's own field cleaning covers strays). Free-text -> structured is now
-// the one-time world migration (see migration.test.mjs / qualityParser.test.mjs).
+// Retained read-time shims: rateOfFire (weapon), damage modifier (ammunition),
+// and the weapon `ammo` link string->array coercion (the field is now an
+// ArrayField matching the upstream shape; the fork's interim singular-string
+// links and old array-worlds both load cleanly). The numeric `specialQualities`
+// normalizers and the malfunction string->bool shim were removed (dev-only
+// shapes never shipped; the schema's own field cleaning covers strays).
+// Free-text -> structured is now the one-time world migration (see
+// migration.test.mjs / qualityParser.test.mjs).
 // ---------------------------------------------------------------------------
 
 test("migrateRateOfFire converts each string field independently (regression guard)", () => {
@@ -86,18 +89,46 @@ test("WeaponData.migrateData no longer coerces a legacy malfunction string", () 
     assert.equal(source.malfunction, "jammed");
 });
 
-test("WeaponData.migrateAmmunitionLink normalizes legacy arrays to one ID", () => {
-    const first = { ammo: ["ammo-1", "ammo-2"] };
-    WeaponData.migrateAmmunitionLink(first);
-    assert.equal(first.ammo, "ammo-1");
+test("WeaponData.migrateData coerces a legacy singular ammo string to an array", () => {
+    // The fork's interim schema stored `ammo` as a single string id; the field is
+    // now an ArrayField. migrateData wraps a non-empty string in an array and
+    // normalizes the empty-string (never-linked) case to [] — otherwise ArrayField
+    // cleaning would turn "" into a junk [null] element on every load.
+    const linked = { rateOfFire: { single: 0, burst: 0, full: 0 }, ammo: "a1" };
+    WeaponData.migrateData(linked);
+    assert.deepEqual(linked.ammo, ["a1"]);
 
-    const empty = { ammo: [] };
-    WeaponData.migrateAmmunitionLink(empty);
-    assert.equal(empty.ammo, "");
+    const empty = { rateOfFire: { single: 0, burst: 0, full: 0 }, ammo: "" };
+    WeaponData.migrateData(empty);
+    assert.deepEqual(empty.ammo, []);
+});
 
-    const current = { ammo: "ammo-3" };
-    WeaponData.migrateAmmunitionLink(current);
-    assert.equal(current.ammo, "ammo-3");
+test("WeaponData.migrateData leaves an existing ammo array untouched", () => {
+    // A value already in the array shape (upstream worlds, freshly-saved fork
+    // worlds) must pass through unmodified.
+    const source = { rateOfFire: { single: 0, burst: 0, full: 0 }, ammo: ["a1", "a2"] };
+    WeaponData.migrateData(source);
+    assert.deepEqual(source.ammo, ["a1", "a2"]);
+});
+
+test("prepareAmmoFetch resolves linked ammo and filters stale/missing ids", () => {
+    // The derived ammoItems array drops ids that no longer resolve to an owned
+    // item (an ammo deleted while still listed), so downstream reads never see a
+    // hole. The .filter(Boolean) is load-bearing here.
+    const items = { a1: { id: "a1" }, a2: { id: "a2" } };
+    const wd = Object.create(WeaponData.prototype);
+    wd.parent = { actor: { items: { get: id => items[id] } } };
+    wd.ammo = ["a1", "missing", "a2"];
+    wd.prepareAmmoFetch();
+    assert.deepEqual(wd.ammoItems.map(i => i.id), ["a1", "a2"]);
+});
+
+test("prepareAmmoFetch yields an empty array for an unowned weapon", () => {
+    const wd = Object.create(WeaponData.prototype);
+    wd.parent = { actor: null };
+    wd.ammo = ["a1"];
+    wd.prepareAmmoFetch();
+    assert.deepEqual(wd.ammoItems, []);
 });
 
 test("AmmunitionData.migrateData coerces the damage modifier and leaves qualities untouched", () => {
