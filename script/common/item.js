@@ -170,7 +170,10 @@ export class DarkHeresyItem extends Item {
             case "power":
                 return game.i18n.localize("ARMOUR_TYPE.POWER");
             default:
-                return game.i18n.localize("ARMOUR_TYPE.COMMON");
+                // No ARMOUR_TYPE.COMMON key exists; fall back to the schema
+                // default ("basic") so legacy/imported armour never renders a
+                // raw localization key.
+                return game.i18n.localize("ARMOUR_TYPE.BASIC");
         }
     }
 
