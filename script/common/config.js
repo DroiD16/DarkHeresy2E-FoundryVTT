@@ -62,6 +62,12 @@ Dh.evasions = {
     deny: "DIALOG.DENY_THE_WITCH"
 };
 
+Dh.npcTypes = {
+    troop: "NPC_TYPE.TROOP",
+    master: "NPC_TYPE.MASTER",
+    elite: "NPC_TYPE.ELITE"
+};
+
 Dh.craftmanship = {
     poor: "CRAFTSMANSHIP.POOR",
     common: "CRAFTSMANSHIP.COMMON",
