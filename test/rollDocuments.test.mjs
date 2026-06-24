@@ -29,6 +29,16 @@ test("roll document resolution preserves a synthetic token item by UUID", () => 
     assert.equal(resolveRollItem(rollData), item);
 });
 
+test("roll document resolution tolerates missing roll data without throwing", () => {
+    // getRollData() returns undefined for any non-DH chat message, and the
+    // context-menu reroll `condition` runs for every message on right-click, so
+    // the resolvers must degrade to null rather than dereference a nullish arg.
+    assert.equal(resolveRollActor(undefined), null);
+    assert.equal(resolveRollActor(null), null);
+    assert.equal(resolveRollItem(undefined), null);
+    assert.equal(resolveRollItem(null), null);
+});
+
 test("roll document resolution supports token and world-actor legacy data", () => {
     const tokenItem = { id: "token-weapon" };
     const tokenActor = { items: new Map([["weapon", tokenItem]]) };

@@ -1,7 +1,7 @@
 import { commonRoll, combatRoll, damageRoll } from "./roll.js";
 import { prepareCommonRoll } from "./dialog.js";
 import DarkHeresyUtil from "./util.js";
-import { resolveRollItem } from "./roll-documents.js";
+import { resolveRollActor, resolveRollItem } from "./roll-documents.js";
 import { reloadWeapon } from "./ammunition-reload.js";
 
 
@@ -45,7 +45,7 @@ export const addChatMessageContextOptions = function(html, options) {
 
     let canReroll = li => {
         const message = game.messages.get(li.dataset.messageId);
-        let actor = game.actors.get(message.getRollData()?.ownerId);
+        let actor = resolveRollActor(message.getRollData());
         return message.isRoll
             && !message.getRollData()?.flags.isDamageRoll
             && message.isContentVisible
@@ -111,7 +111,7 @@ function applyChatCardDamage(roll, multiplier) {
  * @returns {Promise}
  */
 function rerollTest(rollData) {
-    let actor = game.actors.get(rollData.ownerId);
+    let actor = resolveRollActor(rollData);
     actor.update({ "system.fate.value": actor.fate.value -1 });
     delete rollData.damages; // Reset so no old data is shown on failure
 

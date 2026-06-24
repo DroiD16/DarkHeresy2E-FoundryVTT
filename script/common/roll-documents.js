@@ -5,6 +5,7 @@
  * @returns {Actor|null}
  */
 export function resolveRollActor(rollData) {
+    if (!rollData) return null;
     if (rollData.actorUuid) {
         const actor = fromUuidSync(rollData.actorUuid);
         if (actor) return actor;
@@ -22,6 +23,7 @@ export function resolveRollActor(rollData) {
  * @returns {Item|null}
  */
 export function resolveRollItem(rollData) {
+    if (!rollData) return null;
     if (rollData.itemUuid) {
         const item = fromUuidSync(rollData.itemUuid);
         if (item) return item;
