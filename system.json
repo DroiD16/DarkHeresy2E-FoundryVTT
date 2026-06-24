@@ -2,10 +2,13 @@
   "id": "dark-heresy",
   "title": "Dark Heresy 2E",
   "description": "Unofficial Foundry VTT System for Dark Heresy 2nd Edition.",
-  "version": "4.4.0.0",
+  "readme": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/blob/master/README.md",
+  "bugs": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/issues",
+  "changelog": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases",
+  "version": "5.0.0-droid",
   "compatibility" : {
     "minimum" : 13,
-    "verified" : 13
+    "verified" : 14
   },
   "authors": [
 	{ "name":"JeansenVaars" }, 
@@ -20,7 +23,8 @@
     { "name":"Silver292" },
     { "name":"Giddy" },
     { "name":"Dazzerix" },
-	{ "name":"FilippoPolo" }
+	{ "name":"FilippoPolo" },
+    { "name":"DroiD" }
   ],
   "scripts": [],
   "esmodules": [
@@ -91,12 +95,13 @@
       "path": "lang/ru.json"
     }
   ],
-  "gridDistance": 1,
-  "gridUnits": "m",
-  "primaryTokenAttribute": null,
-  "secondaryTokenAttribute": null,
-  "url": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT",
-  "socket": true,
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "wounds",
+  "secondaryTokenAttribute": "fate",
+  "url": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT",
   "manifest": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.4.0.0/system.json",
   "download": "https://github.com/Vendare/DarkHeresy2E-FoundryVTT/releases/download/4.4.0.0/dark-heresy.zip",
   "license": "LICENSE.txt"
