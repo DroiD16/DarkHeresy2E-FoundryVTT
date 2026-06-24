@@ -497,6 +497,7 @@
     "WEAPON.RANGE": "Range",
     "WEAPON.RATE_OF_FIRE": "RoF",
     "WEAPON.RATE_OF_FIRE_FULL": "Rate of Fire",
+    "WEAPON.RATE_OF_FIRE_SINGLE": "S",
     "WEAPON.DAMAGE": "Dmg",
     "WEAPON.DAMAGE_FULL": "Damage",
     "WEAPON.DAMAGE_TYPE": "Type",

@@ -18,7 +18,7 @@ export class DarkHeresyItem extends Item {
 
     get RateOfFire() {
         let rof = this.rateOfFire;
-        let single = rof.single > 0 ? "S" : "-";
+        let single = rof.single > 0 ? game.i18n.localize("WEAPON.RATE_OF_FIRE_SINGLE") : "-";
         let burst = rof.burst > 0 ? `${rof.burst}` : "-";
         let full = rof.full > 0 ? `${rof.full}` : "-";
         return `${single}/${burst}/${full}`;

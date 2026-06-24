@@ -497,6 +497,7 @@
     "WEAPON.RANGE": "Дальн.",
     "WEAPON.RATE_OF_FIRE": "СКС",
     "WEAPON.RATE_OF_FIRE_FULL": "Скорострельность",
+    "WEAPON.RATE_OF_FIRE_SINGLE": "О",
     "WEAPON.DAMAGE": "Урон",
     "WEAPON.DAMAGE_FULL": "Урон",
     "WEAPON.DAMAGE_TYPE": "Тип",
