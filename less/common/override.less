@@ -293,6 +293,10 @@ li.folder.collapsed > .folder-header {
 
 /* V1 left-aligned the window title; ApplicationV2 centers it. */
 .dark-heresy .window-title {
+  /* The broad `.dark-heresy h1` sheet-heading rule also matches the V2 frame
+     title. Keep the frame title transparent so only Foundry's window-header
+     background is visible. */
+  background: none;
   text-align: start;
 }
 
