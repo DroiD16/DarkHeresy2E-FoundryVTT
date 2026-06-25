@@ -106,6 +106,7 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
             return {
                 key: quality.key,
                 label: entry ? game.i18n.localize(entry.labelKey) : quality.key,
+                desc: entry?.descKey ? game.i18n.localize(entry.descKey) : "",
                 hasValue: !!entry?.hasValue,
                 value: quality.value ?? entry?.default ?? null
             };

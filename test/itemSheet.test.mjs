@@ -112,7 +112,7 @@ test("quality editor uses each sheet's configured path and omits dead indexes", 
     const psychicContext = await psychicPower._prepareContext({});
 
     assert.deepEqual(weaponContext.qualityChips, [{
-        key: "unknown", label: "unknown", hasValue: false, value: 2
+        key: "unknown", label: "unknown", desc: "", hasValue: false, value: 2
     }]);
     assert.equal(Object.hasOwn(weaponContext.qualityChips[0], "index"), false);
     assert.deepEqual(weaponContext.qualityOptions.map(option => option.key), [

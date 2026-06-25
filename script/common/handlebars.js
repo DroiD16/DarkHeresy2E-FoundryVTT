@@ -161,22 +161,37 @@ function registerHandlebarsHelpers() {
     // stripping it), so any token already shown as a chip is dropped from the
     // leftover here to avoid rendering a quality twice (e.g. "Accurate, custom"
     // beside an Accurate chip → only "custom" is appended).
+    //
+    // Each known quality whose descKey localizes to a non-empty string is wrapped
+    // in a <span data-tooltip="..."> so hovering it shows the rulebook description
+    // (themed via data-tooltip-class). Returning a Handlebars.SafeString disables
+    // the {{ }} auto-escaping the read-only callers relied on, so EVERY dynamic
+    // piece (label, value, desc attribute, and the user-entered leftover free
+    // text) is run through Handlebars.escapeExpression; only the comma separators
+    // and the static <span> markup are literal. Unknown keys, empty descriptions,
+    // and the leftover free-text emit bare escaped text with no tooltip span.
     Handlebars.registerHelper("weaponSpecialDisplay", function(specialQualities, special) {
         const cfg = game.darkHeresy?.config?.weaponQualities ?? {};
+        const escape = Handlebars.escapeExpression;
         const parts = [];
         for (const q of specialQualities ?? []) {
             const entry = cfg[q?.key];
             const label = entry ? game.i18n.localize(entry.labelKey) : q?.key;
             if (label == null || label === "") continue;
+            let text = escape(label);
             if (entry?.hasValue) {
-                parts.push(`${label} (${q?.value ?? entry.default})`);
+                text += ` (${escape(String(q?.value ?? entry.default))})`;
+            }
+            const desc = entry?.descKey ? game.i18n.localize(entry.descKey) : "";
+            if (entry && desc) {
+                parts.push(`<span data-tooltip="${escape(desc)}" data-tooltip-class="dark-heresy-tooltip">${text}</span>`);
             } else {
-                parts.push(label);
+                parts.push(text);
             }
         }
         const leftover = dropQualitiesFromText(special, (specialQualities ?? []).map(q => q?.key));
-        if (leftover) parts.push(leftover);
-        return parts.join(", ");
+        if (leftover) parts.push(escape(leftover));
+        return new Handlebars.SafeString(parts.join(", "));
     });
 
     // Summarize an Active Effect's `changes` as readable "<target> <±value>"
