@@ -107,7 +107,7 @@
                     <div class="quality-chips border">
                         {{#each qualityChips}}
                             <span class="quality-chip" data-key="{{key}}">
-                                <span class="quality-chip-label">{{label}}</span>
+                                <span class="quality-chip-label" {{#if desc}}data-tooltip="{{desc}}" data-tooltip-class="dark-heresy-tooltip"{{/if}}>{{label}}</span>
                                 {{#if hasValue}}
                                     <input class="quality-value-input" type="number" data-key="{{key}}"
                                            value="{{value}}" min="0" step="1" data-dtype="Number" {{#unless @root.editable}}disabled{{/unless}} />

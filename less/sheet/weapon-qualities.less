@@ -52,3 +52,21 @@
 .dark-heresy.weapon .add-quality-select {
     width: 12em;
 }
+
+/* Cosmetic theming for the special-quality description tooltips. INTENTIONALLY
+   UNSCOPED: Foundry's TooltipManager renders the floating tooltip into the
+   body-level #tooltip element, which lives OUTSIDE the sheet's .dark-heresy
+   scope, so a `.dark-heresy ...` selector would compile cleanly but never apply.
+   The #tooltip id + the data-tooltip-class hook win over Foundry's default
+   #tooltip rule. COSMETIC ONLY: no position/top/left/transform/z-index — tooltip
+   placement is left entirely to the TooltipManager. */
+#tooltip.dark-heresy-tooltip {
+    max-width: 320px;
+    white-space: normal;
+    padding: 6px 8px;
+    border: 1px solid var(--color-foreground);
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.9);
+    color: var(--color-title);
+    font-family: var(--font-text);
+}
