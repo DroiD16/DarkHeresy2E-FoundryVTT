@@ -350,4 +350,62 @@ export default class DarkHeresyUtil {
         }
         return categories;
     }
+
+    /**
+     * Capture the scroll offsets of every scrollable container within an element.
+     * Pair with {@link DarkHeresyUtil.restoreScrollPositions} to preserve scroll
+     * across an ApplicationV2 part re-render (e.g. each `submitOnChange` edit).
+     *
+     * Why this exists, and why restore is deferred to `_onRender`: the framework's
+     * built-in `part.scrollable` option restores scroll inside `_syncPartState`,
+     * which runs while the freshly rendered tab still lacks its `active` class and
+     * is therefore `display:none` — a `scrollTop` written to a hidden element is
+     * silently dropped. The active tab only gains `active` later, in the sheet's
+     * `_onRender` → `_activateTabs()`. So we read offsets here from the still-visible
+     * prior DOM and re-apply them after the tab is shown.
+     *
+     * Each selector is captured into its own bucket (rather than one merged
+     * document-order list) so that a container which appears/disappears between
+     * renders — e.g. the edit-conditional `.quality-chips` editor on item sheets —
+     * can only shift indices within its own bucket, never another selector's.
+     *
+     * @param {HTMLElement} element   The element to read from (the pre-render part,
+     *                                whose active tab is still on screen).
+     * @param {string[]} selectors    CSS selectors matching the scroll containers.
+     * @returns {Array<Array<[number, number]>>} Per selector, `[scrollTop, scrollLeft]`
+     *                                           for each match in document order.
+     */
+    static captureScrollPositions(element, selectors) {
+        return selectors.map(selector =>
+            Array.from(element.querySelectorAll(selector), el => [el.scrollTop, el.scrollLeft])
+        );
+    }
+
+    /**
+     * Re-apply scroll offsets captured by {@link DarkHeresyUtil.captureScrollPositions},
+     * matching each selector's current containers to its captured bucket by
+     * document-order index. Per-selector container counts are fixed by the template
+     * (only the rows inside them vary), so the mapping is stable; a count mismatch —
+     * e.g. a conditional editor toggling within its bucket — is bounded by `Math.min`.
+     *
+     * Must be called after the active tab is re-activated (so its containers are
+     * laid out), otherwise the writes land on hidden elements and are dropped.
+     *
+     * @param {HTMLElement} element                        The current part element (active tab visible).
+     * @param {string[]} selectors                         CSS selectors matching the scroll containers.
+     * @param {Array<Array<[number, number]>>} captured    Offsets from a prior capture.
+     */
+    static restoreScrollPositions(element, selectors, captured) {
+        if (!captured?.length) return;
+        selectors.forEach((selector, bucket) => {
+            const positions = captured[bucket];
+            if (!positions?.length) return;
+            const containers = element.querySelectorAll(selector);
+            const count = Math.min(containers.length, positions.length);
+            for (let i = 0; i < count; i++) {
+                const [top, left] = positions[i];
+                if (top || left) Object.assign(containers[i], { scrollTop: top, scrollLeft: left });
+            }
+        });
+    }
 }

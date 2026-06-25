@@ -14,6 +14,19 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     /** Opt-in configuration for the shared special-quality chip editor. */
     static QUALITY_EDITOR = null;
 
+    /**
+     * Scroll containers whose position is preserved across part re-renders so a
+     * `submitOnChange` edit does not snap a scrolled list back to the top — the
+     * special-quality chip editor and the effects tab list. Each selector is
+     * matched independently — see {@link DarkHeresyUtil.captureScrollPositions}.
+     */
+    static SCROLLABLE = [".quality-chips", ".items-list"];
+
+    // Per-render snapshot of scroll offsets captured from the outgoing DOM in
+    // `_preSyncPartState` and re-applied in `_onRender` once the active tab is
+    // visible again. Lives on the (re-render-stable) instance.
+    #scrollPositions = [];
+
     // Serialize quality writes so rapid UI events always read the result of the
     // preceding asynchronous item update instead of a stale array snapshot.
     #qualityMutations = Promise.resolve();
@@ -185,9 +198,18 @@ export class DarkHeresyItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     }
 
     /** @inheritDoc */
+    _preSyncPartState(partId, newElement, priorElement, state) {
+        super._preSyncPartState(partId, newElement, priorElement, state);
+        // Read from the still-visible prior DOM; restore happens in `_onRender`,
+        // after `_activateTabs()` makes the target tab visible again.
+        this.#scrollPositions = DarkHeresyUtil.captureScrollPositions(priorElement, this.constructor.SCROLLABLE);
+    }
+
+    /** @inheritDoc */
     async _onRender(context, options) {
         await super._onRender(context, options);
         this._activateTabs();
+        DarkHeresyUtil.restoreScrollPositions(this.element, this.constructor.SCROLLABLE, this.#scrollPositions);
     }
 
     /**
