@@ -29,6 +29,21 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         }
     };
 
+    /**
+     * Scroll containers whose position is preserved across part re-renders so an
+     * edit on (e.g.) the Advances tab does not snap a scrolled list back to the
+     * top. Covers the scrollable tables and the stats specialist-skills column
+     * (both carry `is-scrollable`), the gear tab's single scroll region, and the
+     * effects tab list. Each selector is matched independently — see
+     * {@link DarkHeresyUtil.captureScrollPositions}.
+     */
+    static SCROLLABLE = [".is-scrollable", ".all-gear", ".items-list"];
+
+    // Per-render snapshot of scroll offsets captured from the outgoing DOM in
+    // `_preSyncPartState` and re-applied in `_onRender` once the active tab is
+    // visible again. Lives on the (re-render-stable) instance.
+    #scrollPositions = [];
+
     /** @inheritDoc */
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
@@ -102,9 +117,18 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     /** @inheritDoc */
+    _preSyncPartState(partId, newElement, priorElement, state) {
+        super._preSyncPartState(partId, newElement, priorElement, state);
+        // Read from the still-visible prior DOM; restore happens in `_onRender`,
+        // after `_activateTabs()` makes the target tab visible again.
+        this.#scrollPositions = DarkHeresyUtil.captureScrollPositions(priorElement, this.constructor.SCROLLABLE);
+    }
+
+    /** @inheritDoc */
     async _onRender(context, options) {
         await super._onRender(context, options);
         this._activateTabs();
+        DarkHeresyUtil.restoreScrollPositions(this.element, this.constructor.SCROLLABLE, this.#scrollPositions);
     }
 
     /**
