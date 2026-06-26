@@ -200,13 +200,26 @@ function registerHandlebarsHelpers() {
     // pairs (e.g. "Weapon Skill +5"), shown in the item effect list in place of
     // the redundant source column. The target is humanized from the change key
     // (characteristics/skills get their stat name, with the field in parens when
-    // it isn't the base value); the mode selects the operator symbol.
+    // it isn't the base value); the change type selects the operator symbol.
     Handlebars.registerHelper("effectChanges", function(effect) {
-        const modes = CONST.ACTIVE_EFFECT_MODES;
-        const symbols = {
-            [modes.ADD]: "+", [modes.MULTIPLY]: "×", [modes.OVERRIDE]: "=",
-            [modes.UPGRADE]: "↑", [modes.DOWNGRADE]: "↓", [modes.CUSTOM]: "•"
+        const legacyModes = {
+            0: "custom",
+            1: "multiply",
+            2: "add",
+            3: "downgrade",
+            4: "upgrade",
+            5: "override"
         };
+        const symbols = {
+            add: "+",
+            subtract: "-",
+            multiply: "×",
+            override: "=",
+            upgrade: "↑",
+            downgrade: "↓",
+            custom: "•"
+        };
+        const changeType = change => change.type ?? legacyModes[change.mode];
         const humanize = s => String(s).replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase()).trim();
         const localized = (key, fallback) => game.i18n?.has?.(key) ? game.i18n.localize(key) : fallback;
         const label = key => {
@@ -229,9 +242,10 @@ function registerHandlebarsHelpers() {
         };
         const changes = effect?.changes ?? [];
         return changes.map(c => {
-            const sym = symbols[c.mode] ?? "";
+            const type = changeType(c);
+            const sym = symbols[type] ?? "";
             const v = String(c.value ?? "");
-            const val = (c.mode === modes.ADD && v.startsWith("-")) ? v : `${sym}${v}`;
+            const val = (type === "add" && v.startsWith("-")) ? v : `${sym}${v}`;
             return `${label(c.key)} ${val}`;
         }).join(", ");
     });
