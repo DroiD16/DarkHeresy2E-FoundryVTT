@@ -184,12 +184,15 @@
     --table-columns: 30% 42fr 10fr 7fr 7% 7%;
 }
 
-.dark-heresy .gear .gear-armour-table,
-.dark-heresy .gear .gear-force-fields-table,
-.dark-heresy .gear .gear-description-table {
+.dark-heresy .gear .gear-armour-table {
     --table-columns: 30% 55fr 7% 7%;
 }
 
+/* Force fields, gear/drugs/tools and cybernetics each carry an install / in-use
+   toggle as their first data column, so they share the cybernetics grid: a
+   narrow `10fr` toggle slot ahead of the wide description column. */
+.dark-heresy .gear .gear-force-fields-table,
+.dark-heresy .gear .gear-description-table,
 .dark-heresy .gear .gear-cybernetics-table {
     --table-columns: 30% 10fr 45fr 7% 7%;
 }

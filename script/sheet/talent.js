@@ -22,7 +22,10 @@ export class TalentSheet extends DarkHeresyItemSheet {
         form: {
             root: true,
             template: "systems/dark-heresy/template/sheet/talent.hbs",
-            templates: ["systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs"]
+            templates: [
+                "systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs",
+                "systems/dark-heresy/template/sheet/item/parts/effect-tab-nav.hbs"
+            ]
         }
     };
 }

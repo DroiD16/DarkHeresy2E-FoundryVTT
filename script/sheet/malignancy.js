@@ -9,7 +9,10 @@ export class MalignancySheet extends DarkHeresyItemSheet {
         form: {
             root: true,
             template: "systems/dark-heresy/template/sheet/malignancy.hbs",
-            templates: ["systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs"]
+            templates: [
+                "systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs",
+                "systems/dark-heresy/template/sheet/item/parts/effect-tab-nav.hbs"
+            ]
         }
     };
 }

@@ -271,32 +271,40 @@ test("CyberneticData: inherits equipment fields and appends installed (Boolean f
     assert.equal(schema.installed.options.initial, false);
 });
 
-test("DrugData: inherits equipment fields and appends shortDescription (String '')", () => {
+test("DrugData: inherits equipment fields and appends installed (Boolean false) and shortDescription (String '')", () => {
     const schema = DrugData.defineSchema();
     assertInheritsEquipment(schema);
+    assert.equal(schema.installed.type, "Boolean");
+    assert.equal(schema.installed.options.initial, false);
     assert.equal(schema.shortDescription.type, "String");
     assert.equal(schema.shortDescription.options.initial, "");
 });
 
-test("ForceFieldData: inherits equipment fields and appends protectionRating/overloadChance (Number 0)", () => {
+test("ForceFieldData: inherits equipment fields and appends installed (Boolean false) and protectionRating/overloadChance (Number 0)", () => {
     const schema = ForceFieldData.defineSchema();
     assertInheritsEquipment(schema);
+    assert.equal(schema.installed.type, "Boolean");
+    assert.equal(schema.installed.options.initial, false);
     assert.equal(schema.protectionRating.type, "Number");
     assert.equal(schema.protectionRating.options.initial, 0);
     assert.equal(schema.overloadChance.type, "Number");
     assert.equal(schema.overloadChance.options.initial, 0);
 });
 
-test("GearData: inherits equipment fields and appends shortDescription (String '')", () => {
+test("GearData: inherits equipment fields and appends installed (Boolean false) and shortDescription (String '')", () => {
     const schema = GearData.defineSchema();
     assertInheritsEquipment(schema);
+    assert.equal(schema.installed.type, "Boolean");
+    assert.equal(schema.installed.options.initial, false);
     assert.equal(schema.shortDescription.type, "String");
     assert.equal(schema.shortDescription.options.initial, "");
 });
 
-test("ToolData: inherits equipment fields and appends shortDescription (String '')", () => {
+test("ToolData: inherits equipment fields and appends installed (Boolean false) and shortDescription (String '')", () => {
     const schema = ToolData.defineSchema();
     assertInheritsEquipment(schema);
+    assert.equal(schema.installed.type, "Boolean");
+    assert.equal(schema.installed.options.initial, false);
     assert.equal(schema.shortDescription.type, "String");
     assert.equal(schema.shortDescription.options.initial, "");
 });

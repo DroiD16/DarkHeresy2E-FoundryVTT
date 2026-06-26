@@ -51,6 +51,15 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         // drops the DataModel-derived keys the sheet renders).
         context.actor = this.actor;
         context.system = this.actor.system;
+        // Editable inputs bind to `source` (raw, pre-Active-Effect values) so a
+        // `submitOnChange` round-trip writes the stored value back, never the
+        // effect-applied one. Display-only fields keep reading the derived
+        // `system`. When the sheet is not editable, `source` points at the
+        // derived data so read-only views still show effective values. This is
+        // the ApplicationV2-idiomatic split (cf. dnd5e); it replaces simulating
+        // V1's _disableOverriddenFields. See template/sheet/actor/tab/progression
+        // and the characteristic/stat inputs.
+        context.source = this.isEditable ? this.actor.system._source : this.actor.system;
         context.items = this.constructItemLists();
         context.enrichment = await this._enrichment();
         context.effects = this.prepareActiveEffectCategories();
@@ -193,6 +202,10 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         if (target.classList.contains("weapon-malfunction-toggle")) {
             event.stopPropagation();
             return this._onWeaponMalfunctionToggle(target);
+        }
+        if (target.classList.contains("item-installed-toggle")) {
+            event.stopPropagation();
+            return this._onItemInstalledToggle(target);
         }
     }
 
@@ -341,6 +354,19 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.malfunction": target.checked });
+    }
+
+    /**
+     * Toggle an item's install/in-use flag (`system.installed`) from the Gear
+     * tab. Whether the flag is set controls whether the item's transferred
+     * Active Effects apply to the actor — see {@link DarkHeresyActiveEffect}.
+     * @param {HTMLInputElement} target  The toggled checkbox.
+     * @returns {Promise<Item>|void} The item update, when editable.
+     */
+    _onItemInstalledToggle(target) {
+        if (!this.isEditable) return;
+        const item = this.actor.items.get(target.closest(".item").dataset.itemId);
+        return item?.update({ "system.installed": target.checked });
     }
 
     constructItemLists() {

@@ -77,7 +77,7 @@
                             </div>
                             <div>{{item.name}}</div>
                         </div>
-                        <div class="installed">{{item.isInstalled}}</div>
+                        <div class="installed"><input type="checkbox" class="item-installed-toggle" {{#if item.system.installed}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} title="{{localize "WEAPON_MODIFICATION.INSTALLED"}}" /></div>
                         <div class="upgrade">{{item.upgrades}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
@@ -148,6 +148,7 @@
         <div class="item-list gear-force-fields-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "FORCE_FIELD.HEADER"}}</b>
+                <b class="installed">{{localize "FORCE_FIELD.INSTALLED"}}</b>
                 <b class="craftsmanship">{{localize "FORCE_FIELD.CRAFTSMANSHIP"}}</b>
                 <b class="weight">{{localize "FORCE_FIELD.WEIGHT"}}</b>
                 <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.forcefield')}}" data-type="forceField"><i
@@ -162,6 +163,7 @@
                             </div>
                             <div>{{item.name}}</div>
                         </div>
+                        <div class="installed"><input type="checkbox" class="item-installed-toggle" {{#if item.system.installed}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} title="{{localize "FORCE_FIELD.INSTALLED"}}" /></div>
                         <div class="craftsmanship">{{item.Craftsmanship}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
@@ -175,6 +177,7 @@
         <div class="item-list gear-description-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "GEAR.HEADER"}}</b>
+                <b class="installed">{{localize "GEAR.IN_USE"}}</b>
                 <b class="short-description">{{localize "GEAR.SHORT_DESCRIPTION"}}</b>
                 <b class="weight">{{localize "GEAR.WEIGHT"}}</b>
                 <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.gear')}}" data-type="gear"><i class="fas fa-plus"></i></a>
@@ -188,6 +191,7 @@
                             </div>
                             <div>{{item.name}}</div>
                         </div>
+                        <div class="installed"><input type="checkbox" class="item-installed-toggle" {{#if item.system.installed}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} title="{{localize "GEAR.IN_USE"}}" /></div>
                         <div class="short-description">{{item.shortDescription}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
@@ -200,6 +204,7 @@
         <div class="item-list gear-description-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "DRUG.HEADER"}}</b>
+                <b class="installed">{{localize "DRUG.IN_USE"}}</b>
                 <b class="short-description">{{localize "DRUG.SHORT_DESCRIPTION"}}</b>
                 <b class="weight">{{localize "DRUG.WEIGHT"}}</b>
                 <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.drug')}}" data-type="drug"><i class="fas fa-plus"></i></a>
@@ -213,6 +218,7 @@
                             </div>
                             <div>{{item.name}}</div>
                         </div>
+                        <div class="installed"><input type="checkbox" class="item-installed-toggle" {{#if item.system.installed}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} title="{{localize "DRUG.IN_USE"}}" /></div>
                         <div class="short-description">{{item.shortDescription}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
@@ -225,6 +231,7 @@
         <div class="item-list gear-description-table aligned-table">
             <div class="flex header">
                 <b class="name">{{localize "TOOL.HEADER"}}</b>
+                <b class="installed">{{localize "TOOL.IN_USE"}}</b>
                 <b class="short-description">{{localize "TOOL.SHORT_DESCRIPTION"}}</b>
                 <b class="weight">{{localize "TOOL.WEIGHT"}}</b>
                 <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.tool')}}" data-type="tool"><i class="fas fa-plus"></i></a>
@@ -238,6 +245,7 @@
                             </div>
                             <div>{{item.name}}</div>
                         </div>
+                        <div class="installed"><input type="checkbox" class="item-installed-toggle" {{#if item.system.installed}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} title="{{localize "TOOL.IN_USE"}}" /></div>
                         <div class="short-description">{{item.shortDescription}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
@@ -265,7 +273,7 @@
                             </div>
                             <div>{{item.name}}</div>
                         </div>
-                        <div class="installed">{{item.isInstalled}}</div>
+                        <div class="installed"><input type="checkbox" class="item-installed-toggle" {{#if item.system.installed}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} title="{{localize "CYBERNETIC.INSTALLED"}}" /></div>
                         <div class="cybernetic-craftsmanship">{{item.Craftsmanship}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
