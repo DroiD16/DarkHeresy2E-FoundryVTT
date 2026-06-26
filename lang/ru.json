@@ -22,6 +22,8 @@
     "APTITUDE.LEADERSHIP": "Лидерство",
     "APTITUDE.TECH": "Техно",
     "APTITUDE.GENERAL": "Общая",
+    "AVATAR.SHOW_TOKEN": "Показать токен",
+    "AVATAR.SHOW_PORTRAIT": "Показать портрет",
     "AIMING.NONE": "Нет",
     "AIMING.HALF": "Полу",
     "AIMING.FULL": "Полное",

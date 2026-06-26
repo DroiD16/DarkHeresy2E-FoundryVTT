@@ -22,6 +22,8 @@
     "APTITUDE.LEADERSHIP": "Leadership",
     "APTITUDE.TECH": "Tech",
     "APTITUDE.GENERAL": "General",
+    "AVATAR.SHOW_TOKEN": "Show token",
+    "AVATAR.SHOW_PORTRAIT": "Show portrait",
     "AIMING.NONE": "None",
     "AIMING.HALF": "Half",
     "AIMING.FULL": "Full",

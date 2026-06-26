@@ -25,7 +25,8 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         window: { resizable: true },
         form: { submitOnChange: true },
         actions: {
-            customRoll: DarkHeresySheet.#onCustomRoll
+            customRoll: DarkHeresySheet.#onCustomRoll,
+            toggleTokenPortrait: DarkHeresySheet.#onToggleTokenPortrait
         }
     };
 
@@ -65,6 +66,7 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         context.effects = this.prepareActiveEffectCategories();
         context.owner = this.actor.isOwner;
         context.editable = this.isEditable;
+        context.avatar = this.#prepareAvatar();
         return context;
     }
 
@@ -216,6 +218,44 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      */
     static #onCustomRoll() {
         return this._prepareCustomRoll();
+    }
+
+    /**
+     * Toggle the persisted portrait/token avatar preference. Setting the flag
+     * updates the actor, which re-renders the sheet through the normal pipeline.
+     * @this {DarkHeresySheet}
+     * @returns {Promise<Actor>} The update promise.
+     */
+    static #onToggleTokenPortrait() {
+        const showToken = this.actor.getFlag("dark-heresy", "showTokenPortrait") === true;
+        return this.actor.setFlag("dark-heresy", "showTokenPortrait", !showToken);
+    }
+
+    /**
+     * Resolve the header avatar to display: the portrait (`actor.img`) or the
+     * prototype-token texture, controlled by the persisted `showTokenPortrait`
+     * flag. When the token is shown the edit target follows it so the FilePicker
+     * writes `prototypeToken.texture.src` rather than the portrait, and a video
+     * texture is flagged so the template renders a (non-editable) `<video>`
+     * instead of an `<img>` — core's `editImage` action requires an IMG element
+     * and FormDataExtended would otherwise persist a video element's empty
+     * innerHTML over the field. Falls back to the portrait when the token has no
+     * usable still image (empty src or a `randomImg` wildcard). The button label
+     * tracks the flag (the user's chosen mode), not the fallback display.
+     * @returns {{src: string, edit: string, isVideo: boolean, showToken: boolean}}
+     */
+    #prepareAvatar() {
+        const showToken = this.actor.getFlag("dark-heresy", "showTokenPortrait") === true;
+        const token = this.actor.prototypeToken;
+        const tokenSrc = token?.randomImg ? null : token?.texture?.src;
+        const useToken = showToken && !!tokenSrc;
+        const src = useToken ? tokenSrc : this.actor.img;
+        return {
+            src,
+            edit: useToken ? "prototypeToken.texture.src" : "img",
+            isVideo: foundry.helpers.media.VideoHelper.hasVideoExtension(src),
+            showToken
+        };
     }
 
     _onItemCreate(target) {

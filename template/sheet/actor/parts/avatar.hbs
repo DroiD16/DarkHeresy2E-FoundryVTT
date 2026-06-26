@@ -1,0 +1,25 @@
+{{!-- Header avatar: portrait or prototype-token texture, toggled by the
+      persisted `showTokenPortrait` flag. `avatar` is built in
+      DarkHeresySheet#prepareAvatar. A video token texture is shown read-only
+      (core `editImage` requires an IMG and FormDataExtended would persist a
+      video element's empty innerHTML over a `data-edit` field). The toggle
+      button appears only while editing (top-left corner); its icon names the
+      destination mode. --}}
+<div class="avatar">
+    {{#if avatar.isVideo}}
+    <video class="profile-img" src="{{avatar.src}}" autoplay loop muted disablepictureinpicture></video>
+    {{else}}
+    <img class="profile-img" src="{{avatar.src}}" alt="{{actor.name}}" data-edit="{{avatar.edit}}" data-action="editImage" title="{{actor.name}}" />
+    {{/if}}
+    {{#if editable}}
+    {{#if avatar.showToken}}
+    <a class="avatar-toggle" data-action="toggleTokenPortrait" data-tooltip="{{localize "AVATAR.SHOW_PORTRAIT"}}" aria-label="{{localize "AVATAR.SHOW_PORTRAIT"}}">
+        <i class="fas fa-user"></i>
+    </a>
+    {{else}}
+    <a class="avatar-toggle" data-action="toggleTokenPortrait" data-tooltip="{{localize "AVATAR.SHOW_TOKEN"}}" aria-label="{{localize "AVATAR.SHOW_TOKEN"}}">
+        <i class="fas fa-chess-pawn"></i>
+    </a>
+    {{/if}}
+    {{/if}}
+</div>

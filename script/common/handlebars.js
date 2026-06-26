@@ -44,6 +44,7 @@ function preloadHandlebarsTemplates() {
         "systems/dark-heresy/template/sheet/weapon-modification.hbs",
         "systems/dark-heresy/template/sheet/ammunition.hbs",
         "systems/dark-heresy/template/sheet/force-field.hbs",
+        "systems/dark-heresy/template/sheet/actor/parts/avatar.hbs",
         "systems/dark-heresy/template/sheet/item/parts/effect-part.hbs",
         "systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs",
         "systems/dark-heresy/template/sheet/item/parts/effect-tab-nav.hbs",

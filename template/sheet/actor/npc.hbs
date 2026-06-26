@@ -1,9 +1,7 @@
     <div class="npc">
         <div class="header border">
             <div class="flex row">
-                <div class="avatar">
-                    <img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-edit="img" data-action="editImage" title="{{actor.name}}" />
-                </div>
+                {{> systems/dark-heresy/template/sheet/actor/parts/avatar.hbs}}
                 <div class="flex column grow">
                     <div class="name header-row">
                         <label>{{localize "BIO.NAME"}}</label>
