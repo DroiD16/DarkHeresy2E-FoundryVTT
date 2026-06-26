@@ -179,6 +179,32 @@ test("skill roll data uses virtual advance for characteristic targets", () => {
     assert.equal(rollData.target.base, 65);
 });
 
+test("specialist skill roll data uses parent skill without a speciality", () => {
+    const rollData = DarkHeresyUtil.createSkillRollData({
+        id: "actor-id",
+        characteristics: {
+            intelligence: { label: "Intelligence", short: "Int", total: 40 },
+            fellowship: { label: "Fellowship", short: "Fel", total: 30 }
+        },
+        skills: {
+            commonLore: {
+                label: "Common Lore",
+                characteristics: ["Int", "Fel"],
+                base: 5,
+                advance: -20,
+                virtualAdvance: -20,
+                total: 25,
+                isSpecialist: true,
+                specialities: {}
+            }
+        }
+    }, "commonLore");
+
+    assert.deepEqual(rollData.characteristics.map(c => c.target), [25, 15]);
+    assert.equal(rollData.target.base, 25);
+    assert.equal(rollData.name, "Common Lore");
+});
+
 test("fatigue max includes fatigue base", () => {
     const characteristics = {
         toughness: { short: "T", base: 30, advance: 5, unnatural: 0, total: 0, bonus: 0 },

@@ -128,7 +128,9 @@
                     {{#if skill.isSpecialist}}
                         <div class="item-list">
                             <div class="flex header">
-                                <b class="name">{{localize skill.label}}</b>
+                                <b class="name">
+                                    <button class="roll-skill" data-skill="{{key}}" type="button">{{localize skill.label}}</button>
+                                </b>
                             </div>
                             <div class="items" style="overflow-y: visible">
                                 {{#each skill.specialities as |speciality keySpe|}}
