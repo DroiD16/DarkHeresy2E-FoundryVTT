@@ -51,6 +51,15 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         // drops the DataModel-derived keys the sheet renders).
         context.actor = this.actor;
         context.system = this.actor.system;
+        // Editable inputs bind to `source` (raw, pre-Active-Effect values) so a
+        // `submitOnChange` round-trip writes the stored value back, never the
+        // effect-applied one. Display-only fields keep reading the derived
+        // `system`. When the sheet is not editable, `source` points at the
+        // derived data so read-only views still show effective values. This is
+        // the ApplicationV2-idiomatic split (cf. dnd5e); it replaces simulating
+        // V1's _disableOverriddenFields. See template/sheet/actor/tab/progression
+        // and the characteristic/stat inputs.
+        context.source = this.isEditable ? this.actor.system._source : this.actor.system;
         context.items = this.constructItemLists();
         context.enrichment = await this._enrichment();
         context.effects = this.prepareActiveEffectCategories();

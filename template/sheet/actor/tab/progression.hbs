@@ -55,7 +55,7 @@
         <h1>{{localize "TITLE.EXPERIENCE"}}</h1>
         <div class="information">
             <label>{{localize "EXPERIENCE.TOTAL"}}</label>
-            <input name="system.experience.value" type="number" value="{{system.experience.value}}" data-dtype="Number" />
+            <input name="system.experience.value" type="number" value="{{source.experience.value}}" data-dtype="Number" />
         </div>
         <div class="information">
             <label>{{localize "EXPERIENCE.SPENT_CHARACTERISTICS"}}</label>
@@ -75,7 +75,7 @@
         </div>
         <div class="information">
             <label>{{localize "EXPERIENCE.SPENT_OTHER"}}</label>
-            <input name="system.experience.spentOther" type="number" value="{{system.experience.spentOther}}" data-dtype="Number" />
+            <input name="system.experience.spentOther" type="number" value="{{source.experience.spentOther}}" data-dtype="Number" />
         </div>
         <div class="information">
             <label>{{localize "EXPERIENCE.TOTAL_SPENT"}}</label>
@@ -102,11 +102,11 @@
                         <div class="characteristic item flex row">
                             <div class="name">{{localize characteristic.label}}</div>
                             <select class="advance" name="system.characteristics.{{key}}.advance" data-dtype="Number">
-                                {{selectOptions (config "advanceStagesCharacteristics") selected=characteristic.advance localize=true}}
+                                {{selectOptions (config "advanceStagesCharacteristics") selected=(lookup (lookup @root.source.characteristics key) 'advance') localize=true}}
                             </select>
-                            <input class="unnatural" name="system.characteristics.{{key}}.unnatural" type="number" value="{{characteristic.unnatural}}" data-dtype="Number" />
-                            <input class="base" name="system.characteristics.{{key}}.base" type="number" value="{{characteristic.base}}" data-dtype="Number" />
-                            <input class="cost" name="system.characteristics.{{key}}.cost" type="number" value="{{characteristic.cost}}" data-dtype="Number" />
+                            <input class="unnatural" name="system.characteristics.{{key}}.unnatural" type="number" value="{{lookup (lookup @root.source.characteristics key) 'unnatural'}}" data-dtype="Number" />
+                            <input class="base" name="system.characteristics.{{key}}.base" type="number" value="{{lookup (lookup @root.source.characteristics key) 'base'}}" data-dtype="Number" />
+                            <input class="cost" name="system.characteristics.{{key}}.cost" type="number" value="{{lookup (lookup @root.source.characteristics key) 'cost'}}" data-dtype="Number" />
                         </div>
                     {{/each}}
                 </div>
@@ -124,11 +124,11 @@
                 <div class="rating">
                     <div class="flex">
                         <label>{{localize "PSYCHIC_POWER.RATING"}}</label>
-                        <input name="system.psy.rating" type="number" value="{{system.psy.rating}}" data-dtype="Number" />
+                        <input name="system.psy.rating" type="number" value="{{source.psy.rating}}" data-dtype="Number" />
                     </div>
                     <div class="flex" style="margin-top: 2px">
                         <label>{{localize "PSYCHIC_POWER.COST"}}</label>
-                        <input name="system.psy.cost" type="number" value="{{system.psy.cost}}" data-dtype="Number" />
+                        <input name="system.psy.cost" type="number" value="{{source.psy.cost}}" data-dtype="Number" />
                     </div>
                 </div>
             </div>

@@ -3,15 +3,15 @@
         <h1>{{localize "TITLE.WOUNDS"}}</h1>
         <div class="information">
             <label>{{localize "WOUND.TOTAL"}}</label>
-            <input name="system.wounds.max" type="number" value="{{system.wounds.max}}" data-dtype="Number" />
+            <input name="system.wounds.max" type="number" value="{{source.wounds.max}}" data-dtype="Number" />
         </div>
         <div class="information">
             <label>{{localize "WOUND.CURRENT"}}</label>
-            <input name="system.wounds.value" type="number" value="{{system.wounds.value}}" data-dtype="Number" />
+            <input name="system.wounds.value" type="number" value="{{source.wounds.value}}" data-dtype="Number" />
         </div>
         <div class="information">
             <label>{{localize "WOUND.CRITICAL_DAMAGE"}}</label>
-            <input name="system.wounds.critical" type="number" value="{{system.wounds.critical}}" data-dtype="Number" />
+            <input name="system.wounds.critical" type="number" value="{{source.wounds.critical}}" data-dtype="Number" />
         </div>
         <div class="item-list">
             <div class="flex header">
@@ -111,7 +111,7 @@
         <h1 style="margin-top: 5px">{{localize "TITLE.OTHER"}}</h1>
         <div class="information initiative">
             <label>{{localize "INITIATIVE"}}</label>
-            <input name="system.initiative.base" type="text" value="{{system.initiative.base}}" />
+            <input name="system.initiative.base" type="text" value="{{source.initiative.base}}" />
             +
             <select name="system.initiative.characteristic">
                 {{selectOptions system.characteristics selected=system.initiative.characteristic labelAttr="label" localize=true}}
@@ -119,7 +119,7 @@
         </div>
         <div class="information">
             <label>{{localize "SIZE"}}</label>
-            <input name="system.size" type="number" value="{{system.size}}" data-dtype="Number" />
+            <input name="system.size" type="number" value="{{source.size}}" data-dtype="Number" />
         </div>
     </div>
     <div class="weapons border">
@@ -175,7 +175,7 @@
             </div>
             <div class="sustained">
                 <label>{{localize "PSYCHIC_POWER.SUSTAINED"}}</label>
-                <input name="system.psy.sustained" type="number" value="{{system.psy.sustained}}" data-dtype="Number" />
+                <input name="system.psy.sustained" type="number" value="{{source.psy.sustained}}" data-dtype="Number" />
             </div>
         </div>
         <div class="item-list combat-psychic-table aligned-table is-scrollable">
