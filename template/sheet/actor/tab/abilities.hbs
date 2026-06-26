@@ -5,7 +5,7 @@
             <div class="flex header">
                 <b class="name">{{localize "TALENT.NAME"}}</b>
                 <b class="benefit">{{localize "TALENT.BENEFIT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.talent')}}" data-type="talent"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.talent')}}" data-type="talent"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.talents as |item|}}                   
@@ -18,7 +18,7 @@
                     </div>
                     <div class="benefit">{{item.benefit}}</div>
                     <div class="button">
-                        <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.talent')}}"><i class="fas fa-trash"></i></a>
+                        {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.talent')}}"><i class="fas fa-trash"></i></a>{{/if}}
                     </div>
                 </div>                    
                 {{/each}}
@@ -31,7 +31,7 @@
             <div class="flex header">
                 <b class="name">{{localize "TRAIT.NAME"}}</b>
                 <b class="benefit">{{localize "TRAIT.BENEFIT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.trait')}}" data-type="trait"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.trait')}}" data-type="trait"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.traits as |item|}}                    
@@ -44,7 +44,7 @@
                         </div>
                         <div class="benefit">{{item.benefit}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.trait')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.trait')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>                
                 {{/each}}
@@ -57,7 +57,7 @@
             <div class="flex header">
                 <b class="name">{{localize "SPECIAL_ABILITY.NAME"}}</b>
                 <b class="benefit">{{localize "SPECIAL_ABILITY.BENEFIT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.specialability')}}" data-type="specialAbility"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.specialability')}}" data-type="specialAbility"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.specialAbilities as |item|}}                    
@@ -70,7 +70,7 @@
                         </div>
                         <div class="benefit">{{item.benefit}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.specialability')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.specialability')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>                    
                 {{/each}}

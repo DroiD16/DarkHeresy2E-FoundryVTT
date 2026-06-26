@@ -23,7 +23,7 @@
                 <b class="type">{{localize "WEAPON.DAMAGE_TYPE"}}</b>
                 <b class="clip">{{localize "WEAPON.CLIP"}}</b>
                 <b class="weight">{{localize "WEAPON.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.weapon')}}" data-type="weapon"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.weapon')}}" data-type="weapon"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.weapons as |item|}}
@@ -42,15 +42,15 @@
                             <div class="clip">{{item.Clip}}</div>
                             <div class="weight">{{item.weight}}</div>
                             <div class="button">
-                                <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.weapon')}}"><i
-                                        class="fas fa-trash"></i></a>
+                                {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.weapon')}}"><i
+                                        class="fas fa-trash"></i></a>{{/if}}
                             </div>
                         </div>
                         {{#each item.system.ammoItems as |ammo|}}
                             <div class="linked-item flex row" data-ammo-id="{{ammo.id}}">
                                 <div class="button">
-                                    <a class="item-control ammo-unlink" title="{{localize 'AMMUNITION.UNLINK'}}"><i
-                                            class="fas fa-chain-broken"></i></a>
+                                    {{#if @root.editable}}<a class="item-control ammo-unlink" title="{{localize 'AMMUNITION.UNLINK'}}"><i
+                                            class="fas fa-chain-broken"></i></a>{{/if}}
                                 </div>
                                 <div>&#8627 {{ammo.name}}</div>
                             </div>
@@ -65,8 +65,8 @@
                 <b class="installed">{{localize "WEAPON_MODIFICATION.INSTALLED"}}</b>
                 <b class="upgrade">{{localize "WEAPON_MODIFICATION.UPGRADES"}}</b>
                 <b class="weight">{{localize "WEAPON_MODIFICATION.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.weaponmodification')}}" data-type="weaponModification"><i
-                        class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.weaponmodification')}}" data-type="weaponModification"><i
+                        class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.weaponMods as |item|}}
@@ -81,8 +81,8 @@
                         <div class="upgrade">{{item.upgrades}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.weaponmodification')}}"><i
-                                    class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.weaponmodification')}}"><i
+                                    class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
 
@@ -96,8 +96,8 @@
                 <b class="quantity">{{localize "AMMUNITION.QUANTITY"}}</b>
                 <b class="sum-weight">{{localize "AMMUNITION.SUM"}}</b>
                 <b class="weight">{{localize "AMMUNITION.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.ammunition')}}" data-type="ammunition"><i
-                        class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.ammunition')}}" data-type="ammunition"><i
+                        class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.ammunitions as |item|}}
@@ -113,8 +113,8 @@
                         <div class="sum-weight">{{item.weightSum}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.ammunition')}}"><i
-                                    class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.ammunition')}}"><i
+                                    class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}
@@ -125,7 +125,7 @@
                 <b class="name">{{localize "ARMOUR.HEADER"}}</b>
                 <b class="part">{{localize "ARMOUR.PART"}}</b>
                 <b class="weight">{{localize "ARMOUR.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.armour')}}" data-type="armour"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.armour')}}" data-type="armour"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.armour as |item|}}
@@ -139,7 +139,7 @@
                         <div class="part">{{item.Part}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.armour')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.armour')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}
@@ -151,8 +151,8 @@
                 <b class="installed">{{localize "FORCE_FIELD.INSTALLED"}}</b>
                 <b class="craftsmanship">{{localize "FORCE_FIELD.CRAFTSMANSHIP"}}</b>
                 <b class="weight">{{localize "FORCE_FIELD.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.forcefield')}}" data-type="forceField"><i
-                        class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.forcefield')}}" data-type="forceField"><i
+                        class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.forceFields as |item|}}
@@ -167,8 +167,8 @@
                         <div class="craftsmanship">{{item.Craftsmanship}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.forcefield')}}"><i
-                                    class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.forcefield')}}"><i
+                                    class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}
@@ -180,7 +180,7 @@
                 <b class="installed">{{localize "GEAR.IN_USE"}}</b>
                 <b class="short-description">{{localize "GEAR.SHORT_DESCRIPTION"}}</b>
                 <b class="weight">{{localize "GEAR.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.gear')}}" data-type="gear"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.gear')}}" data-type="gear"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.gear as |item|}}
@@ -195,7 +195,7 @@
                         <div class="short-description">{{item.shortDescription}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.gear')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.gear')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}
@@ -207,7 +207,7 @@
                 <b class="installed">{{localize "DRUG.IN_USE"}}</b>
                 <b class="short-description">{{localize "DRUG.SHORT_DESCRIPTION"}}</b>
                 <b class="weight">{{localize "DRUG.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.drug')}}" data-type="drug"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.drug')}}" data-type="drug"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.drugs as |item|}}
@@ -222,7 +222,7 @@
                         <div class="short-description">{{item.shortDescription}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.drug')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.drug')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}
@@ -234,7 +234,7 @@
                 <b class="installed">{{localize "TOOL.IN_USE"}}</b>
                 <b class="short-description">{{localize "TOOL.SHORT_DESCRIPTION"}}</b>
                 <b class="weight">{{localize "TOOL.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.tool')}}" data-type="tool"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.tool')}}" data-type="tool"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.tools as |item|}}
@@ -249,7 +249,7 @@
                         <div class="short-description">{{item.shortDescription}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.tool')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.tool')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}
@@ -261,8 +261,8 @@
                 <b class="installed">{{localize "CYBERNETIC.INSTALLED"}}</b>
                 <b class="cybernetic-craftsmanship">{{localize "CYBERNETIC.CRAFTSMANSHIP"}}</b>
                 <b class="weight">{{localize "CYBERNETIC.WEIGHT"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.cybernetic')}}" data-type="cybernetic"><i
-                        class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.cybernetic')}}" data-type="cybernetic"><i
+                        class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.cybernetics as |item|}}
@@ -277,8 +277,8 @@
                         <div class="cybernetic-craftsmanship">{{item.Craftsmanship}}</div>
                         <div class="weight">{{item.weight}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.cybernetic')}}"><i
-                                    class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.cybernetic')}}"><i
+                                    class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}

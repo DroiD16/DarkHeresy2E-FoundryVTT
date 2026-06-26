@@ -16,7 +16,7 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "WOUND.CRITICAL_INJURIES"}}</b>
-                <a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.criticalinjury')}}" data-type="criticalInjury"><i class="fas fa-plus"></i></a>
+                {{#if @root.editable}}<a class="button item-create" title="{{localize 'BUTTON.ADD' type=(localize 'TYPES.Item.criticalinjury')}}" data-type="criticalInjury"><i class="fas fa-plus"></i></a>{{/if}}
             </div>
             <div class="items">
                 {{#each items.criticalInjuries as |item|}}
@@ -28,7 +28,7 @@
                             <div class="name">{{item.name}}</div>
                         </div>
                         <div class="button">
-                            <a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.criticalinjury')}}"><i class="fas fa-trash"></i></a>
+                            {{#if @root.editable}}<a class="item-control item-delete" title="{{localize 'BUTTON.DELETE' type=(localize 'TYPES.Item.criticalinjury')}}"><i class="fas fa-trash"></i></a>{{/if}}
                         </div>
                     </div>
                 {{/each}}

@@ -259,6 +259,7 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onItemCreate(target) {
+        if (!this.isEditable) return;
         const header = target.dataset;
         const data = {
             name: DarkHeresyUtil.defaultItemName(header.type),
@@ -273,11 +274,13 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onItemDelete(target) {
+        if (!this.isEditable) return;
         const itemId = target.closest(".item").dataset.itemId;
         return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
 
     async _onAmmoUnlink(target) {
+        if (!this.isEditable) return;
         const ammoId = target.closest(".linked-item")?.dataset.ammoId;
         const weaponId = target.closest(".item")?.dataset.itemId;
         const weapon = this.actor.items.get(weaponId);
@@ -381,11 +384,13 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onItemCostChange(target) {
+        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.cost": target.value });
     }
 
     _onItemStarterChange(target) {
+        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.starter": target.checked });
     }
