@@ -23,6 +23,12 @@
         <div class="tab" data-group="primary" data-tab="data">
             <div class="stats border">
                 <h1>{{localize "TITLE.STATS"}}</h1>
+                <div class="stats-row">
+                    <div class="stat installed">
+                        <label>{{localize "FORCE_FIELD.INSTALLED"}}</label>
+                        <input name="system.installed" type="checkbox" data-dtype="Boolean" {{#if system.installed}}checked{{/if}}/>
+                    </div>
+                </div>
                 <div class="stats-row" style="justify-content: space-evenly">
                     <div class="stat protection-rating">
                         <label>{{localize "FORCE_FIELD.PROTECTION_RATING"}}</label>

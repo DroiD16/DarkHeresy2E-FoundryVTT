@@ -24,6 +24,12 @@
             <div class="stats border">
                 <h1>{{localize "TITLE.STATS"}}</h1>
                 <div class="stats-row">
+                    <div class="stat installed">
+                        <label>{{localize "GEAR.IN_USE"}}</label>
+                        <input name="system.installed" type="checkbox" data-dtype="Boolean" {{#if system.installed}}checked{{/if}}/>
+                    </div>
+                </div>
+                <div class="stats-row">
                     <div class="stat craftsmanship">
                         <label>{{localize "GEAR.CRAFTSMANSHIP"}}</label>
                         <select name="system.craftsmanship">

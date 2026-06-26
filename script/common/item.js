@@ -221,13 +221,6 @@ export class DarkHeresyItem extends Item {
         }
     }
 
-    get isInstalled() {
-        return this.installed
-            ? game.i18n.localize("Yes")
-            : game.i18n.localize("No");
-    }
-
-
     get isMentalDisorder() { return this.type === "mentalDisorder"; }
 
     get isMalignancy() { return this.type === "malignancy"; }

@@ -7,6 +7,7 @@ export default class DrugData extends EquipmentItemData {
         const base = super.defineSchema();
         return {
             ...base,
+            installed: new fields.BooleanField({ initial: false }),
             shortDescription: new fields.StringField({ initial: "" })
         };
     }

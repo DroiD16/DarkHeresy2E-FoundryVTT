@@ -48,11 +48,7 @@
                     </div>
                     <div class="stat installed">
                         <label>{{localize "WEAPON_MODIFICATION.INSTALLED"}}</label>
-                        {{#if system.installed}}
-                            <input name="system.installed" type="checkbox" value="installed" checked/>
-                        {{else}}
-                            <input name="system.installed" type="checkbox" value="installed"/>
-                        {{/if}}
+                        <input name="system.installed" type="checkbox" data-dtype="Boolean" {{#if system.installed}}checked{{/if}}/>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import { DarkHeresyActor } from "./common/actor.js";
 import { DarkHeresyItem } from "./common/item.js";
+import { DarkHeresyActiveEffect } from "./common/active-effect.js";
 import { AcolyteSheet } from "./sheet/actor/acolyte.js";
 import { NpcSheet } from "./sheet/actor/npc.js";
 import { WeaponSheet } from "./sheet/weapon.js";
@@ -39,6 +40,7 @@ Hooks.once("init", function() {
     CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
     CONFIG.Actor.documentClass = DarkHeresyActor;
     CONFIG.Item.documentClass = DarkHeresyItem;
+    CONFIG.ActiveEffect.documentClass = DarkHeresyActiveEffect;
     CONFIG.fontDefinitions["Caslon Antique"] = { editor: true, fonts: [] };
     CONFIG.ActiveEffect.legacyTransferral = false;
     game.darkHeresy = {

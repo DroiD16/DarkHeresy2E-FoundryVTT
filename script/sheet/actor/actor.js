@@ -194,6 +194,10 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
             event.stopPropagation();
             return this._onWeaponMalfunctionToggle(target);
         }
+        if (target.classList.contains("item-installed-toggle")) {
+            event.stopPropagation();
+            return this._onItemInstalledToggle(target);
+        }
     }
 
     /**
@@ -341,6 +345,19 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
         if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.malfunction": target.checked });
+    }
+
+    /**
+     * Toggle an item's install/in-use flag (`system.installed`) from the Gear
+     * tab. Whether the flag is set controls whether the item's transferred
+     * Active Effects apply to the actor — see {@link DarkHeresyActiveEffect}.
+     * @param {HTMLInputElement} target  The toggled checkbox.
+     * @returns {Promise<Item>|void} The item update, when editable.
+     */
+    _onItemInstalledToggle(target) {
+        if (!this.isEditable) return;
+        const item = this.actor.items.get(target.closest(".item").dataset.itemId);
+        return item?.update({ "system.installed": target.checked });
     }
 
     constructItemLists() {
