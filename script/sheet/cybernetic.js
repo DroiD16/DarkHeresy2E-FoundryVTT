@@ -9,7 +9,10 @@ export class CyberneticSheet extends DarkHeresyItemSheet {
         form: {
             root: true,
             template: "systems/dark-heresy/template/sheet/cybernetic.hbs",
-            templates: ["systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs"]
+            templates: [
+                "systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs",
+                "systems/dark-heresy/template/sheet/item/parts/effect-tab-nav.hbs"
+            ]
         }
     };
 }

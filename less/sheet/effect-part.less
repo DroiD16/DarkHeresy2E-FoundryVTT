@@ -1,3 +1,9 @@
+/* Styling for the categorized Active-Effects list. The `.dark-heresy .effects`
+   block below is shared by BOTH effect partials: the item sheets' self-contained
+   effect-tab.hbs and the actor sheets' effect-part.hbs (which additionally renders
+   the condition tray styled just below). Column rules are intentionally robust for
+   both the narrow item sheets (500/600px) and the wider actor sheets, so changes
+   here apply to every effect list by design. */
 .dark-heresy .effects .condition-list {
   display: flex;
   flex-direction: row;
@@ -58,7 +64,7 @@
 
 .dark-heresy .effects .items-header {
   width: 100%;
-  height: 22px;
+  min-height: 22px;
   align-items: center;
   border: 0 none;
   border-radius: 3px;
@@ -102,6 +108,7 @@
    (growing) column, duration a small fixed column, controls compact. */
 .dark-heresy .effects .effect-name {
   flex: 0 1 30%;
+  min-width: 0;
   align-items: center;
   font-family: var(--font-text);
 }
@@ -123,6 +130,12 @@
   font-weight: normal;
   line-height: 16px;
   color: var(--color-text);
+  /* Long effect names ellipsize inside the bounded name column instead of
+     pushing the row wider than the sheet. */
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* The changes summary ("what it modifies") is the main column. */
@@ -141,13 +154,28 @@
   text-align: center;
 }
 
+/* Duration is a compact column sized in rem so it scales with the font and
+   fits localized headers ("Duration" / "Длительность") without a fixed pixel
+   width tuned to English. min-width:0 lets it shrink rather than force a
+   horizontal scrollbar on a narrow sheet. */
 .dark-heresy .effects .effect-duration {
-  flex: 0 0 56px;
+  flex: 0 0 6rem;
+  min-width: 0;
   text-align: center;
   font-size: var(--font-size-14);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* Header labels may be long single words in some locales; let them wrap within
+   their column (the header row grows) instead of clipping. Value rows keep
+   nowrap + ellipsis above so the populated list stays compact and aligned. */
+.dark-heresy .effects .items-header .effect-summary,
+.dark-heresy .effects .items-header .effect-duration {
+  white-space: normal;
+  overflow: visible;
+  line-height: 14px;
 }
 
 .dark-heresy .effects .effect-controls {

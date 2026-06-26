@@ -46,6 +46,7 @@ function preloadHandlebarsTemplates() {
         "systems/dark-heresy/template/sheet/force-field.hbs",
         "systems/dark-heresy/template/sheet/item/parts/effect-part.hbs",
         "systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs",
+        "systems/dark-heresy/template/sheet/item/parts/effect-tab-nav.hbs",
 
         "systems/dark-heresy/template/sheet/characteristics/information.hbs",
         "systems/dark-heresy/template/sheet/characteristics/left.hbs",

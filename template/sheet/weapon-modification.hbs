@@ -16,6 +16,7 @@
     <div class="sheet-tabs tabs flex row" data-group="primary">
         <b class="item" data-action="tab" data-group="primary" data-tab="data">{{localize "TAB.DATA"}}</b>
         <b class="item" data-action="tab" data-group="primary" data-tab="notes">{{localize "TAB.NOTES"}}</b>
+        {{> systems/dark-heresy/template/sheet/item/parts/effect-tab-nav.hbs}}
     </div>
 
     <div class="sheet-body">
@@ -64,5 +65,6 @@
                 </div>
             </div>
         </div>
+        {{> systems/dark-heresy/template/sheet/item/parts/effect-tab.hbs}}
     </div>
 </div>
