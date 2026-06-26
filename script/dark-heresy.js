@@ -41,12 +41,14 @@ Hooks.once("init", function() {
     // base runtime. Suppress the known legacy template warnings until the spray
     // template workflow can grow a V14-only Region path.
     CONFIG.compatibility.excludePatterns.push(
-        /Scene#templates/,
-        /MeasuredTemplate/,
-        /MeasuredTemplateDocument/,
-        /core\.gridTemplates/,
-        /core\.coneTemplateType/,
-        /ControlIcon#refresh/
+        /MeasuredTemplateDocument is deprecated because it has been merged into.+Region document/,
+        /CONST\.MEASURED_TEMPLATE_TYPES is deprecated without replacement/,
+        /Scene#templates is deprecated/,
+        /MeasuredTemplate is deprecated because the MeasuredTemplate document has been merged into.+Region document/,
+        /ControlIcon#refresh\(options\) has been deprecated/,
+        /The setting "core\.gridTemplates" is deprecated without replacement/,
+        /MeasuredTemplate\.getConeShape is deprecated/,
+        /The setting "core\.coneTemplateType" is deprecated without replacement/
     );
     CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
     CONFIG.Actor.documentClass = DarkHeresyActor;

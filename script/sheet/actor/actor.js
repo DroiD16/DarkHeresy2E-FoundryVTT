@@ -193,22 +193,20 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      */
     #onChange(event) {
         const target = event.target;
+        let handler;
         if (target.classList.contains("item-cost")) {
-            event.stopPropagation();
-            return this._onItemCostChange(target);
-        }
-        if (target.classList.contains("item-starter")) {
-            event.stopPropagation();
-            return this._onItemStarterChange(target);
-        }
-        if (target.classList.contains("weapon-malfunction-toggle")) {
-            event.stopPropagation();
-            return this._onWeaponMalfunctionToggle(target);
-        }
-        if (target.classList.contains("item-installed-toggle")) {
-            event.stopPropagation();
-            return this._onItemInstalledToggle(target);
-        }
+            handler = this._onItemCostChange;
+        } else if (target.classList.contains("item-starter")) {
+            handler = this._onItemStarterChange;
+        } else if (target.classList.contains("weapon-malfunction-toggle")) {
+            handler = this._onWeaponMalfunctionToggle;
+        } else if (target.classList.contains("item-installed-toggle")) {
+            handler = this._onItemInstalledToggle;
+        } else return;
+
+        event.stopPropagation();
+        if (!this.isEditable) return;
+        return handler.call(this, target);
     }
 
     /**
@@ -242,7 +240,10 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      * innerHTML over the field. Falls back to the portrait when the token has no
      * usable still image (empty src or a `randomImg` wildcard). The button label
      * tracks the flag (the user's chosen mode), not the fallback display.
-     * @returns {{src: string, edit: string, isVideo: boolean, showToken: boolean}}
+     * @returns {{
+     *   src: string, edit: string, isVideo: boolean, showToken: boolean,
+     *   toggleTooltip: string, toggleIcon: string
+     * }}
      */
     #prepareAvatar() {
         const showToken = this.actor.getFlag("dark-heresy", "showTokenPortrait") === true;
@@ -254,7 +255,9 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
             src,
             edit: useToken ? "prototypeToken.texture.src" : "img",
             isVideo: foundry.helpers.media.VideoHelper.hasVideoExtension(src),
-            showToken
+            showToken,
+            toggleTooltip: showToken ? "AVATAR.SHOW_PORTRAIT" : "AVATAR.SHOW_TOKEN",
+            toggleIcon: showToken ? "fa-user" : "fa-chess-pawn"
         };
     }
 
@@ -375,6 +378,7 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onConditionToggle(target) {
+        if (!this.isEditable) return;
         const key = target.closest(".condition").dataset.key;
         if (this.actor.hasCondition(key)) {
             this.actor.removeCondition(key);
@@ -384,19 +388,16 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     _onItemCostChange(target) {
-        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.cost": target.value });
     }
 
     _onItemStarterChange(target) {
-        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.starter": target.checked });
     }
 
     _onWeaponMalfunctionToggle(target) {
-        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         item.update({ "system.malfunction": target.checked });
     }
@@ -409,7 +410,6 @@ export class DarkHeresySheet extends HandlebarsApplicationMixin(ActorSheetV2) {
      * @returns {Promise<Item>|void} The item update, when editable.
      */
     _onItemInstalledToggle(target) {
-        if (!this.isEditable) return;
         const item = this.actor.items.get(target.closest(".item").dataset.itemId);
         return item?.update({ "system.installed": target.checked });
     }

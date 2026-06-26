@@ -201,15 +201,14 @@ function registerHandlebarsHelpers() {
     // the redundant source column. The target is humanized from the change key
     // (characteristics/skills get their stat name, with the field in parens when
     // it isn't the base value); the change type selects the operator symbol.
+    let legacyModes;
+    const legacyModeType = mode => {
+        legacyModes ??= Object.fromEntries(
+            Object.entries(CONST.ACTIVE_EFFECT_MODES).map(([key, value]) => [value, key.toLowerCase()])
+        );
+        return legacyModes[mode];
+    };
     Handlebars.registerHelper("effectChanges", function(effect) {
-        const legacyModes = {
-            0: "custom",
-            1: "multiply",
-            2: "add",
-            3: "downgrade",
-            4: "upgrade",
-            5: "override"
-        };
         const symbols = {
             add: "+",
             subtract: "-",
@@ -219,7 +218,7 @@ function registerHandlebarsHelpers() {
             downgrade: "↓",
             custom: "•"
         };
-        const changeType = change => change.type ?? legacyModes[change.mode];
+        const changeType = change => change.type ?? legacyModeType(change.mode);
         const humanize = s => String(s).replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase()).trim();
         const localized = (key, fallback) => game.i18n?.has?.(key) ? game.i18n.localize(key) : fallback;
         const label = key => {

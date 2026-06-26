@@ -12,14 +12,8 @@
     <img class="profile-img" src="{{avatar.src}}" alt="{{actor.name}}" data-edit="{{avatar.edit}}" data-action="editImage" title="{{actor.name}}" />
     {{/if}}
     {{#if editable}}
-    {{#if avatar.showToken}}
-    <a class="avatar-toggle" data-action="toggleTokenPortrait" data-tooltip="{{localize "AVATAR.SHOW_PORTRAIT"}}" aria-label="{{localize "AVATAR.SHOW_PORTRAIT"}}">
-        <i class="fas fa-user"></i>
+    <a class="avatar-toggle" data-action="toggleTokenPortrait" data-tooltip="{{localize avatar.toggleTooltip}}" aria-label="{{localize avatar.toggleTooltip}}">
+        <i class="fas {{avatar.toggleIcon}}"></i>
     </a>
-    {{else}}
-    <a class="avatar-toggle" data-action="toggleTokenPortrait" data-tooltip="{{localize "AVATAR.SHOW_TOKEN"}}" aria-label="{{localize "AVATAR.SHOW_TOKEN"}}">
-        <i class="fas fa-chess-pawn"></i>
-    </a>
-    {{/if}}
     {{/if}}
 </div>
