@@ -5,26 +5,46 @@
   "readme": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/blob/master/README.md",
   "bugs": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/issues",
   "changelog": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases",
-  "version": "5.2.0-droid",
-  "compatibility" : {
-    "minimum" : 13,
-    "verified" : 14
+  "version": "5.2.1-droid",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 14
   },
   "authors": [
-	{ "name":"JeansenVaars" }, 
-    { "name":"Moo Man",
+    {
+      "name": "JeansenVaars"
+    },
+    {
+      "name": "Moo Man",
       "email": "russellt@cubicle7games.com",
       "discord": "Moo Man#7518",
-      "reddit": "u/mooman10" }, 
-    { "name":"fredthedeadhead" },
-    { "name":"Perfectro" }, 
-    { "name":"Vendare",
-	  "discord": "Vendare#4014"},
-    { "name":"Silver292" },
-    { "name":"Giddy" },
-    { "name":"Dazzerix" },
-	{ "name":"FilippoPolo" },
-    { "name":"DroiD" }
+      "reddit": "u/mooman10"
+    },
+    {
+      "name": "fredthedeadhead"
+    },
+    {
+      "name": "Perfectro"
+    },
+    {
+      "name": "Vendare",
+      "discord": "Vendare#4014"
+    },
+    {
+      "name": "Silver292"
+    },
+    {
+      "name": "Giddy"
+    },
+    {
+      "name": "Dazzerix"
+    },
+    {
+      "name": "FilippoPolo"
+    },
+    {
+      "name": "DroiD"
+    }
   ],
   "scripts": [],
   "esmodules": [
@@ -84,7 +104,7 @@
       "name": "Français",
       "path": "lang/fr.json"
     },
-	  {
+    {
       "lang": "pl",
       "name": "Polski",
       "path": "lang/pl.json"
@@ -103,6 +123,6 @@
   "secondaryTokenAttribute": "fate",
   "url": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT",
   "manifest": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases/latest/download/system.json",
-  "download": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases/download/5.2.0-droid/dark-heresy.zip",
+  "download": "https://github.com/DroiD16/DarkHeresy2E-FoundryVTT/releases/download/5.2.1-droid/dark-heresy.zip",
   "license": "LICENSE"
 }
