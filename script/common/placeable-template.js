@@ -108,7 +108,11 @@ export class PlaceableTemplate extends foundry.canvas.placeables.MeasuredTemplat
      * @param {Event} event  Triggering event that ended the placement.
      */
     async _finishPlacement(event) {
-        this.layer._onDragLeftCancel(event);
+        if (game.release.generation < 14) {
+            this.layer._onDragLeftCancel(event);
+        } else {
+            this.layer.clearPreviewContainer();
+        }
         canvas.stage.off("mousemove", this.#events.move);
         canvas.stage.off("mousedown", this.#events.confirm);
         canvas.app.view.oncontextmenu = null;
@@ -128,9 +132,8 @@ export class PlaceableTemplate extends foundry.canvas.placeables.MeasuredTemplat
         const now = Date.now(); // Apply a 20ms throttle
         if ( now - this.#moveTime <= 20 ) return;
         const center = event.data.getLocalPosition(this.layer);
-        const interval = canvas.grid.type === CONST.GRID_TYPES.GRIDLESS ? 0 : 2;
-        const snapped = canvas.grid.getSnappedPosition(center.x, center.y, interval);
-        this.document.updateSource({x: snapped.x, y: snapped.y});
+        const updates = this.getSnappedPosition(center);
+        this.document.updateSource(updates);
         this.refresh();
         this.#moveTime = now;
     }
@@ -159,8 +162,7 @@ export class PlaceableTemplate extends foundry.canvas.placeables.MeasuredTemplat
      */
     async _onConfirmPlacement(event) {
         await this._finishPlacement(event);
-        const interval = canvas.grid.type === CONST.GRID_TYPES.GRIDLESS ? 0 : 2;
-        const destination = canvas.grid.getSnappedPosition(this.document.x, this.document.y, interval);
+        const destination = canvas.templates.getSnappedPoint({x: this.document.x, y: this.document.y});
         this.document.updateSource(destination);
         this.#events.resolve(canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [this.document.toObject()]));
     }

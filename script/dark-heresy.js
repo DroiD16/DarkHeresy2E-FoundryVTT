@@ -37,6 +37,17 @@ import { registerAdditionalModuleSettings } from "./moduleSupport/moduleSupportS
 Hooks.once("init", function() {
     const { Actors, Items } = foundry.documents.collections;
     const { ActorSheet, ItemSheet } = foundry.appv1.sheets;
+    // V14 deprecates MeasuredTemplate in favor of Regions, but V13 remains the
+    // base runtime. Suppress the known legacy template warnings until the spray
+    // template workflow can grow a V14-only Region path.
+    CONFIG.compatibility.excludePatterns.push(
+        /Scene#templates/,
+        /MeasuredTemplate/,
+        /MeasuredTemplateDocument/,
+        /core\.gridTemplates/,
+        /core\.coneTemplateType/,
+        /ControlIcon#refresh/
+    );
     CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
     CONFIG.Actor.documentClass = DarkHeresyActor;
     CONFIG.Item.documentClass = DarkHeresyItem;
