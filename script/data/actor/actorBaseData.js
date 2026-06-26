@@ -31,7 +31,7 @@ function characteristic(label, short, aptitudes) {
 function specialities(labelMap) {
     const out = {};
     for (const [key, label] of Object.entries(labelMap)) {
-        out[key] = { label, advance: -20, starter: false, cost: 0 };
+        out[key] = { label, base: 0, advance: -20, starter: false, cost: 0 };
     }
     return out;
 }
@@ -54,6 +54,7 @@ function skill(label, characteristics, isSpecialist, aptitudes, specMap = {}) {
     const def = {
         label: new fields.StringField({ initial: label }),
         characteristics: new fields.ArrayField(new fields.StringField(), { initial: characteristics }),
+        base: new fields.NumberField({ initial: 0 }),
         advance: new fields.NumberField({ initial: -20 }),
         isSpecialist: new fields.BooleanField({ initial: isSpecialist }),
         specialities: new fields.ObjectField({ initial: specialities(specMap) }),
@@ -234,6 +235,7 @@ export default class DarkHeresyActorData extends foundry.abstract.TypeDataModel 
                 critical: new fields.NumberField({ initial: 0 })
             }),
             fatigue: new fields.SchemaField({
+                base: new fields.NumberField({ initial: 0 }),
                 max: new fields.NumberField({ initial: 0 }),
                 value: new fields.NumberField({ initial: 0 })
             }),
@@ -246,7 +248,58 @@ export default class DarkHeresyActorData extends foundry.abstract.TypeDataModel 
                 sustained: new fields.NumberField({ initial: 0 }),
                 class: new fields.StringField({ initial: "bound" }),
                 cost: new fields.NumberField({ initial: 0 })
+            }),
+            armour: new fields.SchemaField({
+                head: armourLocation(),
+                leftArm: armourLocation(),
+                rightArm: armourLocation(),
+                body: armourLocation(),
+                leftLeg: armourLocation(),
+                rightLeg: armourLocation()
+            }),
+            movement: new fields.SchemaField({
+                half: movementRate(),
+                full: movementRate(),
+                charge: movementRate(),
+                run: movementRate()
+            }),
+            modifiers: new fields.SchemaField({
+                attack: new fields.SchemaField({
+                    melee: modifier(),
+                    ranged: modifier()
+                }),
+                focusPower: modifier()
             })
         };
     }
+}
+
+/**
+ * Build the stored base field for one body location's derived armour data.
+ * @returns {object} A SchemaField with the AE-targetable base value.
+ */
+function armourLocation() {
+    return new fields.SchemaField({
+        base: new fields.NumberField({ initial: 0 })
+    });
+}
+
+/**
+ * Build the stored base field for one movement rate's derived total.
+ * @returns {object} A SchemaField with the AE-targetable base value.
+ */
+function movementRate() {
+    return new fields.SchemaField({
+        base: new fields.NumberField({ initial: 0 })
+    });
+}
+
+/**
+ * Build a generic stored actor modifier group.
+ * @returns {object} A SchemaField with the AE-targetable base value.
+ */
+function modifier() {
+    return new fields.SchemaField({
+        base: new fields.NumberField({ initial: 0 })
+    });
 }

@@ -88,6 +88,9 @@ export default class DarkHeresyUtil {
 
         rollData.target.base = characteristic.total + weaponItem.attack;
         rollData.target.automationModifier = 0;
+        rollData.target.actorModifier = isMelee
+            ? actor.modifiers.attack.melee.base
+            : actor.modifiers.attack.ranged.base;
         rollData.target.totalModifier = 0;
         rollData.rangeBand = !isMelee ? "short" : undefined;
         rollData.rangeMod = !isMelee ? 10 : 0;
@@ -134,6 +137,8 @@ export default class DarkHeresyUtil {
         let rollData = this.createCommonAttackRollData(actor, power);
         rollData.target.base = focusPowerTarget.total;
         rollData.target.modifier = power.focusPower.difficulty;
+        rollData.target.actorModifier = actor.modifiers.focusPower.base;
+        rollData.target.automationModifier = rollData.target.actorModifier;
         rollData.weapon = foundry.utils.mergeObject(rollData.weapon, {
             damageFormula: power.damage.formula,
             penetrationFormula: power.damage.penetration,
@@ -158,6 +163,7 @@ export default class DarkHeresyUtil {
             sustained: actor.psy.sustained,
             max: effectiveBase + classBonus,
             warpConduit: false,
+            useModifier: true,
             display: true
         };
         return rollData;
@@ -169,7 +175,7 @@ export default class DarkHeresyUtil {
 
         let characteristics = this.getCharacteristicOptions(actor, defaultChar);
         characteristics = characteristics.map(char => {
-            char.target += skill.advance;
+            char.target += (Number(skill.base) || 0) + skill.advance;
             return char;
         });
 

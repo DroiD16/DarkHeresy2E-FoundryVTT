@@ -49,7 +49,8 @@ function combatAutomationPreview(root, rollData) {
         aimModifier: effectiveAimModifier(rollData.weapon.traits, aim?.value ?? 0),
         rangeBand,
         rangeMod: rangeBandModifier(rangeBand),
-        attackTypeName: attackType?.value ?? rollData.attackType?.name
+        attackTypeName: attackType?.value ?? rollData.attackType?.name,
+        actorModifier: rollData.target.actorModifier
     }).total;
 }
 
@@ -132,7 +133,8 @@ export async function prepareCombatRoll(rollData, actorRef) {
             aimModifier: 0,
             rangeBand: rollData.rangeBand,
             rangeMod: rollData.rangeMod,
-            attackTypeName: rollData.attackType?.name
+            attackTypeName: rollData.attackType?.name,
+            actorModifier: rollData.target.actorModifier
         }).total;
         const content = await foundry.applications.handlebars.renderTemplate("systems/dark-heresy/template/dialog/combat-roll.hbs", rollData);
         await foundry.applications.api.DialogV2.wait({
@@ -305,11 +307,20 @@ export async function preparePsychicPowerRoll(rollData) {
             attachFocusSelect(root);
             const slider = root.querySelector("#rating");
             const output = root.querySelector("#psy");
+            const automation = root.querySelector("#automationModifier");
+            const refreshAutomation = () => {
+                if (!automation || !output) return;
+                const psyModifier = (rollData.psy.rating - normalizeTestModifier(output.value)) * 10;
+                automation.value = normalizeTestModifier(rollData.target.actorModifier) + psyModifier;
+            };
             if (slider && output) {
                 slider.addEventListener("input", event => {
                     output.value = event.currentTarget.value;
+                    refreshAutomation();
                 });
             }
+            output?.addEventListener("change", refreshAutomation);
+            refreshAutomation();
         }
     });
 }

@@ -215,6 +215,10 @@ function registerHandlebarsHelpers() {
                 if (field && field !== "base" && field !== "total") l += ` (${field})`;
                 return l;
             }
+            if (parts[0] === "armour" && parts[1]) return `${humanize(parts[1])} Armour`;
+            if (parts[0] === "movement" && parts[1]) return `${humanize(parts[1])} Movement`;
+            if (parts[0] === "modifiers" && parts[1]) return humanize(parts.slice(1).join(" "));
+            if (parts[0] === "fatigue" && parts[1] === "base") return "Fatigue";
             return humanize(parts[parts.length - 1] || key);
         };
         const changes = effect?.changes ?? [];
@@ -227,4 +231,3 @@ function registerHandlebarsHelpers() {
     });
 
 }
-

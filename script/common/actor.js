@@ -60,7 +60,7 @@ export class DarkHeresyActor extends Actor {
                 + this.characteristics.willpower.advance) / 10);
 
         // The only thing not affected by itself
-        this.fatigue.max = tb + wb;
+        this.fatigue.max = tb + wb + this._num(this.fatigue.base);
 
     }
 
@@ -68,11 +68,14 @@ export class DarkHeresyActor extends Actor {
         for (let skill of Object.values(this.skills)) {
             let short = skill.characteristics[0];
             let characteristic = this._findCharacteristic(short);
-            skill.total = characteristic.total + skill.advance;
+            skill.total = characteristic.total + this._num(skill.base) + this._num(skill.advance);
             skill.advanceSkill = this._getAdvanceSkill(skill.advance);
             if (skill.isSpecialist) {
                 for (let [specialityKey, speciality] of Object.entries(skill.specialities)) {
-                    speciality.total = characteristic.total + speciality.advance;
+                    speciality.total = characteristic.total
+                        + this._num(skill.base)
+                        + this._num(speciality.base)
+                        + this._num(speciality.advance);
                     speciality.isKnown = speciality.advance >= 0;
                     speciality.advanceSpec = this._getAdvanceSkill(speciality.advance);
                     // Localise the display label by its stable key, keeping the stored
@@ -195,16 +198,10 @@ export class DarkHeresyActor extends Actor {
         let locations = Object.keys(game.darkHeresy.config.hitLocations);
         let toughness = this.characteristics.toughness;
 
-        this.system.armour = locations
-            .reduce((accumulator, location) =>
-                Object.assign(accumulator,
-                    {
-                        [location]: {
-                            total: toughness.bonus,
-                            toughnessBonus: toughness.bonus,
-                            value: 0
-                        }
-                    }), {});
+        const baseArmour = locations.reduce((accumulator, location) => {
+            accumulator[location] = this._num(this.system.armour?.[location]?.base);
+            return accumulator;
+        }, {});
 
         // Object for storing the max armour
         let maxArmour = locations
@@ -233,30 +230,39 @@ export class DarkHeresyActor extends Actor {
                 });
             });
 
-        this.armour.head.value = maxArmour.head;
-        this.armour.leftArm.value = maxArmour.leftArm;
-        this.armour.rightArm.value = maxArmour.rightArm;
-        this.armour.body.value = maxArmour.body;
-        this.armour.leftLeg.value = maxArmour.leftLeg;
-        this.armour.rightLeg.value = maxArmour.rightLeg;
-
-        this.armour.head.total += this.armour.head.value;
-        this.armour.leftArm.total += this.armour.leftArm.value;
-        this.armour.rightArm.total += this.armour.rightArm.value;
-        this.armour.body.total += this.armour.body.value;
-        this.armour.leftLeg.total += this.armour.leftLeg.value;
-        this.armour.rightLeg.total += this.armour.rightLeg.value;
+        this.system.armour = locations.reduce((accumulator, location) => {
+            const total = baseArmour[location] + maxArmour[location];
+            accumulator[location] = {
+                base: baseArmour[location],
+                total,
+                toughnessBonus: toughness.bonus,
+                damageReduction: total + toughness.bonus
+            };
+            return accumulator;
+        }, {});
     }
 
     _computeMovement() {
         let agility = this.characteristics.agility;
         let size = this.size;
-        this.system.movement = {
-            half: agility.bonus + size - 4,
-            full: (agility.bonus + size - 4) * 2,
-            charge: (agility.bonus + size - 4) * 3,
-            run: (agility.bonus + size - 4) * 6
+        const base = {
+            half: this._num(this.system.movement?.half?.base),
+            full: this._num(this.system.movement?.full?.base),
+            charge: this._num(this.system.movement?.charge?.base),
+            run: this._num(this.system.movement?.run?.base)
         };
+        const movementBase = agility.bonus + size - 4;
+        this.system.movement = {
+            half: { base: base.half, total: movementBase + base.half },
+            full: { base: base.full, total: (movementBase * 2) + base.full },
+            charge: { base: base.charge, total: (movementBase * 3) + base.charge },
+            run: { base: base.run, total: (movementBase * 6) + base.run }
+        };
+    }
+
+    _num(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
     }
 
     _findCharacteristic(short) {
@@ -464,17 +470,17 @@ export class DarkHeresyActor extends Actor {
     _getArmour(location) {
         switch (location) {
             case "ARMOUR.HEAD":
-                return this.armour.head.value;
+                return this.armour.head.total;
             case "ARMOUR.LEFT_ARM":
-                return this.armour.leftArm.value;
+                return this.armour.leftArm.total;
             case "ARMOUR.RIGHT_ARM":
-                return this.armour.rightArm.value;
+                return this.armour.rightArm.total;
             case "ARMOUR.BODY":
-                return this.armour.body.value;
+                return this.armour.body.total;
             case "ARMOUR.LEFT_LEG":
-                return this.armour.leftLeg.value;
+                return this.armour.leftLeg.total;
             case "ARMOUR.RIGHT_LEG":
-                return this.armour.rightLeg.value;
+                return this.armour.rightLeg.total;
             default:
                 return 0;
         }
@@ -575,5 +581,7 @@ export class DarkHeresyActor extends Actor {
     get encumbrance() { return this.system.encumbrance; }
 
     get movement() { return this.system.movement; }
+
+    get modifiers() { return this.system.modifiers; }
 
 }

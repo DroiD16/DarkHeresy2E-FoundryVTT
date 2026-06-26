@@ -130,6 +130,7 @@ async function _computeCombatTarget(rollData) {
         rangeBand: rollData.rangeBand,
         rangeMod: rollData.rangeMod,
         attackTypeName: rollData.attackType?.name,
+        actorModifier: rollData.target.actorModifier,
         psyModifier
     });
     rollData.target.modifier = Number.isFinite(Number(rollData.target.modifier))

@@ -49,6 +49,7 @@ test("computeCombatAutomationModifier: default ranged Standard Attack totals +20
         rangeQuality: 0,
         twinLinked: 0,
         attackType: 10,
+        actor: 0,
         psy: 0,
         total: 20
     });
@@ -67,6 +68,7 @@ test("computeCombatAutomationModifier: combines Aim, range qualities and Twin-Li
         rangeQuality: 10,
         twinLinked: 20,
         attackType: -20,
+        actor: 0,
         psy: 0,
         total: 30
     });
@@ -86,6 +88,14 @@ test("computeCombatAutomationModifier: includes psychic modifier without changin
         traits: {}, attackTypeName: "bolt", psyModifier: -20
     });
     assert.equal(result.total, -20);
+});
+
+test("computeCombatAutomationModifier: includes actor base modifier in automation", () => {
+    const result = computeCombatAutomationModifier({
+        traits: {}, attackTypeName: "standard", actorModifier: 15
+    });
+    assert.equal(result.actor, 15);
+    assert.equal(result.total, 25);
 });
 
 test("clampTestModifier: caps only the combined modifier", () => {

@@ -45,9 +45,10 @@ export function effectiveAimModifier(traits, selectedAimModifier) {
  * @param {string} data.rangeBand
  * @param {number} data.rangeMod Legacy numeric range modifier fallback.
  * @param {string} data.attackTypeName
+ * @param {number} data.actorModifier
  * @param {number} data.psyModifier
  * @returns {{aim: number, range: number, rangeQuality: number,
- * twinLinked: number, attackType: number, psy: number, total: number}}
+ * twinLinked: number, attackType: number, actor: number, psy: number, total: number}}
  */
 export function computeCombatAutomationModifier({
     traits,
@@ -55,6 +56,7 @@ export function computeCombatAutomationModifier({
     rangeBand,
     rangeMod = 0,
     attackTypeName,
+    actorModifier = 0,
     psyModifier = 0
 }) {
     const resolvedBand = resolveRangeBand(rangeBand, rangeMod);
@@ -66,6 +68,7 @@ export function computeCombatAutomationModifier({
         rangeQuality,
         twinLinked: traits?.twinLinked ? 20 : 0,
         attackType: attackTypeModifier(attackTypeName),
+        actor: Number(actorModifier) || 0,
         psy: Number(psyModifier) || 0
     };
     return {
