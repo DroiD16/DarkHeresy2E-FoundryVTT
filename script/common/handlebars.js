@@ -207,12 +207,17 @@ function registerHandlebarsHelpers() {
             [modes.UPGRADE]: "↑", [modes.DOWNGRADE]: "↓", [modes.CUSTOM]: "•"
         };
         const humanize = s => String(s).replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase()).trim();
+        const localized = (key, fallback) => game.i18n?.has?.(key) ? game.i18n.localize(key) : fallback;
         const label = key => {
             const parts = String(key).replace(/^system\./, "").split(".");
             if ((parts[0] === "characteristics" || parts[0] === "skills") && parts[1]) {
-                let l = humanize(parts[1]);
-                const field = parts[2];
-                if (field && field !== "base" && field !== "total") l += ` (${field})`;
+                let l = localized(game.darkHeresy?.config?.focusPowerTests?.[parts[1]], humanize(parts[1]));
+                let field = parts[2];
+                if (parts[0] === "skills" && field === "specialities" && parts[3]) {
+                    l += `: ${localized(`SPECIALITY.${parts[3]}`, humanize(parts[3]))}`;
+                    field = parts[4];
+                }
+                if (field && field !== "base" && field !== "total") l += ` (${humanize(field)})`;
                 return l;
             }
             if (parts[0] === "armour" && parts[1]) return `${humanize(parts[1])} Armour`;

@@ -24,14 +24,14 @@ function characteristic(label, short, aptitudes) {
 /**
  * Expand a { key: label } map into the populated specialities object used as the
  * ObjectField initial. Each speciality matches the template exactly:
- * { label, advance: -20, starter: false, cost: 0 }.
+ * { label, advance: -20, virtualAdvance: -20, starter: false, cost: 0 }.
  * @param {{[key: string]: string}} labelMap   Map of speciality key to display label.
  * @returns {object}                          Populated specialities object.
  */
 function specialities(labelMap) {
     const out = {};
     for (const [key, label] of Object.entries(labelMap)) {
-        out[key] = { label, base: 0, advance: -20, starter: false, cost: 0 };
+        out[key] = { label, base: 0, advance: -20, virtualAdvance: -20, starter: false, cost: 0 };
     }
     return out;
 }
@@ -56,6 +56,7 @@ function skill(label, characteristics, isSpecialist, aptitudes, specMap = {}) {
         characteristics: new fields.ArrayField(new fields.StringField(), { initial: characteristics }),
         base: new fields.NumberField({ initial: 0 }),
         advance: new fields.NumberField({ initial: -20 }),
+        virtualAdvance: new fields.NumberField({ initial: -20 }),
         isSpecialist: new fields.BooleanField({ initial: isSpecialist }),
         specialities: new fields.ObjectField({ initial: specialities(specMap) }),
         aptitudes: new fields.ArrayField(new fields.StringField(), { initial: aptitudes })

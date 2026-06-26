@@ -138,6 +138,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -155,6 +156,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -173,6 +175,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -190,6 +193,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -209,6 +213,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -226,6 +231,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -243,12 +249,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "adeptaSororitas": {
                         "label": "Adepta Sororitas",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -256,6 +264,7 @@
                         "label": "Adeptus Arbites",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -263,6 +272,7 @@
                         "label": "Adeptus Astartes",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -270,6 +280,7 @@
                         "label": "Adeptus Astra Telepathica",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -277,6 +288,7 @@
                         "label": "Adeptus Mechanicus",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -284,6 +296,7 @@
                         "label": "Administratum",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -291,6 +304,7 @@
                         "label": "Askellon Sector",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -298,6 +312,7 @@
                         "label": "Chartist Captains",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -305,6 +320,7 @@
                         "label": "Collegia Titanicu",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -312,6 +328,7 @@
                         "label": "Ecclesiarchy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -319,6 +336,7 @@
                         "label": "Imperial Creed",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -326,6 +344,7 @@
                         "label": "Imperial Guard",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -333,6 +352,7 @@
                         "label": "Imperial Navy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -340,6 +360,7 @@
                         "label": "Imperium",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -347,6 +368,7 @@
                         "label": "Navigators",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -354,6 +376,7 @@
                         "label": "Planetary Defence Forces",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -361,6 +384,7 @@
                         "label": "Rogue Traders",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -368,6 +392,7 @@
                         "label": "Schola Progenium",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -375,6 +400,7 @@
                         "label": "Tech",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -382,6 +408,7 @@
                         "label": "Underworld",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -389,6 +416,7 @@
                         "label": "War",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -406,6 +434,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -422,6 +451,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -439,12 +469,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "archaeotech": {
                         "label": "Archaeotech",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -452,6 +484,7 @@
                         "label": "Chaos Space Marines",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -459,6 +492,7 @@
                         "label": "Criminal Cartels and Smugglers",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -466,6 +500,7 @@
                         "label": "Daemonology",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -473,6 +508,7 @@
                         "label": "Heresy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -480,6 +516,7 @@
                         "label": "The Horus Heresy and the Long War",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -487,6 +524,7 @@
                         "label": "Inquisition",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -494,6 +532,7 @@
                         "label": "Mutants",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -501,6 +540,7 @@
                         "label": "Officio Assassinorum",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -508,6 +548,7 @@
                         "label": "Pirates",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -515,6 +556,7 @@
                         "label": "Psykers",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -522,6 +564,7 @@
                         "label": "The Warp",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -529,6 +572,7 @@
                         "label": "Xenos",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -547,6 +591,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -564,6 +609,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -581,6 +627,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -598,12 +645,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "chapterRunes": {
                         "label": "Chapter Runes",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -611,6 +660,7 @@
                         "label": "Chaos Marks",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -618,6 +668,7 @@
                         "label": "Eldar",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -625,6 +676,7 @@
                         "label": "High Gothic",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -632,6 +684,7 @@
                         "label": "Imperial Codes",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -639,6 +692,7 @@
                         "label": "Low Gothic",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -646,6 +700,7 @@
                         "label": "Mercenary",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -653,6 +708,7 @@
                         "label": "Necrontyr",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -660,6 +716,7 @@
                         "label": "Ork",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -667,6 +724,7 @@
                         "label": "Techna-Lingua",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -674,6 +732,7 @@
                         "label": "Tau",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -681,6 +740,7 @@
                         "label": "Underworld",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -688,6 +748,7 @@
                         "label": "Xenos Markings",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -705,6 +766,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -723,6 +785,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -740,12 +803,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "surface": {
                         "label": "Surface",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -753,6 +818,7 @@
                         "label": "Stellar",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -760,6 +826,7 @@
                         "label": "Warp",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -777,12 +844,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "surface": {
                         "label": "Surface",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -790,6 +859,7 @@
                         "label": "Aeronautica",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -797,6 +867,7 @@
                         "label": "Voidship",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -813,6 +884,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -830,6 +902,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -847,12 +920,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "astromancy": {
                         "label": "Astromancy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -860,6 +935,7 @@
                         "label": "Beasts",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -867,6 +943,7 @@
                         "label": "Bureaucracy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -874,6 +951,7 @@
                         "label": "Chymistry",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -881,6 +959,7 @@
                         "label": "Cryptology",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -888,6 +967,7 @@
                         "label": "Heraldry",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -895,6 +975,7 @@
                         "label": "Imperial Warrants",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -902,6 +983,7 @@
                         "label": "Judgement",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -909,6 +991,7 @@
                         "label": "Legend",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -916,6 +999,7 @@
                         "label": "Numerology",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -923,6 +1007,7 @@
                         "label": "Occult",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -930,6 +1015,7 @@
                         "label": "Philosophy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -937,6 +1023,7 @@
                         "label": "Tactica Imperialis",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -954,6 +1041,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -971,6 +1059,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -988,6 +1077,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1005,6 +1095,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1023,6 +1114,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1040,6 +1132,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1058,12 +1151,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "agri": {
                         "label": "Agri",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1071,6 +1166,7 @@
                         "label": "Archaeologist",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1078,6 +1174,7 @@
                         "label": "Armourer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1085,6 +1182,7 @@
                         "label": "Astrographer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1092,6 +1190,7 @@
                         "label": "Chymist",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1099,6 +1198,7 @@
                         "label": "Cryptographer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1106,6 +1206,7 @@
                         "label": "Cook",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1113,6 +1214,7 @@
                         "label": "Explorator",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1120,6 +1222,7 @@
                         "label": "Linguist",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1127,6 +1230,7 @@
                         "label": "Loremancer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1134,6 +1238,7 @@
                         "label": "Morticator",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1141,6 +1246,7 @@
                         "label": "Performancer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1148,6 +1254,7 @@
                         "label": "Prospector",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1155,6 +1262,7 @@
                         "label": "Scrimshawer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1162,6 +1270,7 @@
                         "label": "Sculptor",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1169,6 +1278,7 @@
                         "label": "Shipwright",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1176,6 +1286,7 @@
                         "label": "Soothsayer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1183,6 +1294,7 @@
                         "label": "Technomat",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1190,6 +1302,7 @@
                         "label": "Voidfarer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -1435,6 +1548,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1452,6 +1566,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1470,6 +1585,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1487,6 +1603,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1506,6 +1623,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1523,6 +1641,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1540,12 +1659,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "adeptaSororitas": {
                         "label": "Adepta Sororitas",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1553,6 +1674,7 @@
                         "label": "Adeptus Arbites",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1560,6 +1682,7 @@
                         "label": "Adeptus Astartes",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1567,6 +1690,7 @@
                         "label": "Adeptus Astra Telepathica",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1574,6 +1698,7 @@
                         "label": "Adeptus Mechanicus",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1581,6 +1706,7 @@
                         "label": "Administratum",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1588,6 +1714,7 @@
                         "label": "Askellon Sector",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1595,6 +1722,7 @@
                         "label": "Chartist Captains",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1602,6 +1730,7 @@
                         "label": "Collegia Titanicu",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1609,6 +1738,7 @@
                         "label": "Ecclesiarchy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1616,6 +1746,7 @@
                         "label": "Imperial Creed",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1623,6 +1754,7 @@
                         "label": "Imperial Guard",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1630,6 +1762,7 @@
                         "label": "Imperial Navy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1637,6 +1770,7 @@
                         "label": "Imperium",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1644,6 +1778,7 @@
                         "label": "Navigators",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1651,6 +1786,7 @@
                         "label": "Planetary Defence Forces",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1658,6 +1794,7 @@
                         "label": "Rogue Traders",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1665,6 +1802,7 @@
                         "label": "Schola Progenium",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1672,6 +1810,7 @@
                         "label": "Tech",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1679,6 +1818,7 @@
                         "label": "Underworld",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1686,6 +1826,7 @@
                         "label": "War",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -1703,6 +1844,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1719,6 +1861,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1736,12 +1879,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "archaeotech": {
                         "label": "Archaeotech",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1749,6 +1894,7 @@
                         "label": "Chaos Space Marines",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1756,6 +1902,7 @@
                         "label": "Criminal Cartels and Smugglers",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1763,6 +1910,7 @@
                         "label": "Daemonology",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1770,6 +1918,7 @@
                         "label": "Heresy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1777,6 +1926,7 @@
                         "label": "The Horus Heresy and the Long War",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1784,6 +1934,7 @@
                         "label": "Inquisition",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1791,6 +1942,7 @@
                         "label": "Mutants",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1798,6 +1950,7 @@
                         "label": "Officio Assassinorum",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1805,6 +1958,7 @@
                         "label": "Pirates",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1812,6 +1966,7 @@
                         "label": "Psykers",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1819,6 +1974,7 @@
                         "label": "The Warp",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1826,6 +1982,7 @@
                         "label": "Xenos",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -1844,6 +2001,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1861,6 +2019,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1878,6 +2037,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -1895,12 +2055,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "chapterRunes": {
                         "label": "Chapter Runes",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1908,6 +2070,7 @@
                         "label": "Chaos Marks",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1915,6 +2078,7 @@
                         "label": "Eldar",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1922,6 +2086,7 @@
                         "label": "High Gothic",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1929,6 +2094,7 @@
                         "label": "Imperial Codes",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1936,6 +2102,7 @@
                         "label": "Low Gothic",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1943,6 +2110,7 @@
                         "label": "Mercenary",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1950,6 +2118,7 @@
                         "label": "Necrontyr",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1957,6 +2126,7 @@
                         "label": "Ork",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1964,6 +2134,7 @@
                         "label": "Techna-Lingua",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1971,6 +2142,7 @@
                         "label": "Tau",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1978,6 +2150,7 @@
                         "label": "Underworld",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -1985,6 +2158,7 @@
                         "label": "Xenos Markings",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -2002,6 +2176,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2020,6 +2195,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2037,12 +2213,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "surface": {
                         "label": "Surface",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2050,6 +2228,7 @@
                         "label": "Stellar",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2057,6 +2236,7 @@
                         "label": "Warp",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -2074,12 +2254,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "surface": {
                         "label": "Surface",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2087,6 +2269,7 @@
                         "label": "Aeronautica",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2094,6 +2277,7 @@
                         "label": "Voidship",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -2110,6 +2294,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2127,6 +2312,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2144,12 +2330,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "astromancy": {
                         "label": "Astromancy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2157,6 +2345,7 @@
                         "label": "Beasts",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2164,6 +2353,7 @@
                         "label": "Bureaucracy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2171,6 +2361,7 @@
                         "label": "Chymistry",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2178,6 +2369,7 @@
                         "label": "Cryptology",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2185,6 +2377,7 @@
                         "label": "Heraldry",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2192,6 +2385,7 @@
                         "label": "Imperial Warrants",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2199,6 +2393,7 @@
                         "label": "Judgement",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2206,6 +2401,7 @@
                         "label": "Legend",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2213,6 +2409,7 @@
                         "label": "Numerology",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2220,6 +2417,7 @@
                         "label": "Occult",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2227,6 +2425,7 @@
                         "label": "Philosophy",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2234,6 +2433,7 @@
                         "label": "Tactica Imperialis",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }
@@ -2251,6 +2451,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2268,6 +2469,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2285,6 +2487,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2302,6 +2505,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2320,6 +2524,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2337,6 +2542,7 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": false,
                 "specialities": {},
                 "aptitudes": [
@@ -2355,12 +2561,14 @@
                 ],
                 "base": 0,
                 "advance": -20,
+                "virtualAdvance": -20,
                 "isSpecialist": true,
                 "specialities": {
                     "agri": {
                         "label": "Agri",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2368,6 +2576,7 @@
                         "label": "Archaeologist",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2375,6 +2584,7 @@
                         "label": "Armourer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2382,6 +2592,7 @@
                         "label": "Astrographer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2389,6 +2600,7 @@
                         "label": "Chymist",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2396,6 +2608,7 @@
                         "label": "Cryptographer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2403,6 +2616,7 @@
                         "label": "Cook",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2410,6 +2624,7 @@
                         "label": "Explorator",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2417,6 +2632,7 @@
                         "label": "Linguist",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2424,6 +2640,7 @@
                         "label": "Loremancer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2431,6 +2648,7 @@
                         "label": "Morticator",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2438,6 +2656,7 @@
                         "label": "Performancer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2445,6 +2664,7 @@
                         "label": "Prospector",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2452,6 +2672,7 @@
                         "label": "Scrimshawer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2459,6 +2680,7 @@
                         "label": "Sculptor",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2466,6 +2688,7 @@
                         "label": "Shipwright",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2473,6 +2696,7 @@
                         "label": "Soothsayer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2480,6 +2704,7 @@
                         "label": "Technomat",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     },
@@ -2487,6 +2712,7 @@
                         "label": "Voidfarer",
                         "base": 0,
                         "advance": -20,
+                        "virtualAdvance": -20,
                         "starter": false,
                         "cost": 0
                     }

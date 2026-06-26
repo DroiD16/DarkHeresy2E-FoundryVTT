@@ -96,7 +96,7 @@
 }
 
 .dark-heresy .effects .item.effect {
-  align-items: center;
+  align-items: flex-start;
   padding: 2px 4px;
 }
 
@@ -140,13 +140,15 @@
 
 /* The changes summary ("what it modifies") is the main column. */
 .dark-heresy .effects .effect-summary {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
   font-family: var(--font-text);
   font-size: var(--font-size-14);
-  line-height: 14px;
+  line-height: 16px;
   color: var(--color-text);
   padding: 0 6px;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .dark-heresy .effects .items-header .effect-summary {

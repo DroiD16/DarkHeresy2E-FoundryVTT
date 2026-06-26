@@ -1,6 +1,19 @@
 import { ammunitionMultiplier, buildTraitsFromQualities } from "./weapon-qualities.js";
 
 /**
+ * Resolve the advance value used for skill roll targets. Stored `advance`
+ * remains the XP source; `virtualAdvance` can only raise the effective target.
+ * @param {{advance?: number|string, virtualAdvance?: number|string}} skill Skill-like actor data.
+ * @returns {number} The effective advance for roll calculations.
+ */
+export function effectiveSkillAdvance(skill) {
+    const advance = Number(skill?.advance);
+    const baseAdvance = Number.isFinite(advance) ? advance : 0;
+    const virtualAdvance = Number(skill?.virtualAdvance);
+    return Number.isFinite(virtualAdvance) ? Math.max(baseAdvance, virtualAdvance) : baseAdvance;
+}
+
+/**
  * Map a weapon's resolved ammunition items to the lean descriptors the combat
  * dialog needs. Kept as a pure module function (NOT full Documents — rollData is
  * serialized into the chat message for the reroll path) so the 0/1/>1 boundary
@@ -175,7 +188,7 @@ export default class DarkHeresyUtil {
 
         let characteristics = this.getCharacteristicOptions(actor, defaultChar);
         characteristics = characteristics.map(char => {
-            char.target += (Number(skill.base) || 0) + skill.advance;
+            char.target += (Number(skill.base) || 0) + effectiveSkillAdvance(skill);
             return char;
         });
 

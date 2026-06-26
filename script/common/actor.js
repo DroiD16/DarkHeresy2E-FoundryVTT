@@ -1,3 +1,5 @@
+import { effectiveSkillAdvance } from "./util.js";
+
 export class DarkHeresyActor extends Actor {
 
     async _preCreate(data, options, user) {
@@ -68,14 +70,14 @@ export class DarkHeresyActor extends Actor {
         for (let skill of Object.values(this.skills)) {
             let short = skill.characteristics[0];
             let characteristic = this._findCharacteristic(short);
-            skill.total = characteristic.total + this._num(skill.base) + this._num(skill.advance);
+            skill.total = characteristic.total + this._num(skill.base) + effectiveSkillAdvance(skill);
             skill.advanceSkill = this._getAdvanceSkill(skill.advance);
             if (skill.isSpecialist) {
                 for (let [specialityKey, speciality] of Object.entries(skill.specialities)) {
                     speciality.total = characteristic.total
                         + this._num(skill.base)
                         + this._num(speciality.base)
-                        + this._num(speciality.advance);
+                        + effectiveSkillAdvance(speciality);
                     speciality.isKnown = speciality.advance >= 0;
                     speciality.advanceSpec = this._getAdvanceSkill(speciality.advance);
                     // Localise the display label by its stable key, keeping the stored

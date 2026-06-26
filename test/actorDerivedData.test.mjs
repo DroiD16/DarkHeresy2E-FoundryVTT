@@ -6,6 +6,12 @@ globalThis.Actor = class {
     prepareDerivedData() {}
 };
 
+globalThis.foundry = {
+    utils: {
+        mergeObject: (original, other) => ({ ...original, ...other })
+    }
+};
+
 globalThis.game = {
     darkHeresy: {
         config: {
@@ -18,8 +24,12 @@ globalThis.game = {
                 rightLeg: "ARMOUR.RIGHT_LEG"
             },
             advanceStagesCharacteristics: { 0: "ADVANCE.NONE" },
-            advanceStagesSkills: { "-20": "ADVANCE.UNTRAINED", 0: "ADVANCE.KNOWN" }
+            advanceStagesSkills: { "-20": "ADVANCE.UNTRAINED", 0: "ADVANCE.KNOWN" },
+            characteristicCosts: [[0, 0, 0]]
         }
+    },
+    settings: {
+        get: () => true
     },
     i18n: {
         localize: key => key,
@@ -28,6 +38,7 @@ globalThis.game = {
 };
 
 const { DarkHeresyActor } = await import("../script/common/actor.js");
+const { default: DarkHeresyUtil } = await import("../script/common/util.js");
 
 function actor(system, items = []) {
     const instance = Object.create(DarkHeresyActor.prototype);
@@ -64,6 +75,108 @@ test("skill totals include skill base and speciality base", () => {
 
     assert.equal(dh.system.skills.logic.total, 55);
     assert.equal(dh.system.skills.trade.specialities.armourer.total, 60);
+});
+
+test("skill totals use virtual advance only when it is higher than advance", () => {
+    const dh = actor({
+        characteristics: {
+            intelligence: { short: "Int", total: 40 }
+        },
+        skills: {
+            logic: {
+                characteristics: ["Int"],
+                base: 5,
+                advance: 0,
+                virtualAdvance: 20,
+                isSpecialist: false
+            },
+            medicae: {
+                characteristics: ["Int"],
+                base: 5,
+                advance: 10,
+                virtualAdvance: 0,
+                isSpecialist: false
+            }
+        }
+    });
+
+    dh._computeSkills();
+
+    assert.equal(dh.system.skills.logic.total, 65);
+    assert.equal(dh.system.skills.medicae.total, 55);
+});
+
+test("speciality totals use virtual advance without changing known state", () => {
+    const dh = actor({
+        characteristics: {
+            intelligence: { short: "Int", total: 40 }
+        },
+        skills: {
+            trade: {
+                characteristics: ["Int"],
+                base: 3,
+                advance: -20,
+                isSpecialist: true,
+                specialities: {
+                    armourer: { base: 7, advance: -20, virtualAdvance: 10 }
+                }
+            }
+        }
+    });
+
+    dh._computeSkills();
+
+    assert.equal(dh.system.skills.trade.specialities.armourer.total, 60);
+    assert.equal(dh.system.skills.trade.specialities.armourer.isKnown, false);
+});
+
+test("auto experience uses advance instead of virtual advance", () => {
+    const dh = actor({
+        characteristics: {},
+        skills: {
+            logic: {
+                characteristics: ["Int"],
+                aptitudes: ["Intelligence", "Knowledge"],
+                advance: 10,
+                virtualAdvance: 30,
+                starter: false,
+                isSpecialist: false
+            }
+        },
+        experience: { spentOther: 0, value: 1000 },
+        psy: { rating: 0, cost: 0 }
+    }, [
+        { isAptitude: true, name: "Intelligence" },
+        { isAptitude: true, name: "Knowledge" }
+    ]);
+
+    dh._computeExperience_auto();
+
+    assert.equal(dh.system.skills.logic.cost, 300);
+    assert.equal(dh.system.experience.spentSkills, 300);
+});
+
+test("skill roll data uses virtual advance for characteristic targets", () => {
+    const rollData = DarkHeresyUtil.createSkillRollData({
+        id: "actor-id",
+        characteristics: {
+            intelligence: { label: "Intelligence", short: "Int", total: 40 },
+            fellowship: { label: "Fellowship", short: "Fel", total: 30 }
+        },
+        skills: {
+            logic: {
+                label: "Logic",
+                characteristics: ["Int", "Fel"],
+                base: 5,
+                advance: 0,
+                virtualAdvance: 20,
+                total: 65
+            }
+        }
+    }, "logic");
+
+    assert.deepEqual(rollData.characteristics.map(c => c.target), [65, 55]);
+    assert.equal(rollData.target.base, 65);
 });
 
 test("fatigue max includes fatigue base", () => {
